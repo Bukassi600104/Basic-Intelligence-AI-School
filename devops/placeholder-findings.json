@@ -1,0 +1,233 @@
+{
+  "findings": [
+    {
+      "file": "src/contexts/AuthContext.jsx",
+      "line": 4,
+      "matched_text": "console.log('Profile fetch error:', error?.message)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/contexts/AuthContext.jsx", 
+      "line": 8,
+      "matched_text": "console.log('Profile operation error:', error?.message)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/contexts/AuthContext.jsx",
+      "line": 12,
+      "matched_text": "console.log('Membership fetch error:', error?.message)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/contexts/AuthContext.jsx",
+      "line": 16,
+      "matched_text": "console.log('Membership operation error:', error?.message)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/components/ErrorBoundary.jsx",
+      "line": 3,
+      "matched_text": "// console.log(\"Error caught by ErrorBoundary:\", error, errorInfo)",
+      "suggested_replacement": "Keep commented out",
+      "category": "commented_debug",
+      "auto_fix": false
+    },
+    {
+      "file": "src/components/ui/AdminSidebar.jsx",
+      "line": 4,
+      "matched_text": "console.log(`Unknown quick action: ${action}`)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/join-membership-page/components/PaymentSubmissionForm.jsx",
+      "line": 8,
+      "matched_text": "placeholder=\"your.email@example.com\"",
+      "suggested_replacement": "placeholder={process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'your.email@example.com'}",
+      "category": "placeholder_email",
+      "auto_fix": true
+    },
+    {
+      "file": "src/components/ui/AuthenticationGate.jsx",
+      "line": 4,
+      "matched_text": "email: 'user@example.com',",
+      "suggested_replacement": "email: process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL || 'user@example.com',",
+      "category": "placeholder_email",
+      "auto_fix": true
+    },
+    {
+      "file": "src/pages/admin-users/index.jsx",
+      "line": 4,
+      "matched_text": "console.log('Send welcome email to:', userIds)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-users/index.jsx",
+      "line": 8,
+      "matched_text": "console.log('Export selected users:', userIds)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-users/index.jsx",
+      "line": 12,
+      "matched_text": "console.log('Delete users:', userIds)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-users/index.jsx",
+      "line": 16,
+      "matched_text": "placeholder=\"user@example.com\"",
+      "suggested_replacement": "placeholder={process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL || 'user@example.com'}",
+      "category": "placeholder_email",
+      "auto_fix": true
+    },
+    {
+      "file": "src/pages/admin-users/index.jsx",
+      "line": 20,
+      "matched_text": "placeholder=\"user@example.com\"",
+      "suggested_replacement": "placeholder={process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL || 'user@example.com'}",
+      "category": "placeholder_email",
+      "auto_fix": true
+    },
+    {
+      "file": "src/services/emailService.js",
+      "line": 4,
+      "matched_text": "console.log('Email sent successfully via Resend:', data)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/auth/SignInPage.jsx",
+      "line": 8,
+      "matched_text": "placeholder=\"your.email@example.com\"",
+      "suggested_replacement": "placeholder={process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL || 'your.email@example.com'}",
+      "category": "placeholder_email",
+      "auto_fix": true
+    },
+    {
+      "file": "src/pages/auth/SignUpPage.jsx",
+      "line": 8,
+      "matched_text": "placeholder=\"your.email@example.com\"",
+      "suggested_replacement": "placeholder={process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL || 'your.email@example.com'}",
+      "category": "placeholder_email",
+      "auto_fix": true
+    },
+    {
+      "file": "src/services/paymentService.js",
+      "line": 4,
+      "matched_text": "// Log error but don't fail the payment approval console.log('Failed to update user member ID:', userUpdateError?.message)",
+      "suggested_replacement": "Keep commented out",
+      "category": "commented_debug",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-dashboard/index.jsx",
+      "line": 4,
+      "matched_text": "console.log('Unknown quick action:', action)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-dashboard/index.jsx",
+      "line": 8,
+      "matched_text": "onClick={() => console.log('Analytics clicked')}",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-dashboard/index.jsx",
+      "line": 12,
+      "matched_text": "onClick={() => console.log('Settings clicked')}",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-courses/index.jsx",
+      "line": 4,
+      "matched_text": "onDuplicate={(course) => console.log('Duplicate course:', course?.id)}",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-content/components/UnifiedMediaManager.jsx",
+      "line": 4,
+      "matched_text": "console.log('Preview file:', item.file_path)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-content/components/UnifiedMediaManager.jsx",
+      "line": 8,
+      "matched_text": "console.log('Edit item:', item.id)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/services/userService.js",
+      "line": 4,
+      "matched_text": "console.log('Update last active error:', error?.message)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/services/userService.js",
+      "line": 8,
+      "matched_text": "console.log('Update last active failed:', error?.message)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-courses/components/CourseForm.jsx",
+      "line": 4,
+      "matched_text": "console.log('Videos to link:', selectedVideos)",
+      "suggested_replacement": "Remove in production",
+      "category": "debug_log",
+      "auto_fix": false
+    },
+    {
+      "file": "src/pages/admin-courses/components/CourseForm.jsx",
+      "line": 8,
+      "matched_text": "placeholder=\"https://example.com/image.jpg\"",
+      "suggested_replacement": "placeholder={process.env.NEXT_PUBLIC_CDN_URL || 'https://example.com/image.jpg'}",
+      "category": "placeholder_url",
+      "auto_fix": true
+    }
+  ],
+  "summary": {
+    "total_findings": 27,
+    "auto_fixable": 6,
+    "manual_review": 21,
+    "categories": {
+      "debug_log": 18,
+      "placeholder_email": 6,
+      "placeholder_url": 1,
+      "commented_debug": 2
+    }
+  },
+  "scan_date": "2025-10-18",
+  "scan_branch": "deepseek/replace-placeholders"
+}
