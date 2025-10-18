@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 import { notificationService } from './notificationService';
 
 export const subscriptionService = {

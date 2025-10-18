@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 import { Resend } from 'resend';
 
 export const emailService = {
@@ -38,7 +39,7 @@ export const emailService = {
 
       return emailResult;
     } catch (error) {
-      console.error('Error sending email to member:', error);
+      logger.error('Error sending email to member:', error);
       return { success: false, error: error.message };
     }
   },
@@ -115,14 +116,14 @@ export const emailService = {
       });
 
       if (error) {
-        console.error('Resend API error:', error);
+        logger.error('Resend API error:', error);
         return { success: false, error: error.message };
       }
 
-      console.log('Email sent successfully via Resend:', data);
+      logger.info('Email sent successfully via Resend:', data);
       return { success: true, data };
     } catch (error) {
-      console.error('Error sending email via Resend:', error);
+      logger.error('Error sending email via Resend:', error);
       return { success: false, error: error.message };
     }
   },
@@ -270,10 +271,10 @@ export const emailService = {
         });
 
       if (error) {
-        console.error('Error logging email:', error);
+        logger.error('Error logging email:', error);
       }
     } catch (error) {
-      console.error('Error logging email:', error);
+      logger.error('Error logging email:', error);
     }
   },
 

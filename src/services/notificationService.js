@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 import { emailService } from './emailService';
 
 export const notificationService = {
@@ -23,7 +24,7 @@ export const notificationService = {
         .single();
 
       if (error || !member) {
-        console.error('Member not found for activation reminder:', memberId);
+        logger.error('Member not found for activation reminder:', memberId);
         return { success: false, error: 'Member not found' };
       }
 
@@ -62,7 +63,7 @@ The Basic Intelligence Team
 
       return result;
     } catch (error) {
-      console.error('Error sending activation reminder:', error);
+      logger.error('Error sending activation reminder:', error);
       return { success: false, error: error.message };
     }
   },
@@ -77,7 +78,7 @@ The Basic Intelligence Team
         .single();
 
       if (error || !member) {
-        console.error('Member not found for activation confirmation:', memberId);
+        logger.error('Member not found for activation confirmation:', memberId);
         return { success: false, error: 'Member not found' };
       }
 
@@ -111,7 +112,7 @@ The Basic Intelligence Team
 
       return result;
     } catch (error) {
-      console.error('Error sending activation confirmation:', error);
+      logger.error('Error sending activation confirmation:', error);
       return { success: false, error: error.message };
     }
   },
@@ -126,7 +127,7 @@ The Basic Intelligence Team
         .single();
 
       if (error || !member) {
-        console.error('Member not found for expiry notification:', memberId);
+        logger.error('Member not found for expiry notification:', memberId);
         return { success: false, error: 'Member not found' };
       }
 
@@ -212,7 +213,7 @@ The Basic Intelligence Team
 
       return result;
     } catch (error) {
-      console.error('Error sending subscription expiry notification:', error);
+      logger.error('Error sending subscription expiry notification:', error);
       return { success: false, error: error.message };
     }
   },
@@ -227,7 +228,7 @@ The Basic Intelligence Team
         .single();
 
       if (error || !member) {
-        console.error('Member not found for renewal confirmation:', memberId);
+        logger.error('Member not found for renewal confirmation:', memberId);
         return { success: false, error: 'Member not found' };
       }
 
@@ -261,7 +262,7 @@ The Basic Intelligence Team
 
       return result;
     } catch (error) {
-      console.error('Error sending renewal confirmation:', error);
+      logger.error('Error sending renewal confirmation:', error);
       return { success: false, error: error.message };
     }
   },
@@ -276,7 +277,7 @@ The Basic Intelligence Team
         .single();
 
       if (error || !member) {
-        console.error('Member not found for upgrade confirmation:', memberId);
+        logger.error('Member not found for upgrade confirmation:', memberId);
         return { success: false, error: 'Member not found' };
       }
 
@@ -313,7 +314,7 @@ The Basic Intelligence Team
 
       return result;
     } catch (error) {
-      console.error('Error sending upgrade confirmation:', error);
+      logger.error('Error sending upgrade confirmation:', error);
       return { success: false, error: error.message };
     }
   },
@@ -331,7 +332,7 @@ The Basic Intelligence Team
         .lt('created_at', fortyEightHoursAgo.toISOString());
 
       if (error) {
-        console.error('Error fetching pending members:', error);
+        logger.error('Error fetching pending members:', error);
         return { success: false, error: error.message };
       }
 
@@ -356,7 +357,7 @@ The Basic Intelligence Team
         }
       };
     } catch (error) {
-      console.error('Error checking pending activations:', error);
+      logger.error('Error checking pending activations:', error);
       return { success: false, error: error.message };
     }
   },
@@ -386,7 +387,7 @@ The Basic Intelligence Team
         .not('subscription_end_date', 'is', null);
 
       if (error) {
-        console.error('Error fetching expiring members:', error);
+        logger.error('Error fetching expiring members:', error);
         return { success: false, error: error.message };
       }
 
@@ -433,7 +434,7 @@ The Basic Intelligence Team
         }
       };
     } catch (error) {
-      console.error('Error checking expiring subscriptions:', error);
+      logger.error('Error checking expiring subscriptions:', error);
       return { success: false, error: error.message };
     }
   },
@@ -457,7 +458,7 @@ The Basic Intelligence Team
 
       if (error) {
         // Fallback to email_logs table
-        console.warn('Automated notifications table not available, falling back to email_logs');
+        logger.warn('Automated notifications table not available, falling back to email_logs');
         await supabase
           .from('email_logs')
           .insert({
@@ -472,7 +473,7 @@ The Basic Intelligence Team
           });
       }
     } catch (error) {
-      console.error('Error logging automated notification:', error);
+      logger.error('Error logging automated notification:', error);
     }
   },
 

@@ -5,6 +5,7 @@ import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { contentService } from '../../services/contentService';
+import { logger } from '../../utils/logger';
 
 const StudentVideos = () => {
   const { user, userProfile, isMember } = useAuth();
@@ -37,7 +38,7 @@ const StudentVideos = () => {
         const { data, error } = await contentService.getAccessibleContent('video');
         
         if (error) {
-          console.error('Failed to load videos:', error);
+          logger.error('Failed to load videos:', error);
           return;
         }
 
@@ -55,7 +56,7 @@ const StudentVideos = () => {
         
         setVideos(transformedVideos);
       } catch (error) {
-        console.error('Failed to load videos:', error);
+        logger.error('Failed to load videos:', error);
       } finally {
         setLoading(false);
       }

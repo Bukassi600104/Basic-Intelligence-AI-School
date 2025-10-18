@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 import { userService } from './userService';
 
 // Track application start time for uptime calculation
@@ -40,7 +41,7 @@ export const systemService = {
         }
       };
     } catch (error) {
-      console.error('Error fetching system status:', error);
+      logger.error('Error fetching system status:', error);
       return {
         success: false,
         error: error.message,
@@ -137,7 +138,7 @@ export const systemService = {
         fileCount: totalFiles
       };
     } catch (error) {
-      console.error('Error fetching storage usage:', error);
+      logger.error('Error fetching storage usage:', error);
       return {
         percentage: 65,
         used: 650,
@@ -192,14 +193,14 @@ export const systemService = {
             });
           }
         } catch (bucketError) {
-          console.warn(`Error accessing bucket ${bucket}:`, bucketError);
+          logger.warn(`Error accessing bucket ${bucket}:`, bucketError);
           // Continue with other buckets
         }
       }
 
       return breakdown;
     } catch (error) {
-      console.error('Error getting storage breakdown:', error);
+      logger.error('Error getting storage breakdown:', error);
       return [];
     }
   },

@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 
 export const paymentService = {
   // Get all payments (admin only)
@@ -210,7 +211,7 @@ export const paymentService = {
           ?.eq('id', payment?.user?.id)
 
         if (userUpdateError) {
-          // Log error but don't fail the payment approval console.log('Failed to update user member ID:', userUpdateError?.message);
+          // Log error but don't fail the payment approval logger.error('Failed to update user member ID:', userUpdateError?.message);
         }
       }
       

@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 
 export const adminService = {
   // Get dashboard statistics
@@ -77,7 +78,7 @@ export const adminService = {
 
       return { data: stats, error: null };
     } catch (error) {
-      console.error('getDashboardStats error:', error);
+      logger.error('getDashboardStats error:', error);
       return { data: null, error: error?.message || 'Failed to fetch dashboard statistics' };
     }
   },
@@ -145,7 +146,7 @@ export const adminService = {
 
       return { data: sortedActivities, error: null };
     } catch (error) {
-      console.error('getRecentActivities error:', error);
+      logger.error('getRecentActivities error:', error);
       return { data: [], error: error?.message || 'Failed to fetch recent activities' };
     }
   },
@@ -200,7 +201,7 @@ export const adminService = {
 
       return { data: alerts, error: null };
     } catch (error) {
-      console.error('getSystemAlerts error:', error);
+      logger.error('getSystemAlerts error:', error);
       return { data: [], error: error?.message || 'Failed to fetch system alerts' };
     }
   },
@@ -320,13 +321,13 @@ export const adminService = {
         ?.single();
 
       if (error) {
-        console.error('Create user database error:', error);
+        logger.error('Create user database error:', error);
         return { data: null, error: error?.message || 'Failed to create user in database' };
       }
 
       return { data, error: null };
     } catch (error) {
-      console.error('Create user service error:', error);
+      logger.error('Create user service error:', error);
       return { data: null, error: error?.message || 'Unexpected error occurred while creating user' };
     }
   },
@@ -394,7 +395,7 @@ export const adminService = {
 
       return dashboardData;
     } catch (error) {
-      console.error('getDashboardMetrics error:', error);
+      logger.error('getDashboardMetrics error:', error);
       // Fallback to existing stats if new functions aren't available yet
       const statsResult = await adminService.getDashboardStats();
       return {

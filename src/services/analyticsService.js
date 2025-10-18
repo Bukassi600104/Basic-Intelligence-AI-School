@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 
 export const analyticsService = {
   // Get comprehensive analytics data
@@ -30,7 +31,7 @@ export const analyticsService = {
         }
       };
     } catch (error) {
-      console.error('Error fetching analytics data:', error);
+      logger.error('Error fetching analytics data:', error);
       return {
         success: false,
         error: error.message,
@@ -60,7 +61,7 @@ export const analyticsService = {
         currency: 'NGN'
       }));
     } catch (error) {
-      console.error('Error fetching revenue data:', error);
+      logger.error('Error fetching revenue data:', error);
       return this.getMockRevenueData(dateRange);
     }
   },
@@ -89,7 +90,7 @@ export const analyticsService = {
         };
       });
     } catch (error) {
-      console.error('Error fetching user growth data:', error);
+      logger.error('Error fetching user growth data:', error);
       return this.getMockUserGrowthData(dateRange);
     }
   },
@@ -137,7 +138,7 @@ export const analyticsService = {
         completionRate: Math.round((course.completion / course.enrollments) * 100) || 0
       }));
     } catch (error) {
-      console.error('Error fetching course performance data:', error);
+      logger.error('Error fetching course performance data:', error);
       return this.getMockCoursePerformanceData();
     }
   },
@@ -159,7 +160,7 @@ export const analyticsService = {
         storageSize: bucket.size
       }));
     } catch (error) {
-      console.error('Error fetching content engagement data:', error);
+      logger.error('Error fetching content engagement data:', error);
       return this.getMockContentEngagementData();
     }
   },
@@ -188,7 +189,7 @@ export const analyticsService = {
         growthRate: 15 // Could be calculated from previous period
       };
     } catch (error) {
-      console.error('Error fetching summary metrics:', error);
+      logger.error('Error fetching summary metrics:', error);
       return {
         totalRevenue: 0,
         totalUsers: 0,
@@ -277,13 +278,13 @@ export const analyticsService = {
             });
           }
         } catch (bucketError) {
-          console.warn(`Error accessing bucket ${bucket}:`, bucketError);
+          logger.warn(`Error accessing bucket ${bucket}:`, bucketError);
         }
       }
 
       return breakdown;
     } catch (error) {
-      console.error('Error getting storage breakdown:', error);
+      logger.error('Error getting storage breakdown:', error);
       return [];
     }
   },
@@ -479,7 +480,7 @@ export const analyticsService = {
       
       return { success: true, message: 'Report exported successfully' };
     } catch (error) {
-      console.error('Error exporting report:', error);
+      logger.error('Error exporting report:', error);
       return { success: false, error: error.message };
     }
   }

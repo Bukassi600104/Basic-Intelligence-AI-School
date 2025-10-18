@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { logger } from '../utils/logger';
 
 export const userService = {
   // Get all users (admin only)
@@ -245,10 +246,10 @@ export const userService = {
         ?.eq('id', userId)
       
       if (error) {
-        console.log('Update last active error:', error?.message)
+        logger.error('Update last active error:', error?.message)
       }
     } catch (error) {
-      console.log('Update last active failed:', error?.message)
+      logger.error('Update last active failed:', error?.message)
     }
   }
 }
