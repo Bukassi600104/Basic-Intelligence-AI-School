@@ -1,113 +1,118 @@
-# Dependencies Migration and Security Vulnerabilities Report
+# Dependency Migration Plan
 
-## Current Vulnerabilities Summary
+## Security Vulnerabilities Analysis
 
-**Total Vulnerabilities:** 3 (1 high, 2 moderate)
+### Current Vulnerabilities (3 total)
 
-## High Priority Vulnerabilities
+#### High Severity (1)
+- **vite** (v5.0.0) - Multiple security vulnerabilities including:
+  - `server.fs.deny` bypass on case-insensitive filesystems (CVE-2024-XXXXX)
+  - XSS vulnerability in `server.transformIndexHtml` via URL payload
+  - Multiple `server.fs.deny` bypass vulnerabilities
 
-### 1. Vite (High Severity)
-- **Current Version:** 5.0.0
-- **Fixed Version:** 5.4.20
-- **Vulnerabilities:** Multiple security issues in Vite development server
-- **Risk:** File system access bypass, XSS vulnerabilities
-- **Recommended Action:** Upgrade to Vite 5.4.20
+#### Moderate Severity (2)
+- **esbuild** (via vite) - Development server request interception vulnerability
+- **postcss** (v8.4.8) - Line return parsing error
 
-### 2. PostCSS (Moderate Severity)
-- **Current Version:** 8.4.8
-- **Fixed Version:** 8.5.6
-- **Vulnerability:** PostCSS line return parsing error
-- **Risk:** Potential parsing errors in CSS processing
-- **Recommended Action:** Upgrade to PostCSS 8.5.6
+### Recommended Upgrade Paths
 
-### 3. esbuild (Moderate Severity)
-- **Current Version:** (via Vite dependency)
-- **Vulnerability:** Development server request interception
-- **Risk:** Unauthorized requests to development server
-- **Recommended Action:** Upgrade Vite to fix esbuild dependency
-
-## Recommended Upgrade Strategy
-
-### Immediate Security Fixes (Auto-fixable)
+#### Immediate Security Fixes (npm audit fix --force)
 
 ```bash
 npm audit fix --force
 ```
 
-### Manual Migration Considerations
+This will upgrade:
+- **vite**: 5.0.0 → 5.4.20 (fixes all security vulnerabilities)
+- **postcss**: 8.4.8 → 8.5.6 (fixes parsing vulnerability)
 
-#### React 18 to 19 (Major Version)
-- **Current:** React 18.3.1
-- **Latest:** React 19.2.0
-- **Migration Notes:**
-  - Breaking changes in React 19
-  - Requires thorough testing of components
-  - Update React DOM to 19.2.0
-  - Check for deprecated APIs
+#### Major Version Upgrades (Requires Testing)
 
-#### Vite 5 to 7 (Major Version)
-- **Current:** Vite 5.0.0
-- **Latest:** Vite 7.1.10
-- **Migration Notes:**
-  - Major configuration changes
-  - Plugin compatibility updates
-  - Build optimization improvements
+**High Priority:**
+1. **React Ecosystem** (Major breaking changes)
+   - react: 18.3.1 → 19.2.0
+   - react-dom: 18.3.1 → 19.2.0
+   - react-router-dom: 6.0.2 → 7.9.4
 
-#### Tailwind CSS 3 to 4 (Major Version)
-- **Current:** Tailwind CSS 3.4.6
-- **Latest:** Tailwind CSS 4.1.14
-- **Migration Notes:**
-  - Breaking changes in configuration
-  - New utility classes
-  - Performance improvements
+2. **Build Tools** (Breaking changes likely)
+   - vite: 5.0.0 → 7.1.10
+   - @vitejs/plugin-react: 4.3.4 → 5.0.4
 
-## Testing Strategy After Upgrades
+3. **Styling** (Breaking changes likely)
+   - tailwindcss: 3.4.6 → 4.1.14
+   - @tailwindcss/line-clamp: 0.1.0 → 0.4.4
 
-1. **Build Test:** `npm run build`
-2. **Development Server:** `npm run dev`
-3. **Component Testing:** Verify all React components
-4. **Styling Verification:** Check Tailwind classes
-5. **Routing Test:** Verify React Router functionality
-6. **Authentication Test:** Verify Supabase integration
+**Medium Priority:**
+4. **Testing** (Breaking changes likely)
+   - @testing-library/jest-dom: 5.17.0 → 6.9.1
+   - @testing-library/react: 11.2.7 → 16.3.0
+   - @testing-library/user-event: 12.8.3 → 14.6.1
 
-## Risk Assessment
+5. **UI Components** (Breaking changes possible)
+   - framer-motion: 10.18.0 → 12.23.24
+   - lucide-react: 0.484.0 → 0.546.0
+   - recharts: 2.15.4 → 3.3.0
 
-### Low Risk Updates
-- @reduxjs/toolkit (2.9.0 → 2.9.1)
-- @supabase/supabase-js (2.75.0 → 2.75.1)
-- autoprefixer (10.4.2 → 10.4.21)
-- resend (6.1.3 → 6.2.0)
+### Migration Strategy
 
-### Medium Risk Updates
-- Vite (5.0.0 → 5.4.20) - Security fixes
-- PostCSS (8.4.8 → 8.5.6) - Security fixes
-- React Router DOM (6.0.2 → 7.9.4) - Major version
-
-### High Risk Updates
-- React (18.3.1 → 19.2.0) - Major breaking changes
-- Vite (5.0.0 → 7.1.10) - Major configuration changes
-- Tailwind CSS (3.4.6 → 4.1.14) - Major breaking changes
-
-## Implementation Priority
-
-### Phase 1: Security Patches (Immediate)
-- Apply `npm audit fix --force`
-- Test build and development server
+#### Phase 1: Security Patches (Immediate)
+- Run `npm audit fix --force` to address critical vulnerabilities
+- Test build and basic functionality
 - Deploy security fixes
 
-### Phase 2: Minor Updates (Next Sprint)
-- Update low-risk dependencies
-- Test functionality
+#### Phase 2: React 19 Migration (High Priority)
+1. Update React and React DOM to v19
+2. Update React Router to v7
+3. Test all routing and component functionality
+4. Address breaking changes in React 19
 
-### Phase 3: Major Updates (Future Planning)
-- Plan React 19 migration
-- Plan Tailwind CSS 4 migration
-- Allocate testing resources
+#### Phase 3: Build Tools Upgrade (Medium Priority)
+1. Update Vite and related plugins
+2. Test build process and development server
+3. Update configuration files as needed
 
-## Rollback Plan
+#### Phase 4: Styling Updates (Medium Priority)
+1. Update Tailwind CSS to v4
+2. Update related styling dependencies
+3. Test responsive design and styling
 
-If upgrades cause issues:
-1. Revert package.json and package-lock.json
-2. Run `npm install` to restore previous state
-3. Document encountered issues
-4. Create targeted migration plan for specific packages
+### Testing Requirements
+
+After each upgrade phase:
+- [ ] Build process works without errors
+- [ ] Development server starts correctly
+- [ ] All pages load without console errors
+- [ ] Authentication flows work
+- [ ] Admin dashboard functionality
+- [ ] Student dashboard functionality
+- [ ] Mobile responsiveness
+- [ ] Form submissions work
+
+### Risk Assessment
+
+**High Risk:**
+- React 18 → 19 migration (breaking changes in concurrent features)
+- Vite major version upgrades (configuration changes)
+- Tailwind CSS v4 (syntax changes)
+
+**Medium Risk:**
+- React Router v6 → v7 (API changes)
+- Testing library updates (testing patterns may change)
+
+**Low Risk:**
+- Utility libraries (dotenv, autoprefixer)
+- UI component libraries (minor version updates)
+
+### Rollback Plan
+
+1. Keep current `package-lock.json` as backup
+2. Create git branch for each upgrade phase
+3. Test thoroughly before merging to main
+4. Have rollback procedure ready for production deployment
+
+### Notes
+
+- Current project uses Vite 5.0.0 which has multiple security vulnerabilities
+- React 19 introduces significant changes to concurrent rendering
+- Tailwind CSS v4 requires migration from PostCSS 7 syntax
+- Consider creating a staging environment for testing major upgrades
