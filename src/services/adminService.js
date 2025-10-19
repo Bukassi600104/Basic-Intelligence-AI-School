@@ -276,9 +276,6 @@ export const adminService = {
   // Create new user (admin only)
   createUser: async (userData) => {
     try {
-      // Generate UUID for the user
-      const userId = crypto.randomUUID();
-      
       // Validate required fields
       if (!userData?.email || !userData?.full_name) {
         return { data: null, error: 'Email and full name are required fields' };
@@ -295,9 +292,28 @@ export const adminService = {
         return { data: null, error: 'User with this email already exists' };
       }
 
-      // Prepare user data with proper defaults and UUID
+      // Generate a secure password for the new user
+      const tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+
+      // Create auth user first using admin API
+      const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
+        email: userData.email,
+        password: tempPassword,
+        email_confirm: true, // Auto-confirm email for admin-created users
+        user_metadata: {
+          full_name: userData.full_name,
+          role: userData?.role || 'student'
+        }
+      });
+
+      if (authError) {
+        logger.error('Create auth user error:', authError);
+        return { data: null, error: authError?.message || 'Failed to create authentication user' };
+      }
+
+      // Prepare user profile data using the auth user ID
       const newUserData = {
-        id: userId,
+        id: authUser.user.id,
         email: userData?.email,
         full_name: userData?.full_name,
         role: userData?.role || 'student',
@@ -314,6 +330,7 @@ export const adminService = {
         last_active_at: new Date()?.toISOString()
       };
 
+      // Create user profile
       const { data, error } = await supabase
         ?.from('user_profiles')
         ?.insert([newUserData])
@@ -321,11 +338,21 @@ export const adminService = {
         ?.single();
 
       if (error) {
-        logger.error('Create user database error:', error);
-        return { data: null, error: error?.message || 'Failed to create user in database' };
+        logger.error('Create user profile error:', error);
+        // Clean up: delete the auth user if profile creation fails
+        await supabase.auth.admin.deleteUser(authUser.user.id);
+        return { data: null, error: error?.message || 'Failed to create user profile' };
       }
 
-      return { data, error: null };
+      logger.info(`Admin created user: ${userData.email} with temporary password`);
+      return { 
+        data: { 
+          ...data, 
+          temp_password: tempPassword, // Include temp password for admin reference
+          message: 'User created successfully. Temporary password has been generated.' 
+        }, 
+        error: null 
+      };
     } catch (error) {
       logger.error('Create user service error:', error);
       return { data: null, error: error?.message || 'Unexpected error occurred while creating user' };
