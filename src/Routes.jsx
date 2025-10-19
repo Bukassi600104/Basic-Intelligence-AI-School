@@ -27,7 +27,7 @@ import CoursesPage from './pages/courses';
 
 const Routes = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || '/'}>
       <ErrorBoundary>
       <ScrollToTop />
       <RouterRoutes>
