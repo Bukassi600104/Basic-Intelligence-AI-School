@@ -5,6 +5,7 @@ import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { contentService } from '../../services/contentService';
+import { referralService } from '../../services/referralService';
 
 const StudentDashboard = () => {
   const { user, userProfile, isMember } = useAuth();
@@ -12,6 +13,11 @@ const StudentDashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [recentContent, setRecentContent] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [referralInfo, setReferralInfo] = useState(null);
+  const [referralAnalytics, setReferralAnalytics] = useState([]);
+  const [showReferralModal, setShowReferralModal] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   // Check if user is a paid student
   useEffect(() => {
@@ -61,6 +67,31 @@ const StudentDashboard = () => {
       loadRecentContent();
     }
   }, [userProfile]);
+
+  // Load referral information
+  useEffect(() => {
+    const loadReferralInfo = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const { data: referralData, error: referralError } = await referralService.getUserReferralInfo(user?.id);
+        if (!referralError && referralData) {
+          setReferralInfo(referralData);
+        }
+
+        const { data: analyticsData, error: analyticsError } = await referralService.getUserReferralAnalytics(user?.id);
+        if (!analyticsError && analyticsData) {
+          setReferralAnalytics(analyticsData);
+        }
+      } catch (error) {
+        console.error('Failed to load referral info:', error);
+      }
+    };
+
+    if (userProfile?.membership_status === 'active') {
+      loadReferralInfo();
+    }
+  }, [user?.id, userProfile]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB', {
@@ -228,6 +259,80 @@ const StudentDashboard = () => {
             </div>
           </div>
 
+          {/* Referral Sharing Section */}
+          {userProfile?.membership_status === 'active' && (
+            <div className="bg-gradient-to-r from-green-50 to-emerald-100 border border-green-200 rounded-2xl p-8 mb-8">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                      <Icon name="Share2" size={24} className="text-green-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-green-900">Share & Refer Friends</h2>
+                      <p className="text-green-700">
+                        Invite friends to join Basic Intelligence AI School and help them start their AI journey
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-white/50 rounded-lg p-4 text-center">
+                      <div className="text-2xl font-bold text-green-900 mb-1">
+                        {referralInfo?.referral_count || 0}
+                      </div>
+                      <div className="text-sm text-green-700">Friends Referred</div>
+                    </div>
+                    <div className="bg-white/50 rounded-lg p-4 text-center">
+                      <div className="text-2xl font-bold text-green-900 mb-1">
+                        {referralAnalytics?.filter(ref => ref?.referred_user?.membership_status === 'active')?.length || 0}
+                      </div>
+                      <div className="text-sm text-green-700">Active Members</div>
+                    </div>
+                    <div className="bg-white/50 rounded-lg p-4 text-center">
+                      <div className="text-2xl font-bold text-green-900 mb-1">
+                        {referralInfo?.referral_code || 'Loading...'}
+                      </div>
+                      <div className="text-sm text-green-700">Your Referral Code</div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-3">
+                    <Button 
+                      onClick={() => setShowReferralModal(true)}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <Icon name="Share2" size={16} className="mr-2" />
+                      Share Referral Link
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={async () => {
+                        if (referralInfo?.referral_code) {
+                          const referralLink = referralService.generateReferralLink(referralInfo.referral_code);
+                          const result = await referralService.copyToClipboard(referralLink);
+                          if (result.success) {
+                            setCopySuccess(true);
+                            setTimeout(() => setCopySuccess(false), 2000);
+                          }
+                        }
+                      }}
+                    >
+                      <Icon name="Copy" size={16} className="mr-2" />
+                      {copySuccess ? 'Copied!' : 'Copy Link'}
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="mt-6 lg:mt-0 lg:ml-8">
+                  <div className="w-24 h-24 bg-green-200 rounded-2xl flex items-center justify-center">
+                    <Icon name="Users" size={48} className="text-green-600" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Recent Content Section */}
           <div className="bg-card border border-border rounded-2xl p-8">
             <div className="flex items-center justify-between mb-6">
@@ -309,6 +414,168 @@ const StudentDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Referral Modal */}
+      {showReferralModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-border">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-foreground">Share Referral Link</h2>
+                <button
+                  onClick={() => {
+                    setShowReferralModal(false);
+                    setSelectedMessage(null);
+                  }}
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Icon name="X" size={24} />
+                </button>
+              </div>
+              <p className="text-muted-foreground mt-2">
+                Choose a message and share your referral link with friends
+              </p>
+            </div>
+
+            <div className="p-6">
+              {referralInfo?.referral_code && (
+                <div className="mb-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Your Referral Link
+                      </label>
+                      <div className="flex">
+                        <input
+                          type="text"
+                          readOnly
+                          value={referralService.generateReferralLink(referralInfo.referral_code)}
+                          className="flex-1 px-3 py-2 border border-border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-muted/50"
+                        />
+                        <Button
+                          onClick={async () => {
+                            const referralLink = referralService.generateReferralLink(referralInfo.referral_code);
+                            const result = await referralService.copyToClipboard(referralLink);
+                            if (result.success) {
+                              setCopySuccess(true);
+                              setTimeout(() => setCopySuccess(false), 2000);
+                            }
+                          }}
+                          className="rounded-l-none"
+                        >
+                          <Icon name="Copy" size={16} className="mr-2" />
+                          {copySuccess ? 'Copied!' : 'Copy'}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Choose a Message</h3>
+                <div className="space-y-3">
+                  {referralInfo?.referral_code && referralService.getReferralMessages(referralService.generateReferralLink(referralInfo.referral_code)).map((message) => (
+                    <div
+                      key={message.id}
+                      className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 ${
+                        selectedMessage?.id === message.id
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                      onClick={() => setSelectedMessage(message)}
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mt-1 ${
+                          selectedMessage?.id === message.id
+                            ? 'border-primary bg-primary'
+                            : 'border-border'
+                        }`}>
+                          {selectedMessage?.id === message.id && (
+                            <Icon name="Check" size={12} className="text-white" />
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-foreground mb-2">{message.title}</h4>
+                          <p className="text-sm text-muted-foreground mb-3">{message.message}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {message.platforms.map((platform) => (
+                              <span
+                                key={platform}
+                                className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded"
+                              >
+                                {platform}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {selectedMessage && (
+                <div className="border-t border-border pt-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Share on Social Media</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {selectedMessage.platforms.includes('whatsapp') && (
+                      <Button
+                        onClick={() => referralService.shareToSocialMedia('whatsapp', selectedMessage.message)}
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        <Icon name="MessageCircle" size={16} className="mr-2" />
+                        WhatsApp
+                      </Button>
+                    )}
+                    {selectedMessage.platforms.includes('twitter') && (
+                      <Button
+                        onClick={() => referralService.shareToSocialMedia('twitter', selectedMessage.message)}
+                        className="bg-blue-400 hover:bg-blue-500 text-white"
+                      >
+                        <Icon name="Twitter" size={16} className="mr-2" />
+                        Twitter
+                      </Button>
+                    )}
+                    {selectedMessage.platforms.includes('linkedin') && (
+                      <Button
+                        onClick={() => referralService.shareToSocialMedia('linkedin', selectedMessage.message)}
+                        className="bg-blue-700 hover:bg-blue-800 text-white"
+                      >
+                        <Icon name="Linkedin" size={16} className="mr-2" />
+                        LinkedIn
+                      </Button>
+                    )}
+                    {selectedMessage.platforms.includes('facebook') && (
+                      <Button
+                        onClick={() => referralService.shareToSocialMedia('facebook', selectedMessage.message)}
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
+                        <Icon name="Facebook" size={16} className="mr-2" />
+                        Facebook
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-border">
+              <div className="flex justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowReferralModal(false);
+                    setSelectedMessage(null);
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

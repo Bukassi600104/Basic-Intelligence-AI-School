@@ -298,6 +298,33 @@ const AdminUsersPage = () => {
           }
           break;
           
+        case 'toggleActive':
+          // Toggle active status
+          const newActiveStatus = !user?.is_active;
+          if (window?.confirm(`Are you sure you want to ${newActiveStatus ? 'activate' : 'deactivate'} ${user?.full_name}?`)) {
+            const { error: activeError } = await adminService?.updateUserActiveStatus(user?.id, newActiveStatus);
+            if (activeError) {
+              alert('Failed to update active status: ' + activeError);
+            } else {
+              alert(`User ${newActiveStatus ? 'activated' : 'deactivated'} successfully`);
+              await loadUsers(); // Reload users
+            }
+          }
+          break;
+          
+        case 'delete':
+          // Delete user
+          if (window?.confirm(`Are you sure you want to delete ${user?.full_name}? This action cannot be undone.`)) {
+            const { error: deleteError } = await adminService?.deleteUser(user?.id);
+            if (deleteError) {
+              alert('Failed to delete user: ' + deleteError);
+            } else {
+              alert('User deleted successfully');
+              await loadUsers(); // Reload users
+            }
+          }
+          break;
+          
         default:
           break;
       }
@@ -378,9 +405,13 @@ const AdminUsersPage = () => {
           break;
           
         case 'delete_users':
-          if (window?.confirm(`Are you sure you want to delete ${userIds?.length} users?`)) {
-            // Handle bulk user deletion - implement carefully
-            console.log('Delete users:', userIds);
+          if (window?.confirm(`Are you sure you want to delete ${userIds?.length} users? This action cannot be undone.`)) {
+            const { error: deleteError } = await adminService?.bulkDeleteUsers(userIds);
+            if (deleteError) {
+              alert('Failed to delete users: ' + deleteError);
+            } else {
+              alert(`${userIds?.length} users deleted successfully`);
+            }
           }
           break;
           

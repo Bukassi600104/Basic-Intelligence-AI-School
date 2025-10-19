@@ -4,6 +4,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import { adminService } from '../../../services/adminService';
+import { reviewService } from '../../../services/reviewService';
 
 const EnhancedDashboard = () => {
   const { userProfile } = useAuth();
@@ -18,6 +19,12 @@ const EnhancedDashboard = () => {
       payments: 0,
       media: 0,
       courses: 0
+    },
+    reviewStats: {
+      total: 0,
+      pending: 0,
+      approved: 0,
+      averageRating: 0
     }
   });
   const [loading, setLoading] = useState(true);
@@ -142,7 +149,7 @@ const EnhancedDashboard = () => {
         </div>
 
         {/* Stats Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           {/* Total Users */}
           <div 
             className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
@@ -220,6 +227,26 @@ const EnhancedDashboard = () => {
             <p className="text-sm text-muted-foreground">Total Revenue</p>
             <div className="mt-2 text-xs text-purple-600 font-medium">
               This month
+            </div>
+          </div>
+
+          {/* Review Stats */}
+          <div 
+            className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer"
+            onClick={() => navigate('/admin-reviews')}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center">
+                <Icon name="Star" size={24} className="text-pink-600" />
+              </div>
+              <Icon name="ArrowRight" size={20} className="text-muted-foreground" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-2">
+              {dashboardData.reviewStats.total}
+            </h3>
+            <p className="text-sm text-muted-foreground">Total Reviews</p>
+            <div className="mt-2 text-xs text-pink-600 font-medium">
+              {dashboardData.reviewStats.pending} pending
             </div>
           </div>
         </div>

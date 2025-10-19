@@ -411,5 +411,124 @@ export const adminService = {
         }
       };
     }
+  },
+
+  // Delete user (admin only)
+  deleteUser: async (userId) => {
+    try {
+      // First check if user exists and admin has permission
+      const { data: user, error: userError } = await supabase
+        ?.from('user_profiles')
+        ?.select('id, email, full_name')
+        ?.eq('id', userId)
+        ?.single();
+
+      if (userError) {
+        return { data: null, error: 'User not found' };
+      }
+
+      // Delete user from user_profiles table
+      const { error: deleteError } = await supabase
+        ?.from('user_profiles')
+        ?.delete()
+        ?.eq('id', userId);
+
+      if (deleteError) {
+        logger.error('Delete user error:', deleteError);
+        return { data: null, error: deleteError?.message || 'Failed to delete user' };
+      }
+
+      logger.info(`Admin deleted user: ${user?.email} (${user?.full_name})`);
+      return { data: { message: 'User deleted successfully' }, error: null };
+    } catch (error) {
+      logger.error('Delete user service error:', error);
+      return { data: null, error: error?.message || 'Unexpected error occurred while deleting user' };
+    }
+  },
+
+  // Bulk delete users (admin only)
+  bulkDeleteUsers: async (userIds) => {
+    try {
+      if (!userIds || userIds?.length === 0) {
+        return { data: null, error: 'No users selected for deletion' };
+      }
+
+      // Get user info for logging
+      const { data: users, error: usersError } = await supabase
+        ?.from('user_profiles')
+        ?.select('id, email, full_name')
+        ?.in('id', userIds);
+
+      if (usersError) {
+        return { data: null, error: 'Failed to fetch user information' };
+      }
+
+      // Delete users from user_profiles table
+      const { error: deleteError } = await supabase
+        ?.from('user_profiles')
+        ?.delete()
+        ?.in('id', userIds);
+
+      if (deleteError) {
+        logger.error('Bulk delete users error:', deleteError);
+        return { data: null, error: deleteError?.message || 'Failed to delete users' };
+      }
+
+      logger.info(`Admin bulk deleted ${users?.length} users`);
+      return { data: { message: `${users?.length} users deleted successfully` }, error: null };
+    } catch (error) {
+      logger.error('Bulk delete users service error:', error);
+      return { data: null, error: error?.message || 'Unexpected error occurred while deleting users' };
+    }
+  },
+
+  // Update user active status (make inactive/active)
+  updateUserActiveStatus: async (userId, isActive) => {
+    try {
+      const { data, error } = await supabase
+        ?.from('user_profiles')
+        ?.update({ 
+          is_active: isActive,
+          updated_at: new Date()?.toISOString()
+        })
+        ?.eq('id', userId)
+        ?.select()
+        ?.single();
+
+      if (error) {
+        return { data: null, error: error?.message };
+      }
+
+      logger.info(`Admin updated user active status: ${userId} -> ${isActive ? 'active' : 'inactive'}`);
+      return { data, error: null };
+    } catch (error) {
+      return { data: null, error: error?.message };
+    }
+  },
+
+  // Bulk update user active status
+  bulkUpdateUserActiveStatus: async (userIds, isActive) => {
+    try {
+      if (!userIds || userIds?.length === 0) {
+        return { data: null, error: 'No users selected' };
+      }
+
+      const { error } = await supabase
+        ?.from('user_profiles')
+        ?.update({ 
+          is_active: isActive,
+          updated_at: new Date()?.toISOString()
+        })
+        ?.in('id', userIds);
+
+      if (error) {
+        return { data: null, error: error?.message };
+      }
+
+      logger.info(`Admin bulk updated ${userIds?.length} users to ${isActive ? 'active' : 'inactive'}`);
+      return { data: { message: `${userIds?.length} users updated successfully` }, error: null };
+    } catch (error) {
+      return { data: null, error: error?.message };
+    }
   }
 };

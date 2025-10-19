@@ -10,7 +10,9 @@ const UserTableRow = ({
   onEdit, 
   onTogglePaymentStatus, 
   onAssignMemberId, 
-  onViewPayments 
+  onViewPayments,
+  onDelete,
+  onToggleActiveStatus
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -46,33 +48,36 @@ const UserTableRow = ({
       <td className="px-4 py-3">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-medium">
-            {user?.name?.charAt(0)?.toUpperCase()}
+            {user?.full_name?.charAt(0)?.toUpperCase()}
           </div>
           <div>
-            <div className="font-medium text-foreground">{user?.name}</div>
+            <div className="font-medium text-foreground">{user?.full_name}</div>
             <div className="text-sm text-muted-foreground">{user?.email}</div>
+            <div className={`text-xs ${user?.is_active ? 'text-success' : 'text-destructive'}`}>
+              {user?.is_active ? 'Active' : 'Inactive'}
+            </div>
           </div>
         </div>
       </td>
       
       <td className="px-4 py-3">
-        <div className="text-sm text-foreground">{formatWhatsApp(user?.whatsapp)}</div>
+        <div className="text-sm text-foreground">{formatWhatsApp(user?.phone)}</div>
       </td>
       
       <td className="px-4 py-3">
-        <div className="text-sm text-foreground">{formatDate(user?.registrationDate)}</div>
+        <div className="text-sm text-foreground">{formatDate(user?.created_at)}</div>
       </td>
       
       <td className="px-4 py-3">
-        <UserStatusBadge status={user?.paymentStatus} size="sm" />
+        <UserStatusBadge status={user?.membership_status} size="sm" />
       </td>
       
       <td className="px-4 py-3">
-        {user?.memberId ? (
+        {user?.member_id ? (
           <div className="flex items-center space-x-2">
-            <span className="font-mono text-sm font-medium text-foreground">{user?.memberId}</span>
+            <span className="font-mono text-sm font-medium text-foreground">{user?.member_id}</span>
             <button
-              onClick={() => copyToClipboard(user?.memberId)}
+              onClick={() => copyToClipboard(user?.member_id)}
               className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors duration-200"
               title="Copy Member ID"
             >
@@ -121,6 +126,26 @@ const UserTableRow = ({
           >
             <Icon name="Receipt" size={14} />
           </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onToggleActiveStatus(user)}
+            title={user?.is_active ? 'Make Inactive' : 'Make Active'}
+            className={user?.is_active ? 'text-warning' : 'text-success'}
+          >
+            <Icon name={user?.is_active ? 'UserX' : 'UserCheck'} size={14} />
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onDelete(user)}
+            title="Delete user"
+            className="text-destructive hover:text-destructive"
+          >
+            <Icon name="Trash2" size={14} />
+          </Button>
         </div>
       </td>
     </tr>
@@ -138,11 +163,14 @@ const UserTableRow = ({
             className="rounded border-border text-primary focus:ring-primary"
           />
           <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-medium">
-            {user?.name?.charAt(0)?.toUpperCase()}
+            {user?.full_name?.charAt(0)?.toUpperCase()}
           </div>
           <div>
-            <div className="font-medium text-foreground">{user?.name}</div>
+            <div className="font-medium text-foreground">{user?.full_name}</div>
             <div className="text-sm text-muted-foreground">{user?.email}</div>
+            <div className={`text-xs ${user?.is_active ? 'text-success' : 'text-destructive'}`}>
+              {user?.is_active ? 'Active' : 'Inactive'}
+            </div>
           </div>
         </div>
         
@@ -155,11 +183,11 @@ const UserTableRow = ({
       </div>
 
       <div className="flex items-center justify-between mb-3">
-        <UserStatusBadge status={user?.paymentStatus} size="sm" />
-        {user?.memberId && (
+        <UserStatusBadge status={user?.membership_status} size="sm" />
+        {user?.member_id && (
           <div className="flex items-center space-x-1 bg-muted px-2 py-1 rounded text-xs">
             <Icon name="Hash" size={12} className="text-muted-foreground" />
-            <span className="font-mono font-medium">{user?.memberId}</span>
+            <span className="font-mono font-medium">{user?.member_id}</span>
           </div>
         )}
       </div>
@@ -168,12 +196,12 @@ const UserTableRow = ({
         <div className="space-y-3 pt-3 border-t border-border">
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <span className="text-muted-foreground">WhatsApp:</span>
-              <div className="font-medium">{formatWhatsApp(user?.whatsapp)}</div>
+              <span className="text-muted-foreground">Phone:</span>
+              <div className="font-medium">{formatWhatsApp(user?.phone)}</div>
             </div>
             <div>
               <span className="text-muted-foreground">Registered:</span>
-              <div className="font-medium">{formatDate(user?.registrationDate)}</div>
+              <div className="font-medium">{formatDate(user?.created_at)}</div>
             </div>
           </div>
           
@@ -193,6 +221,24 @@ const UserTableRow = ({
             <Button variant="outline" size="sm" onClick={() => onViewPayments(user)}>
               <Icon name="Receipt" size={14} className="mr-1" />
               Payments
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => onToggleActiveStatus(user)}
+              className={user?.is_active ? 'text-warning' : 'text-success'}
+            >
+              <Icon name={user?.is_active ? 'UserX' : 'UserCheck'} size={14} className="mr-1" />
+              {user?.is_active ? 'Inactive' : 'Active'}
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => onDelete(user)}
+              className="text-destructive hover:text-destructive"
+            >
+              <Icon name="Trash2" size={14} className="mr-1" />
+              Delete
             </Button>
           </div>
         </div>

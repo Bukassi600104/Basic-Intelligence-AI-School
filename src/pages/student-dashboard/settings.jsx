@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import { reviewService } from '../../services/reviewService';
 
 const StudentSettings = () => {
   const { user, userProfile, isMember, updateProfile } = useAuth();
@@ -24,6 +25,13 @@ const StudentSettings = () => {
     paymentReminders: true,
     supportMessages: true
   });
+  const [userReview, setUserReview] = useState(null);
+  const [reviewForm, setReviewForm] = useState({
+    rating: 5,
+    reviewText: ''
+  });
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   // Check if user is a paid student
   useEffect(() => {
@@ -65,6 +73,31 @@ const StudentSettings = () => {
       loadUserData();
     }
   }, [userProfile, user]);
+
+  // Load user's review
+  useEffect(() => {
+    const loadUserReview = async () => {
+      if (!user?.id) return;
+      
+      try {
+        const { data: reviewData, error } = await reviewService.getUserReview(user?.id);
+        if (!error && reviewData) {
+          setUserReview(reviewData);
+          setReviewForm({
+            rating: reviewData?.rating || 5,
+            reviewText: reviewData?.review_text || ''
+          });
+          setReviewSubmitted(true);
+        }
+      } catch (error) {
+        console.error('Failed to load user review:', error);
+      }
+    };
+
+    if (userProfile?.membership_status === 'active') {
+      loadUserReview();
+    }
+  }, [user?.id, userProfile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -333,6 +366,160 @@ const StudentSettings = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Review Submission */}
+              {userProfile?.membership_status === 'active' && (
+                <div className="bg-card border border-border rounded-2xl p-6">
+                  <h2 className="text-xl font-bold text-foreground mb-6">Share Your Experience</h2>
+                  
+                  {reviewSubmitted ? (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Icon name="CheckCircle" size={32} className="text-green-600" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-foreground mb-2">Thank You for Your Review!</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Your feedback helps us improve and helps others discover our platform.
+                      </p>
+                      <div className="flex items-center justify-center space-x-1 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Icon 
+                            key={i}
+                            name="Star" 
+                            size={20} 
+                            className={i < userReview?.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'} 
+                          />
+                        ))}
+                      </div>
+                      <p className="text-sm text-muted-foreground italic">
+                        "{userReview?.review_text}"
+                      </p>
+                      <Button 
+                        variant="outline" 
+                        className="mt-4"
+                        onClick={() => {
+                          setReviewSubmitted(false);
+                          setReviewForm({
+                            rating: userReview?.rating || 5,
+                            reviewText: userReview?.review_text || ''
+                          });
+                        }}
+                      >
+                        <Icon name="Edit" size={16} className="mr-2" />
+                        Edit Review
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-3">
+                          How would you rate your experience?
+                        </label>
+                        <div className="flex items-center space-x-1">
+                          {[1, 2, 3, 4, 5].map((rating) => (
+                            <button
+                              key={rating}
+                              type="button"
+                              onClick={() => setReviewForm(prev => ({ ...prev, rating }))}
+                              className="focus:outline-none"
+                            >
+                              <Icon 
+                                name="Star" 
+                                size={32} 
+                                className={rating <= reviewForm.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'} 
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                          <span>Poor</span>
+                          <span>Excellent</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          Your Review
+                        </label>
+                        <textarea
+                          value={reviewForm.reviewText}
+                          onChange={(e) => setReviewForm(prev => ({ ...prev, reviewText: e.target.value }))}
+                          rows={4}
+                          className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary resize-vertical"
+                          placeholder="Share your experience with Basic Intelligence AI School. What did you like? What could be improved?"
+                          maxLength={500}
+                        />
+                        <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                          <span>Share your honest feedback</span>
+                          <span>{reviewForm.reviewText.length}/500</span>
+                        </div>
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <Button 
+                          onClick={async () => {
+                            setReviewLoading(true);
+                            try {
+                              const { data, error } = await reviewService.submitReview({
+                                rating: reviewForm.rating,
+                                review_text: reviewForm.reviewText,
+                                user_id: user?.id,
+                                user_name: userProfile?.full_name || 'Anonymous',
+                                status: 'pending'
+                              });
+
+                              if (error) {
+                                alert('Failed to submit review: ' + error);
+                              } else {
+                                setUserReview(data);
+                                setReviewSubmitted(true);
+                                alert('Review submitted successfully! It will be visible after approval.');
+                              }
+                            } catch (error) {
+                              alert('Failed to submit review: ' + error.message);
+                            } finally {
+                              setReviewLoading(false);
+                            }
+                          }}
+                          loading={reviewLoading}
+                          disabled={!reviewForm.reviewText.trim()}
+                          className="flex-1"
+                        >
+                          <Icon name="Send" size={16} className="mr-2" />
+                          Submit Review
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => {
+                            setReviewForm({
+                              rating: 5,
+                              reviewText: ''
+                            });
+                          }}
+                        >
+                          <Icon name="X" size={16} className="mr-2" />
+                          Clear
+                        </Button>
+                      </div>
+
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-start space-x-3">
+                          <Icon name="Info" size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <h4 className="text-sm font-medium text-blue-900 mb-1">Review Guidelines</h4>
+                            <ul className="text-xs text-blue-700 space-y-1">
+                              <li>• Be honest and constructive in your feedback</li>
+                              <li>• Reviews are moderated before being published</li>
+                              <li>• Your review helps other students make informed decisions</li>
+                              <li>• Approved reviews may be featured on our homepage</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Actions Sidebar */}

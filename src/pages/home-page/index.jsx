@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import PublicHeader from '../../components/ui/PublicHeader';
 import HeroSection from './components/HeroSection';
 import FeaturesGrid from './components/FeaturesGrid';
+import ReviewCarousel from '../../components/ui/ReviewCarousel';
 import CourseHighlights from './components/CourseHighlights';
 import ContactSection from './components/ContactSection';
 
@@ -27,6 +28,11 @@ const HomePage = () => {
         <main className="pt-16">
           <HeroSection />
           <FeaturesGrid />
+          <div className="py-16 lg:py-24">
+            <div className="max-w-7xl mx-auto px-4 lg:px-6">
+              <ReviewCarousel />
+            </div>
+          </div>
           <CourseHighlights />
           <ContactSection />
         </main>

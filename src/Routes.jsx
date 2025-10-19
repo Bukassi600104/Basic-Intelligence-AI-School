@@ -12,6 +12,7 @@ import AdminSettings from './pages/admin-settings';
 import AdminAnalytics from './pages/admin-analytics';
 import AdminNotifications from './pages/admin-notifications';
 import AdminNotificationWizard from './pages/admin-notification-wizard';
+import AdminReviews from './pages/admin-reviews';
 import AboutPage from './pages/about-page';
 import HomePage from './pages/home-page';
 import SignInPage from './pages/auth/SignInPage';
@@ -41,6 +42,7 @@ const Routes = () => {
         <Route path="/admin-analytics" element={<AdminAnalytics />} />
         <Route path="/admin-notifications" element={<AdminNotifications />} />
         <Route path="/admin-notification-wizard" element={<AdminNotificationWizard />} />
+        <Route path="/admin-reviews" element={<AdminReviews />} />
         <Route path="/join-membership-page" element={<JoinMembershipPage />} />
         <Route path="/about-page" element={<AboutPage />} />
         <Route path="/home-page" element={<HomePage />} />

@@ -155,6 +155,8 @@ const UserTable = ({
                 onTogglePaymentStatus={(user) => onUserAction('togglePayment', user)}
                 onAssignMemberId={(user) => onUserAction('assignMemberId', user)}
                 onViewPayments={(user) => onUserAction('viewPayments', user)}
+                onDelete={(user) => onUserAction('delete', user)}
+                onToggleActiveStatus={(user) => onUserAction('toggleActive', user)}
               />
             ))}
           </tbody>
@@ -172,6 +174,8 @@ const UserTable = ({
             onTogglePaymentStatus={(user) => onUserAction('togglePayment', user)}
             onAssignMemberId={(user) => onUserAction('assignMemberId', user)}
             onViewPayments={(user) => onUserAction('viewPayments', user)}
+            onDelete={(user) => onUserAction('delete', user)}
+            onToggleActiveStatus={(user) => onUserAction('toggleActive', user)}
           />
         ))}
       </div>
