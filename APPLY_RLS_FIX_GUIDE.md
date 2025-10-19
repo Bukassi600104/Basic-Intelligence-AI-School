@@ -17,7 +17,7 @@ Apply the RLS policy fix that allows admin users to create user profiles for oth
    - Click "New Query"
 
 3. **Copy and Run the Fix**
-   - **Use the safe version**: Copy the entire contents of `apply_rls_fix_safe.sql`
+   - **Use the final version**: Copy the entire contents of `apply_rls_fix_final.sql`
    - Paste it into the SQL Editor
    - Click "Run" or press Ctrl+Enter (Cmd+Enter on Mac)
 
@@ -26,7 +26,7 @@ Apply the RLS policy fix that allows admin users to create user profiles for oth
    - The query results should show the new policies
 
 ### Important Note:
-If you previously tried to apply the fix and got "policy already exists" errors, use the `apply_rls_fix_safe.sql` file instead of the original one. The safe version uses conditional creation and won't fail if policies already exist.
+If you previously tried to apply the fix and got "policy already exists" errors, use the `apply_rls_fix_final.sql` file. This version uses proper error handling and won't fail if policies already exist.
 
 ## Method 2: Apply via Supabase CLI (If Installed)
 
