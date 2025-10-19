@@ -11,6 +11,11 @@ export default defineConfig({
   build: {
     outDir: "dist",
     chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
   
   plugins: [tsconfigPaths(), react(), tagger()],
@@ -19,6 +24,15 @@ export default defineConfig({
     port: 4028,
     host: "0.0.0.0",
     strictPort: true,
-    // Removed restrictive allowedHosts to fix Vercel deployment MIME type errors
+    cors: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, HEAD, PUT, PATCH, POST, DELETE",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  },
+  
+  preview: {
+    cors: true,
   },
 });
