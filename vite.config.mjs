@@ -6,16 +6,19 @@ import tagger from "@dhiwise/component-tagger";
 // https://vitejs.dev/config/
 export default defineConfig({
   // Base path for the application
-  base: process.env.VITE_BASE_PATH || '/',
+  base: process.env.VITE_BASE_PATH || "/",
+  
   build: {
     outDir: "dist",
     chunkSizeWarningLimit: 2000,
   },
+  
   plugins: [tsconfigPaths(), react(), tagger()],
+  
   server: {
-    port: "4028",
+    port: 4028,
     host: "0.0.0.0",
     strictPort: true,
-    allowedHosts: ['.amazonaws.com', '.builtwithrocket.new']
-  }
+    // Removed restrictive allowedHosts to fix Vercel deployment MIME type errors
+  },
 });
