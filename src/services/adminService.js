@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { supabaseAdmin } from '../lib/supabaseAdmin';
 import { logger } from '../utils/logger';
 
 export const adminService = {
@@ -295,8 +296,8 @@ export const adminService = {
       // Generate a secure password for the new user
       const tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
 
-      // Create auth user first using admin API
-      const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
+      // Create auth user first using admin API with service key
+      const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
         email: userData.email,
         password: tempPassword,
         email_confirm: true, // Auto-confirm email for admin-created users
@@ -340,7 +341,7 @@ export const adminService = {
       if (error) {
         logger.error('Create user profile error:', error);
         // Clean up: delete the auth user if profile creation fails
-        await supabase.auth.admin.deleteUser(authUser.user.id);
+        await supabaseAdmin.auth.admin.deleteUser(authUser.user.id);
         return { data: null, error: error?.message || 'Failed to create user profile' };
       }
 
