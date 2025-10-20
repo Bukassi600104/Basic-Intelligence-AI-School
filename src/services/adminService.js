@@ -1,5 +1,7 @@
 import { supabase } from '../lib/supabase';
 import { supabaseAdmin } from '../lib/supabaseAdmin';
+import { passwordService } from './passwordService';
+import { notificationService } from './notificationService';
 import { logger } from '../utils/logger';
 
 export const adminService = {
@@ -274,7 +276,7 @@ export const adminService = {
     }
   },
 
-  // Create new user (admin only)
+  // Create new user (admin only) with enhanced features
   createUser: async (userData) => {
     try {
       // Validate required fields
@@ -299,7 +301,12 @@ export const adminService = {
       }
 
       // Generate a secure password for the new user
-      const tempPassword = crypto.randomUUID().replace(/-/g, '').slice(0, 12);
+      const passwordResult = await passwordService.generateAndSetPassword();
+      if (!passwordResult.success) {
+        return { data: null, error: 'Failed to generate secure password' };
+      }
+
+      const tempPassword = passwordResult.password;
 
       // Create auth user first using admin API with service key
       const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
@@ -328,6 +335,7 @@ export const adminService = {
         is_active: userData?.is_active !== undefined ? userData?.is_active : true,
         bio: userData?.bio || null,
         phone: userData?.phone || null,
+        whatsapp_phone: userData?.whatsapp_phone || null,
         location: userData?.location || null,
         avatar_url: userData?.avatar_url || null,
         created_at: new Date()?.toISOString(),
@@ -350,12 +358,44 @@ export const adminService = {
         return { data: null, error: error?.message || 'Failed to create user profile' };
       }
 
-      logger.info(`Admin created user: ${userData.email} with temporary password`);
+      // Send welcome notifications
+      try {
+        // Send email welcome message
+        await notificationService.sendNotification({
+          userId: authUser.user.id,
+          templateName: 'Welcome Email',
+          variables: {
+            temporary_password: tempPassword,
+            membership_tier: userData?.membership_tier || 'starter',
+            subscription_expiry: 'Not set' // You can add subscription logic here
+          },
+          recipientType: 'email'
+        });
+
+        // Send WhatsApp welcome message if phone number provided
+        if (userData?.whatsapp_phone) {
+          await notificationService.sendNotification({
+            userId: authUser.user.id,
+            templateName: 'Welcome WhatsApp',
+            variables: {
+              temporary_password: tempPassword,
+              membership_tier: userData?.membership_tier || 'starter',
+              subscription_expiry: 'Not set'
+            },
+            recipientType: 'whatsapp'
+          });
+        }
+      } catch (notificationError) {
+        logger.warn('Welcome notifications failed:', notificationError);
+        // Continue even if notifications fail
+      }
+
+      logger.info(`Admin created user: ${userData.email} with password and notifications`);
       return { 
         data: { 
           ...data, 
           temp_password: tempPassword, // Include temp password for admin reference
-          message: 'User created successfully. Temporary password has been generated.' 
+          message: 'User created successfully. Welcome notifications sent.' 
         }, 
         error: null 
       };

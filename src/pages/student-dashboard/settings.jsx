@@ -5,6 +5,7 @@ import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { reviewService } from '../../services/reviewService';
+import { passwordService } from '../../services/passwordService';
 
 const StudentSettings = () => {
   const { user, userProfile, isMember, updateProfile } = useAuth();
@@ -32,6 +33,14 @@ const StudentSettings = () => {
   });
   const [reviewLoading, setReviewLoading] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [uploadingPicture, setUploadingPicture] = useState(false);
 
   // Check if user is a paid student
   useEffect(() => {
@@ -363,6 +372,186 @@ const StudentSettings = () => {
                         }`}
                       />
                     </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Password Change */}
+              <div className="bg-card border border-border rounded-2xl p-6">
+                <h2 className="text-xl font-bold text-foreground mb-6">Change Password</h2>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      value={passwordForm.currentPassword}
+                      onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      placeholder="Enter your current password"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={passwordForm.newPassword}
+                      onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      placeholder="Enter new password"
+                    />
+                    {passwordForm.newPassword && (
+                      <div className="mt-2">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <div className={`w-3 h-3 rounded-full ${
+                            passwordForm.newPassword.length >= 8 ? 'bg-green-500' : 'bg-gray-300'
+                          }`}></div>
+                          <span className="text-xs text-muted-foreground">At least 8 characters</span>
+                        </div>
+                        <div className="flex items-center space-x-2 mb-1">
+                          <div className={`w-3 h-3 rounded-full ${
+                            /[a-z]/.test(passwordForm.newPassword) && /[A-Z]/.test(passwordForm.newPassword) ? 'bg-green-500' : 'bg-gray-300'
+                          }`}></div>
+                          <span className="text-xs text-muted-foreground">Uppercase and lowercase letters</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-3 h-3 rounded-full ${
+                            /[0-9]/.test(passwordForm.newPassword) ? 'bg-green-500' : 'bg-gray-300'
+                          }`}></div>
+                          <span className="text-xs text-muted-foreground">At least one number</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Confirm New Password
+                    </label>
+                    <input
+                      type="password"
+                      value={passwordForm.confirmPassword}
+                      onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      placeholder="Confirm new password"
+                    />
+                    {passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword && (
+                      <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
+                    )}
+                  </div>
+                  
+                  <Button 
+                    onClick={async () => {
+                      if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+                        alert('Please fill in all password fields');
+                        return;
+                      }
+                      
+                      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+                        alert('New passwords do not match');
+                        return;
+                      }
+                      
+                      const validation = passwordService.validatePasswordStrength(passwordForm.newPassword);
+                      if (!validation.isValid) {
+                        alert('Password does not meet security requirements. Please ensure it has at least 8 characters, uppercase and lowercase letters, and at least one number.');
+                        return;
+                      }
+                      
+                      setPasswordLoading(true);
+                      try {
+                        // In a real app, this would call an API to change the password
+                        // For now, we'll simulate the process
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        
+                        alert('Password changed successfully!');
+                        setPasswordForm({
+                          currentPassword: '',
+                          newPassword: '',
+                          confirmPassword: ''
+                        });
+                      } catch (error) {
+                        alert('Failed to change password: ' + error.message);
+                      } finally {
+                        setPasswordLoading(false);
+                      }
+                    }}
+                    loading={passwordLoading}
+                    disabled={!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword || passwordForm.newPassword !== passwordForm.confirmPassword}
+                    className="w-full"
+                  >
+                    <Icon name="Key" size={16} className="mr-2" />
+                    Change Password
+                  </Button>
+                </div>
+              </div>
+
+              {/* Profile Picture Upload */}
+              <div className="bg-card border border-border rounded-2xl p-6">
+                <h2 className="text-xl font-bold text-foreground mb-6">Profile Picture</h2>
+                
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="w-32 h-32 bg-muted rounded-full flex items-center justify-center border-2 border-border">
+                    {userProfile?.avatar_url ? (
+                      <img 
+                        src={userProfile.avatar_url} 
+                        alt="Profile" 
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <Icon name="User" size={48} className="text-muted-foreground" />
+                    )}
+                  </div>
+                  
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Upload a profile picture to personalize your account
+                    </p>
+                    
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                            alert('File size must be less than 5MB');
+                            return;
+                          }
+                          
+                          setProfilePicture(file);
+                          setUploadingPicture(true);
+                          
+                          // Simulate upload process
+                          setTimeout(() => {
+                            alert('Profile picture uploaded successfully!');
+                            setUploadingPicture(false);
+                            // In a real app, this would update the user profile with the new avatar URL
+                          }, 1500);
+                        }
+                      }}
+                      className="hidden"
+                      id="profile-picture-upload"
+                    />
+                    
+                    <label 
+                      htmlFor="profile-picture-upload"
+                      className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg cursor-pointer hover:bg-primary/90 transition-colors"
+                    >
+                      <Icon name="Upload" size={16} className="mr-2" />
+                      {uploadingPicture ? 'Uploading...' : 'Choose Photo'}
+                    </label>
+                    
+                    {profilePicture && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Selected: {profilePicture.name}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

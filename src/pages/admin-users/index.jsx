@@ -441,6 +441,7 @@ const AdminUsersPage = () => {
     membership_tier: 'starter',
     membership_status: 'pending',
     phone: '',
+    whatsapp_phone: '',
     location: '',
     bio: '',
     is_active: true
@@ -792,6 +793,22 @@ const AdminUsersPage = () => {
                           className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                           placeholder="+234123456789"
                         />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-foreground mb-2">
+                          WhatsApp Phone
+                        </label>
+                        <input
+                          type="tel"
+                          value={userFormData.whatsapp_phone}
+                          onChange={(e) => handleUserFormChange('whatsapp_phone', e.target.value)}
+                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          placeholder="+234123456789"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          For WhatsApp notifications (international format)
+                        </p>
                       </div>
 
                       <div>
