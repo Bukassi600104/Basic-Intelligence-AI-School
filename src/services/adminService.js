@@ -523,9 +523,44 @@ export const adminService = {
     }
   },
 
-  // Delete user (admin only) - Complete deletion from both auth and user_profiles
+  // Delete user (admin only) - Complete deletion using database function with fallback
   deleteUser: async (userId) => {
     try {
+      // Validate user ID
+      if (!userId || userId.trim() === '') {
+        return { data: null, error: 'Valid user ID is required' };
+      }
+
+      // First, try to use the database function for complete deletion
+      try {
+        const { data: dbResult, error: dbError } = await supabase
+          ?.rpc('admin_delete_user', { user_id: userId });
+
+        if (!dbError && dbResult?.success === true) {
+          // Database function succeeded - log and return success
+          logger.info(`Admin completely deleted user via database function: ${dbResult?.deleted_email} (${dbResult?.deleted_full_name}) - Tables affected: ${dbResult?.tables_affected?.join(', ')}`);
+          
+          return { 
+            data: { 
+              message: dbResult?.message,
+              deleted_email: dbResult?.deleted_email,
+              deleted_full_name: dbResult?.deleted_full_name,
+              tables_affected: dbResult?.tables_affected,
+              method: 'database_function'
+            }, 
+            error: null 
+          };
+        }
+
+        // If database function failed or doesn't exist, log and fall back to manual deletion
+        if (dbError) {
+          logger.warn(`Database function failed, falling back to manual deletion for user ${userId}:`, dbError);
+        }
+      } catch (dbFunctionError) {
+        logger.warn(`Database function call failed, falling back to manual deletion for user ${userId}:`, dbFunctionError);
+      }
+
+      // Fallback: Manual deletion using existing logic
       // First check if user exists and admin has permission
       const { data: user, error: userError } = await supabase
         ?.from('user_profiles')
@@ -570,15 +605,19 @@ export const adminService = {
         // Delete user's course enrollments
         await supabase?.from('course_enrollments')?.delete()?.eq('user_id', userId);
         
-        // Delete user's reviews
-        await supabase?.from('member_reviews')?.delete()?.eq('user_id', userId);
+        // Delete user's testimonials
+        await supabase?.from('testimonials')?.delete()?.eq('user_id', userId);
         
-        // Delete user's referral records
-        await supabase?.from('referrals')?.delete()?.eq('referrer_id', userId);
-        await supabase?.from('referrals')?.delete()?.eq('referred_id', userId);
+        // Delete user's content access logs
+        await supabase?.from('user_content_access')?.delete()?.eq('user_id', userId);
         
         // Delete user's notification logs
         await supabase?.from('notification_logs')?.delete()?.eq('created_by', userId);
+        
+        // Clear user references in other tables
+        await supabase?.from('courses')?.update({ instructor_id: null })?.eq('instructor_id', userId);
+        await supabase?.from('content_library')?.update({ uploader_id: null })?.eq('uploader_id', userId);
+        await supabase?.from('system_settings')?.update({ updated_by: null })?.eq('updated_by', userId);
         
         logger.info(`Cleaned up associated records for user: ${user?.email}`);
       } catch (cleanupError) {
@@ -586,8 +625,16 @@ export const adminService = {
         // Continue even if cleanup fails
       }
 
-      logger.info(`Admin completely deleted user: ${user?.email} (${user?.full_name})`);
-      return { data: { message: 'User and all associated data deleted successfully' }, error: null };
+      logger.info(`Admin completely deleted user (manual fallback): ${user?.email} (${user?.full_name})`);
+      return { 
+        data: { 
+          message: 'User and all associated data deleted successfully',
+          deleted_email: user?.email,
+          deleted_full_name: user?.full_name,
+          method: 'manual_fallback'
+        }, 
+        error: null 
+      };
     } catch (error) {
       logger.error('Delete user service error:', error);
       return { data: null, error: error?.message || 'Unexpected error occurred while deleting user' };
