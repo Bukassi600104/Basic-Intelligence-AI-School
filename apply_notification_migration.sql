@@ -72,7 +72,8 @@ BEGIN
         WITH CHECK (public.has_admin_role());
 
         -- 6. Create updated_at triggers for new tables
-        CREATE TRIGGER IF NOT EXISTS update_notification_templates_updated_at
+        DROP TRIGGER IF EXISTS update_notification_templates_updated_at ON public.notification_templates;
+        CREATE TRIGGER update_notification_templates_updated_at
             BEFORE UPDATE ON public.notification_templates
             FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
 
