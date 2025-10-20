@@ -54,7 +54,8 @@ BEGIN
         -- 5. RLS Policies for notification tables
 
         -- Admin only access to notification templates
-        CREATE POLICY IF NOT EXISTS "admin_only_notification_templates"
+        DROP POLICY IF EXISTS "admin_only_notification_templates" ON public.notification_templates;
+        CREATE POLICY "admin_only_notification_templates"
         ON public.notification_templates
         FOR ALL
         TO authenticated
@@ -62,7 +63,8 @@ BEGIN
         WITH CHECK (public.has_admin_role());
 
         -- Admin only access to notification logs
-        CREATE POLICY IF NOT EXISTS "admin_only_notification_logs"
+        DROP POLICY IF EXISTS "admin_only_notification_logs" ON public.notification_logs;
+        CREATE POLICY "admin_only_notification_logs"
         ON public.notification_logs
         FOR ALL
         TO authenticated
