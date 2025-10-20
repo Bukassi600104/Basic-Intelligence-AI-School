@@ -282,6 +282,11 @@ export const adminService = {
         return { data: null, error: 'Email and full name are required fields' };
       }
 
+      // Check if service key is configured
+      if (!supabaseAdmin) {
+        return { data: null, error: 'Admin service key not configured. Please add VITE_SUPABASE_SERVICE_ROLE_KEY to your .env file.' };
+      }
+
       // Check if email already exists
       const { data: existingUser } = await supabase
         ?.from('user_profiles')
@@ -331,8 +336,8 @@ export const adminService = {
         last_active_at: new Date()?.toISOString()
       };
 
-      // Create user profile
-      const { data, error } = await supabase
+      // Create user profile using admin client to bypass RLS
+      const { data, error } = await supabaseAdmin
         ?.from('user_profiles')
         ?.insert([newUserData])
         ?.select()
