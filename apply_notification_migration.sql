@@ -106,17 +106,6 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_notification_logs_sent_at ON public.notification_logs(sent_at);
 
         RAISE NOTICE 'Notification migration applied successfully!';
-        
-        -- Verify migration
-        SELECT 
-            'notification_templates' as table_name,
-            COUNT(*) as row_count
-        FROM notification_templates
-        UNION ALL
-        SELECT 
-            'notification_logs' as table_name,
-            COUNT(*) as row_count
-        FROM notification_logs;
     ELSE
         RAISE NOTICE 'Notification migration already applied.';
     END IF;
