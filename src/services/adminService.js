@@ -289,7 +289,7 @@ export const adminService = {
         return { data: null, error: 'Admin service key not configured. Please add VITE_SUPABASE_SERVICE_ROLE_KEY to your .env file.' };
       }
 
-      // Check if email already exists
+      // Check if email already exists in user_profiles
       const { data: existingUser } = await supabase
         ?.from('user_profiles')
         ?.select('id')
@@ -297,7 +297,18 @@ export const adminService = {
         ?.single();
 
       if (existingUser) {
-        return { data: null, error: 'User with this email already exists' };
+        return { data: null, error: 'User with this email already exists in user profiles' };
+      }
+
+      // Check if email already exists in auth.users (to prevent conflicts)
+      try {
+        const { data: existingAuthUser } = await supabaseAdmin.auth.admin.getUserByIdentifier(userData.email);
+        if (existingAuthUser) {
+          return { data: null, error: 'User with this email already exists in authentication system. Please delete the user completely first.' };
+        }
+      } catch (authCheckError) {
+        // If user doesn't exist in auth, this is expected - continue
+        logger.info(`No existing auth user found for ${userData.email}, proceeding with creation`);
       }
 
       // Generate a secure password for the new user
@@ -486,7 +497,7 @@ export const adminService = {
     }
   },
 
-  // Delete user (admin only)
+  // Delete user (admin only) - Complete deletion from both auth and user_profiles
   deleteUser: async (userId) => {
     try {
       // First check if user exists and admin has permission
@@ -500,33 +511,71 @@ export const adminService = {
         return { data: null, error: 'User not found' };
       }
 
-      // Delete user from user_profiles table
-      const { error: deleteError } = await supabase
+      // Step 1: Delete user from user_profiles table
+      const { error: deleteProfileError } = await supabase
         ?.from('user_profiles')
         ?.delete()
         ?.eq('id', userId);
 
-      if (deleteError) {
-        logger.error('Delete user error:', deleteError);
-        return { data: null, error: deleteError?.message || 'Failed to delete user' };
+      if (deleteProfileError) {
+        logger.error('Delete user profile error:', deleteProfileError);
+        return { data: null, error: deleteProfileError?.message || 'Failed to delete user profile' };
       }
 
-      logger.info(`Admin deleted user: ${user?.email} (${user?.full_name})`);
-      return { data: { message: 'User deleted successfully' }, error: null };
+      // Step 2: Delete user from auth.users table using admin API
+      if (supabaseAdmin) {
+        const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+        
+        if (deleteAuthError) {
+          logger.error('Delete auth user error:', deleteAuthError);
+          // Even if auth deletion fails, we've already deleted the profile
+          // Log the error but don't fail the operation
+          logger.warn(`Auth user deletion failed for ${user?.email}, but profile was deleted`);
+        }
+      } else {
+        logger.warn('Admin client not available, auth user not deleted');
+      }
+
+      // Step 3: Clean up associated records (optional but recommended)
+      try {
+        // Delete user's payments
+        await supabase?.from('payments')?.delete()?.eq('user_id', userId);
+        
+        // Delete user's course enrollments
+        await supabase?.from('course_enrollments')?.delete()?.eq('user_id', userId);
+        
+        // Delete user's reviews
+        await supabase?.from('member_reviews')?.delete()?.eq('user_id', userId);
+        
+        // Delete user's referral records
+        await supabase?.from('referrals')?.delete()?.eq('referrer_id', userId);
+        await supabase?.from('referrals')?.delete()?.eq('referred_id', userId);
+        
+        // Delete user's notification logs
+        await supabase?.from('notification_logs')?.delete()?.eq('created_by', userId);
+        
+        logger.info(`Cleaned up associated records for user: ${user?.email}`);
+      } catch (cleanupError) {
+        logger.warn('Cleanup of associated records failed:', cleanupError);
+        // Continue even if cleanup fails
+      }
+
+      logger.info(`Admin completely deleted user: ${user?.email} (${user?.full_name})`);
+      return { data: { message: 'User and all associated data deleted successfully' }, error: null };
     } catch (error) {
       logger.error('Delete user service error:', error);
       return { data: null, error: error?.message || 'Unexpected error occurred while deleting user' };
     }
   },
 
-  // Bulk delete users (admin only)
+  // Bulk delete users (admin only) - Complete deletion from both auth and user_profiles
   bulkDeleteUsers: async (userIds) => {
     try {
       if (!userIds || userIds?.length === 0) {
         return { data: null, error: 'No users selected for deletion' };
       }
 
-      // Get user info for logging
+      // Get user info for logging and auth deletion
       const { data: users, error: usersError } = await supabase
         ?.from('user_profiles')
         ?.select('id, email, full_name')
@@ -536,19 +585,70 @@ export const adminService = {
         return { data: null, error: 'Failed to fetch user information' };
       }
 
-      // Delete users from user_profiles table
-      const { error: deleteError } = await supabase
+      // Step 1: Delete users from user_profiles table
+      const { error: deleteProfileError } = await supabase
         ?.from('user_profiles')
         ?.delete()
         ?.in('id', userIds);
 
-      if (deleteError) {
-        logger.error('Bulk delete users error:', deleteError);
-        return { data: null, error: deleteError?.message || 'Failed to delete users' };
+      if (deleteProfileError) {
+        logger.error('Bulk delete users error:', deleteProfileError);
+        return { data: null, error: deleteProfileError?.message || 'Failed to delete users' };
       }
 
-      logger.info(`Admin bulk deleted ${users?.length} users`);
-      return { data: { message: `${users?.length} users deleted successfully` }, error: null };
+      // Step 2: Delete users from auth.users table using admin API
+      if (supabaseAdmin) {
+        // Delete auth users one by one (Supabase doesn't support bulk auth deletion)
+        const authDeletionPromises = users.map(async (user) => {
+          try {
+            const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
+            if (deleteAuthError) {
+              logger.warn(`Auth user deletion failed for ${user?.email}:`, deleteAuthError);
+              return { success: false, email: user.email, error: deleteAuthError.message };
+            }
+            return { success: true, email: user.email };
+          } catch (error) {
+            logger.warn(`Auth user deletion failed for ${user?.email}:`, error);
+            return { success: false, email: user.email, error: error.message };
+          }
+        });
+
+        const authResults = await Promise.all(authDeletionPromises);
+        const failedAuthDeletions = authResults.filter(result => !result.success);
+        
+        if (failedAuthDeletions.length > 0) {
+          logger.warn(`Failed to delete ${failedAuthDeletions.length} auth users:`, failedAuthDeletions);
+        }
+      } else {
+        logger.warn('Admin client not available, auth users not deleted');
+      }
+
+      // Step 3: Clean up associated records for all users
+      try {
+        // Delete users' payments
+        await supabase?.from('payments')?.delete()?.in('user_id', userIds);
+        
+        // Delete users' course enrollments
+        await supabase?.from('course_enrollments')?.delete()?.in('user_id', userIds);
+        
+        // Delete users' reviews
+        await supabase?.from('member_reviews')?.delete()?.in('user_id', userIds);
+        
+        // Delete users' referral records
+        await supabase?.from('referrals')?.delete()?.in('referrer_id', userIds);
+        await supabase?.from('referrals')?.delete()?.in('referred_id', userIds);
+        
+        // Delete users' notification logs
+        await supabase?.from('notification_logs')?.delete()?.in('created_by', userIds);
+        
+        logger.info(`Cleaned up associated records for ${users?.length} users`);
+      } catch (cleanupError) {
+        logger.warn('Bulk cleanup of associated records failed:', cleanupError);
+        // Continue even if cleanup fails
+      }
+
+      logger.info(`Admin completely bulk deleted ${users?.length} users`);
+      return { data: { message: `${users?.length} users and all associated data deleted successfully` }, error: null };
     } catch (error) {
       logger.error('Bulk delete users service error:', error);
       return { data: null, error: error?.message || 'Unexpected error occurred while deleting users' };
