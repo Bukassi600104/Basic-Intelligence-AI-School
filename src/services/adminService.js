@@ -284,11 +284,6 @@ export const adminService = {
         return { data: null, error: 'Email and full name are required fields' };
       }
 
-      // Check if service key is configured
-      if (!supabaseAdmin) {
-        return { data: null, error: 'Admin service key not configured. Please add VITE_SUPABASE_SERVICE_ROLE_KEY to your .env file.' };
-      }
-
       // Check if email already exists in user_profiles
       const { data: existingUser } = await supabase
         ?.from('user_profiles')
@@ -301,14 +296,19 @@ export const adminService = {
       }
 
       // Check if email already exists in auth.users (to prevent conflicts)
-      try {
-        const { data: existingAuthUser } = await supabaseAdmin.auth.admin.getUserByIdentifier(userData.email);
-        if (existingAuthUser) {
-          return { data: null, error: 'User with this email already exists in authentication system. Please delete the user completely first.' };
+      // This check only works if admin service key is configured
+      if (supabaseAdmin) {
+        try {
+          const { data: existingAuthUser } = await supabaseAdmin.auth.admin.getUserByIdentifier(userData.email);
+          if (existingAuthUser) {
+            return { data: null, error: 'User with this email already exists in authentication system. Please delete the user completely first.' };
+          }
+        } catch (authCheckError) {
+          // If user doesn't exist in auth, this is expected - continue
+          logger.info(`No existing auth user found for ${userData.email}, proceeding with creation`);
         }
-      } catch (authCheckError) {
-        // If user doesn't exist in auth, this is expected - continue
-        logger.info(`No existing auth user found for ${userData.email}, proceeding with creation`);
+      } else {
+        logger.warn('Admin service key not configured, skipping auth user check');
       }
 
       // Generate a secure password for the new user
@@ -319,20 +319,28 @@ export const adminService = {
 
       const tempPassword = passwordResult.password;
 
-      // Create auth user first using admin API with service key
-      const { data: authUser, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: userData.email,
-        password: tempPassword,
-        email_confirm: true, // Auto-confirm email for admin-created users
-        user_metadata: {
-          full_name: userData.full_name,
-          role: userData?.role || 'student'
-        }
-      });
+      // Create auth user first using admin API with service key (if available)
+      let authUser = null;
+      if (supabaseAdmin) {
+        const { data: authUserData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email: userData.email,
+          password: tempPassword,
+          email_confirm: true, // Auto-confirm email for admin-created users
+          user_metadata: {
+            full_name: userData.full_name,
+            role: userData?.role || 'student'
+          }
+        });
 
-      if (authError) {
-        logger.error('Create auth user error:', authError);
-        return { data: null, error: authError?.message || 'Failed to create authentication user' };
+        if (authError) {
+          logger.error('Create auth user error:', authError);
+          return { data: null, error: authError?.message || 'Failed to create authentication user' };
+        }
+        authUser = authUserData;
+      } else {
+        logger.warn('Admin service key not configured, creating user profile only');
+        // Generate a UUID for the user profile since we can't create auth user
+        authUser = { user: { id: crypto.randomUUID() } };
       }
 
       // Prepare user profile data using the auth user ID
@@ -355,17 +363,35 @@ export const adminService = {
         last_active_at: new Date()?.toISOString()
       };
 
-      // Create user profile using admin client to bypass RLS
-      const { data, error } = await supabaseAdmin
-        ?.from('user_profiles')
-        ?.insert([newUserData])
-        ?.select()
-        ?.single();
+      // Create user profile using admin client to bypass RLS (if available)
+      let data = null;
+      let error = null;
+      
+      if (supabaseAdmin) {
+        const result = await supabaseAdmin
+          ?.from('user_profiles')
+          ?.insert([newUserData])
+          ?.select()
+          ?.single();
+        data = result.data;
+        error = result.error;
+      } else {
+        // Fallback to regular client (may fail due to RLS policies)
+        const result = await supabase
+          ?.from('user_profiles')
+          ?.insert([newUserData])
+          ?.select()
+          ?.single();
+        data = result.data;
+        error = result.error;
+      }
 
       if (error) {
         logger.error('Create user profile error:', error);
-        // Clean up: delete the auth user if profile creation fails
-        await supabaseAdmin.auth.admin.deleteUser(authUser.user.id);
+        // Clean up: delete the auth user if profile creation fails (if admin client available)
+        if (supabaseAdmin && authUser.user.id) {
+          await supabaseAdmin.auth.admin.deleteUser(authUser.user.id);
+        }
         return { data: null, error: error?.message || 'Failed to create user profile' };
       }
 
