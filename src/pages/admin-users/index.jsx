@@ -10,6 +10,7 @@ import UserTable from './components/UserTable';
 import { userService } from '../../services/userService';
 import { adminService } from '../../services/adminService';
 import { paymentService } from '../../services/paymentService';
+import { passwordService } from '../../services/passwordService';
 
 const AdminUsersPage = () => {
   const { userProfile } = useAuth();
@@ -446,6 +447,8 @@ const AdminUsersPage = () => {
     bio: '',
     is_active: true
   });
+  const [generatedPassword, setGeneratedPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleCreateUser = () => {
     setShowUserModal(true);
@@ -465,6 +468,40 @@ const AdminUsersPage = () => {
       bio: '',
       is_active: true
     });
+    setGeneratedPassword('');
+    setShowPassword(false);
+  };
+
+  // Generate password function
+  const handleGeneratePassword = () => {
+    const password = passwordService.generatePassword();
+    setGeneratedPassword(password);
+    setShowPassword(true);
+  };
+
+  // Copy password to clipboard
+  const handleCopyPassword = async () => {
+    if (!generatedPassword) return;
+    
+    try {
+      await navigator.clipboard.writeText(generatedPassword);
+      alert('Password copied to clipboard!');
+    } catch (error) {
+      console.error('Failed to copy password:', error);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = generatedPassword;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      alert('Password copied to clipboard!');
+    }
+  };
+
+  // Toggle password visibility
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleUserFormChange = (field, value) => {
@@ -837,6 +874,104 @@ const AdminUsersPage = () => {
                         />
                       </div>
                     </div>
+                  </div>
+
+                  {/* Password Generation Section */}
+                  <div className="mt-6 pt-6 border-t border-border">
+                    <h3 className="text-lg font-medium text-foreground mb-4">Password Generation</h3>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-blue-800 mb-1">
+                            Generate Secure Password
+                          </p>
+                          <p className="text-xs text-blue-600">
+                            Click the button below to generate a secure password for the user
+                          </p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleGeneratePassword}
+                        >
+                          <Icon name="Key" size={16} className="mr-2" />
+                          Generate Password
+                        </Button>
+                      </div>
+                    </div>
+
+                    {generatedPassword && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <p className="text-sm font-medium text-green-800 mb-1">
+                              Generated Password
+                            </p>
+                            <p className="text-xs text-green-600">
+                              Copy this password and share it securely with the user
+                            </p>
+                          </div>
+                          <div className="flex space-x-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={handleTogglePasswordVisibility}
+                            >
+                              <Icon 
+                                name={showPassword ? "EyeOff" : "Eye"} 
+                                size={16} 
+                                className="mr-2" 
+                              />
+                              {showPassword ? 'Hide' : 'Show'}
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={handleCopyPassword}
+                            >
+                              <Icon name="Copy" size={16} className="mr-2" />
+                              Copy
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-white border border-green-300 rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <code className={`text-sm font-mono ${showPassword ? 'text-green-800' : 'text-gray-400'}`}>
+                              {showPassword ? generatedPassword : '••••••••••••'}
+                            </code>
+                            <div className="flex items-center space-x-2">
+                              <div className="flex space-x-1">
+                                {[1, 2, 3, 4, 5].map((i) => (
+                                  <div
+                                    key={i}
+                                    className={`w-2 h-2 rounded-full ${
+                                      i <= Math.floor(passwordService.validatePasswordStrength(generatedPassword).strength / 20)
+                                        ? 'bg-green-500'
+                                        : 'bg-gray-300'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-xs text-green-600 font-medium">
+                                {passwordService.getPasswordStrengthLabel(
+                                  passwordService.validatePasswordStrength(generatedPassword).strength
+                                ).label}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-3 text-xs text-green-600">
+                          <p className="flex items-center">
+                            <Icon name="Shield" size={12} className="mr-1" />
+                            This password meets all security requirements
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Form Actions */}

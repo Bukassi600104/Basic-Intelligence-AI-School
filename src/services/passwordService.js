@@ -56,16 +56,22 @@ export const passwordService = {
   },
 
   // Generate and set password for user
-  async generateAndSetPassword(userId) {
+  async generateAndSetPassword(userId = null) {
     try {
       const password = this.generatePassword();
-      const result = await this.setUserPassword(userId, password);
-
-      if (result.success) {
-        return { success: true, password, error: null };
-      } else {
-        return { success: false, password: null, error: result.error };
+      
+      // If userId is provided, set the password for that user
+      if (userId) {
+        const result = await this.setUserPassword(userId, password);
+        if (result.success) {
+          return { success: true, password, error: null };
+        } else {
+          return { success: false, password: null, error: result.error };
+        }
       }
+      
+      // If no userId provided, just return the generated password
+      return { success: true, password, error: null };
     } catch (error) {
       return { success: false, password: null, error: error.message };
     }
