@@ -36,18 +36,29 @@ const SignInPage = () => {
       // Show loading state while determining user role
       setLoading(true);
       
-      // Redirect immediately based on available user data
+      // Wait for user profile to load before making redirection decisions
       const redirectUser = () => {
+        // If user profile is still loading, wait a bit more
+        if (!userProfile) {
+          const retryTimer = setTimeout(redirectUser, 500);
+          return () => clearTimeout(retryTimer);
+        }
+        
+        // Now we have user profile, make proper redirection decision
         if (isAdmin) {
+          console.log('Redirecting to admin dashboard - user is admin');
           navigate('/admin-dashboard', { replace: true });
         } else if (isMember) {
+          console.log('Redirecting to student dashboard - user is member');
           navigate('/student-dashboard', { replace: true });
         } else if (userProfile) {
           // If we have user profile but not membership, redirect to membership page
+          console.log('Redirecting to membership page - user needs membership');
           navigate('/join-membership-page', { replace: true });
         } else {
           // Fallback: Redirect to appropriate dashboard based on best guess
           const isLikelyAdmin = user?.email?.includes('admin') || user?.email?.includes('@basicintelligence');
+          console.log('Using fallback redirection - likely admin:', isLikelyAdmin);
           if (isLikelyAdmin) {
             navigate('/admin-dashboard', { replace: true });
           } else {
@@ -56,8 +67,8 @@ const SignInPage = () => {
         }
       };
 
-      // Use a small timeout to ensure the loading state is visible
-      const timer = setTimeout(redirectUser, 100);
+      // Use a timeout to ensure user profile has time to load
+      const timer = setTimeout(redirectUser, 1000);
       return () => clearTimeout(timer);
     }
   }, [user, userProfile, isAdmin, isMember, navigate]);
