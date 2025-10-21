@@ -81,23 +81,22 @@ const PublicHeader = () => {
                   </div>
                   <div className="text-sm">
                     <div className="font-medium text-foreground">
-                      {userProfile?.full_name || user?.email}
+                      {userProfile?.full_name || (isAdmin ? 'Admin' : user?.email)}
                     </div>
                     <div className="text-xs text-muted-foreground capitalize">
-                      {membershipTier} Member
+                      {isAdmin ? 'Administrator' : `${membershipTier} Member`}
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
-                  {(isAdmin || isMember) && (
-                    <Link
-                      to={isAdmin ? "/admin-dashboard" : "/student-dashboard"}
-                      className="px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 rounded-md hover:bg-primary/20 transition-colors duration-200"
-                    >
-                      Dashboard
-                    </Link>
-                  )}
+                  {/* Always show dashboard link for authenticated users */}
+                  <Link
+                    to={isAdmin ? "/admin-dashboard" : "/student-dashboard"}
+                    className="px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 rounded-md hover:bg-primary/20 transition-colors duration-200"
+                  >
+                    Dashboard
+                  </Link>
                   
                   <button
                     onClick={handleSignOut}
@@ -160,23 +159,22 @@ const PublicHeader = () => {
                       </div>
                       <div>
                         <div className="font-medium text-foreground">
-                          {userProfile?.full_name || user?.email}
+                          {userProfile?.full_name || (isAdmin ? 'Admin' : user?.email)}
                         </div>
                         <div className="text-sm text-muted-foreground capitalize">
-                          {membershipTier} Member
+                          {isAdmin ? 'Administrator' : `${membershipTier} Member`}
                         </div>
                       </div>
                     </div>
                     
-                    {(isAdmin || isMember) && (
-                      <Link
-                        to={isAdmin ? "/admin-dashboard" : "/student-dashboard"}
-                        className="block w-full text-left px-4 py-2 text-sm font-medium text-primary bg-primary/10 rounded-md hover:bg-primary/20 transition-colors duration-200"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Dashboard
-                      </Link>
-                    )}
+                    {/* Always show dashboard link for authenticated users in mobile menu */}
+                    <Link
+                      to={isAdmin ? "/admin-dashboard" : "/student-dashboard"}
+                      className="block w-full text-left px-4 py-2 text-sm font-medium text-primary bg-primary/10 rounded-md hover:bg-primary/20 transition-colors duration-200"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
                     
                     <button
                       onClick={() => {
