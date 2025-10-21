@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [profileLoading, setProfileLoading] = useState(false)
-  
+
   // Initialize Supabase auth listener
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(

@@ -30,17 +30,22 @@ const SignInPage = () => {
     }
   }, [location?.search]);
 
-  // Redirect if already logged in
+  // Redirect if already logged in or after successful sign in
   useEffect(() => {
-    if (user) {
-      // Redirect based on user role/membership
-      if (isAdmin) {
-        navigate('/admin-dashboard');
-      } else if (isMember) {
-        navigate('/student-dashboard');
-      } else {
-        navigate('/');
-      }
+    if (user && userProfile) {
+      // Wait a moment for state to fully update
+      const timer = setTimeout(() => {
+        // Redirect based on user role/membership
+        if (isAdmin) {
+          navigate('/admin-dashboard', { replace: true });
+        } else if (isMember) {
+          navigate('/student-dashboard', { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [user, userProfile, isAdmin, isMember, navigate]);
 
@@ -86,11 +91,7 @@ const SignInPage = () => {
       }
 
       // Sign in successful - user will be redirected by useEffect
-      if (data?.user) {
-        // Navigate based on user role or intended destination
-        const from = location?.state?.from?.pathname || '/';
-        navigate(from, { replace: true });
-      }
+      // The useEffect above will handle role-based redirection
       
     } catch (error) {
       setError('Sign in failed. Please try again.');
