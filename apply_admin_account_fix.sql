@@ -28,12 +28,36 @@ BEGIN
     IF user_id_to_delete IS NOT NULL THEN
         RAISE NOTICE 'Deleting data for user: %', user_id_to_delete;
         
-        -- Delete from related tables
-        DELETE FROM public.memberships WHERE user_id = user_id_to_delete;
-        DELETE FROM public.payments WHERE user_id = user_id_to_delete;
-        DELETE FROM public.reviews WHERE user_id = user_id_to_delete;
-        DELETE FROM public.referrals WHERE referrer_id = user_id_to_delete OR referred_id = user_id_to_delete;
-        DELETE FROM public.notifications WHERE user_id = user_id_to_delete;
+        -- Delete from related tables (only if they exist)
+        -- Check and delete from memberships table
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'memberships') THEN
+            DELETE FROM public.memberships WHERE user_id = user_id_to_delete;
+            RAISE NOTICE 'Deleted memberships data';
+        END IF;
+        
+        -- Check and delete from payments table
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'payments') THEN
+            DELETE FROM public.payments WHERE user_id = user_id_to_delete;
+            RAISE NOTICE 'Deleted payments data';
+        END IF;
+        
+        -- Check and delete from reviews table (if exists)
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'reviews') THEN
+            DELETE FROM public.reviews WHERE user_id = user_id_to_delete;
+            RAISE NOTICE 'Deleted reviews data';
+        END IF;
+        
+        -- Check and delete from referrals table (if exists)
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'referrals') THEN
+            DELETE FROM public.referrals WHERE referrer_id = user_id_to_delete OR referred_id = user_id_to_delete;
+            RAISE NOTICE 'Deleted referrals data';
+        END IF;
+        
+        -- Check and delete from notifications table (if exists)
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'notifications') THEN
+            DELETE FROM public.notifications WHERE user_id = user_id_to_delete;
+            RAISE NOTICE 'Deleted notifications data';
+        END IF;
         
         -- Delete user profile
         DELETE FROM public.user_profiles WHERE id = user_id_to_delete;

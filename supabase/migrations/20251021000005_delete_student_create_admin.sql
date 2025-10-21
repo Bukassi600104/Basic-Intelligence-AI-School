@@ -31,25 +31,36 @@ BEGIN
     IF user_exists THEN
         RAISE NOTICE 'Deleting related data for user: %', existing_user_id;
         
-        -- Delete from memberships table
-        DELETE FROM public.memberships WHERE user_id = existing_user_id;
-        RAISE NOTICE 'Deleted memberships data';
+        -- Delete from related tables (only if they exist)
+        -- Check and delete from memberships table
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'memberships') THEN
+            DELETE FROM public.memberships WHERE user_id = existing_user_id;
+            RAISE NOTICE 'Deleted memberships data';
+        END IF;
         
-        -- Delete from payments table
-        DELETE FROM public.payments WHERE user_id = existing_user_id;
-        RAISE NOTICE 'Deleted payments data';
+        -- Check and delete from payments table
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'payments') THEN
+            DELETE FROM public.payments WHERE user_id = existing_user_id;
+            RAISE NOTICE 'Deleted payments data';
+        END IF;
         
-        -- Delete from reviews table
-        DELETE FROM public.reviews WHERE user_id = existing_user_id;
-        RAISE NOTICE 'Deleted reviews data';
+        -- Check and delete from reviews table (if exists)
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'reviews') THEN
+            DELETE FROM public.reviews WHERE user_id = existing_user_id;
+            RAISE NOTICE 'Deleted reviews data';
+        END IF;
         
-        -- Delete from referrals table
-        DELETE FROM public.referrals WHERE referrer_id = existing_user_id OR referred_id = existing_user_id;
-        RAISE NOTICE 'Deleted referrals data';
+        -- Check and delete from referrals table (if exists)
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'referrals') THEN
+            DELETE FROM public.referrals WHERE referrer_id = existing_user_id OR referred_id = existing_user_id;
+            RAISE NOTICE 'Deleted referrals data';
+        END IF;
         
-        -- Delete from notifications table
-        DELETE FROM public.notifications WHERE user_id = existing_user_id;
-        RAISE NOTICE 'Deleted notifications data';
+        -- Check and delete from notifications table (if exists)
+        IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'notifications') THEN
+            DELETE FROM public.notifications WHERE user_id = existing_user_id;
+            RAISE NOTICE 'Deleted notifications data';
+        END IF;
         
         -- Delete from user_profiles table
         DELETE FROM public.user_profiles WHERE id = existing_user_id;
