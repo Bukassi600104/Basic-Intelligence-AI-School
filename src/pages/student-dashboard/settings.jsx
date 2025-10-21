@@ -180,7 +180,7 @@ const StudentSettings = () => {
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
-        <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
+        <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8 max-w-7xl mx-auto w-full">
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
             <div>
@@ -580,71 +580,6 @@ const StudentSettings = () => {
                     <Icon name="Key" size={16} className="mr-2" />
                     Change Password
                   </Button>
-                </div>
-              </div>
-
-              {/* Profile Picture Upload */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <h2 className="text-xl font-bold text-foreground mb-6">Profile Picture</h2>
-                
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="w-32 h-32 bg-muted rounded-full flex items-center justify-center border-2 border-border">
-                    {userProfile?.avatar_url ? (
-                      <img 
-                        src={userProfile.avatar_url} 
-                        alt="Profile" 
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <Icon name="User" size={48} className="text-muted-foreground" />
-                    )}
-                  </div>
-                  
-                  <div className="text-center">
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Upload a profile picture to personalize your account
-                    </p>
-                    
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                          if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                            alert('File size must be less than 5MB');
-                            return;
-                          }
-                          
-                          setProfilePicture(file);
-                          setUploadingPicture(true);
-                          
-                          // Simulate upload process
-                          setTimeout(() => {
-                            alert('Profile picture uploaded successfully!');
-                            setUploadingPicture(false);
-                            // In a real app, this would update the user profile with the new avatar URL
-                          }, 1500);
-                        }
-                      }}
-                      className="hidden"
-                      id="profile-picture-upload"
-                    />
-                    
-                    <label 
-                      htmlFor="profile-picture-upload"
-                      className="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg cursor-pointer hover:bg-primary/90 transition-colors"
-                    >
-                      <Icon name="Upload" size={16} className="mr-2" />
-                      {uploadingPicture ? 'Uploading...' : 'Choose Photo'}
-                    </label>
-                    
-                    {profilePicture && (
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Selected: {profilePicture.name}
-                      </p>
-                    )}
-                  </div>
                 </div>
               </div>
 
