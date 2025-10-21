@@ -73,15 +73,15 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
 
       {/* Sidebar */}
       <div className={`
-        fixed lg:sticky top-0 left-0 h-screen bg-card border-r border-border z-40
+        fixed lg:absolute top-0 left-0 h-screen bg-card border-r border-border z-40
         transition-all duration-300 ease-in-out
-        ${isCollapsed ? 'w-16 lg:w-16' : 'w-64 lg:w-64'}
+        ${isCollapsed ? 'w-20 lg:w-20' : 'w-64 lg:w-64'}
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           {!isCollapsed && (
-            <Link to="/student-dashboard" className="flex items-center space-x-3">
+            <Link to="/student-dashboard" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">BI</span>
               </div>
@@ -116,7 +116,7 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
         {/* User Profile */}
         <div className="p-4 border-b border-border">
           {!isCollapsed ? (
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                 <span className="text-primary font-semibold text-sm">
                   {userProfile?.full_name?.charAt?.(0)?.toUpperCase() || 'S'}
@@ -155,7 +155,7 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                       ? 'bg-primary text-white shadow-sm' 
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     }
-                    ${isCollapsed ? 'justify-center' : 'space-x-3'}
+                    ${isCollapsed ? 'justify-center' : 'space-x-2'}
                   `}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -179,7 +179,7 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
           <button
             onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
             className={`
-              flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200
+              flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200
               text-muted-foreground hover:text-foreground hover:bg-muted w-full
               ${isCollapsed ? 'justify-center' : ''}
             `}
@@ -192,7 +192,7 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
           <button
             onClick={handleSignOut}
             className={`
-              flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200
+              flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200
               text-muted-foreground hover:text-foreground hover:bg-muted w-full
               ${isCollapsed ? 'justify-center' : ''}
             `}
