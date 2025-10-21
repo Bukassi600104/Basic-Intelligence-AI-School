@@ -6,12 +6,16 @@ import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
+import NotificationWizardError from '../../components/errors/NotificationWizardError';
+import { validateEnv } from '../../utils/validateEnv';
+import { logger } from '../../utils/logger';
 
 const AdminNotificationWizard = () => {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [notificationData, setNotificationData] = useState({
@@ -25,21 +29,57 @@ const AdminNotificationWizard = () => {
   const [sending, setSending] = useState(false);
   const [results, setResults] = useState(null);
 
-  // Check admin access
+  // Check admin access and validate environment
   useEffect(() => {
-    if (userProfile && userProfile?.role !== 'admin') {
-      navigate('/');
-      return;
-    }
+    const checkAccess = async () => {
+      try {
+        // Validate environment variables
+        validateEnv();
+
+        // Check if user is authenticated
+        if (!userProfile) {
+          navigate('/login');
+          return;
+        }
+
+        // Check if user is admin
+        const { data: isAdmin, error: adminCheckError } = await supabase.rpc('has_admin_role');
+        
+        if (adminCheckError || !isAdmin) {
+          logger.error('Admin check failed:', adminCheckError);
+          navigate('/');
+          return;
+        }
+
+      } catch (error) {
+        setError(error.message);
+        logger.error('Access validation failed:', error);
+      }
+    };
+
+    checkAccess();
   }, [userProfile, navigate]);
+
+  // Validate environment variables
+  useEffect(() => {
+    try {
+      validateEnv();
+    } catch (err) {
+      setError(err.message);
+      logger.error('Environment validation failed:', err);
+    }
+  }, []);
 
   // Load users and templates
   useEffect(() => {
-    loadData();
-  }, []);
+    if (!error) {
+      loadData();
+    }
+  }, [error]);
 
   const loadData = async () => {
     setLoading(true);
+    setError(null);
     try {
       const [usersResult, templatesResult] = await Promise.all([
         userService.getAllUsers(),

@@ -1,16 +1,17 @@
 -- Apply Notification Migration Script
 -- This script applies the enhanced user notifications migration
 
--- Check if migration has already been applied
 DO $$
 BEGIN
-    -- Check if notification_templates table exists
-    IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'notification_templates') THEN
-        RAISE NOTICE 'Applying notification migration...';
-        
-        -- 1. Add WhatsApp phone field to user_profiles table
-        ALTER TABLE public.user_profiles 
-        ADD COLUMN IF NOT EXISTS whatsapp_phone TEXT;
+    RAISE NOTICE 'Applying notification migration...';
+    
+    -- 1. Add WhatsApp phone field to user_profiles table
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'whatsapp_phone'
+    ) THEN
+        ALTER TABLE public.user_profiles ADD COLUMN whatsapp_phone TEXT;
+        RAISE NOTICE 'Column whatsapp_phone added to user_profiles.';
+    END IF;
 
         -- Create index for WhatsApp phone searches
         CREATE INDEX IF NOT EXISTS idx_user_profiles_whatsapp_phone 
@@ -20,7 +21,7 @@ BEGIN
         CREATE TABLE IF NOT EXISTS public.notification_templates (
             id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             name TEXT NOT NULL,
-            subject TEXT NOT NULL,
+            subject TEXT NOT NULL, -- This is the correct schema
             content TEXT NOT NULL,
             type TEXT NOT NULL CHECK (type IN ('email', 'whatsapp', 'both')),
             category TEXT NOT NULL,
@@ -29,6 +30,7 @@ BEGIN
             created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
+        RAISE NOTICE 'Table notification_templates checked/created.';
 
         -- 3. Create notification logs table
         CREATE TABLE IF NOT EXISTS public.notification_logs (
@@ -46,6 +48,7 @@ BEGIN
             created_by UUID REFERENCES public.user_profiles(id) ON DELETE SET NULL,
             created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
+        RAISE NOTICE 'Table notification_logs checked/created.';
 
         -- 4. Enable RLS on new tables
         ALTER TABLE public.notification_templates ENABLE ROW LEVEL SECURITY;
@@ -53,7 +56,6 @@ BEGIN
 
         -- 5. RLS Policies for notification tables
 
-        -- Admin only access to notification templates
         DROP POLICY IF EXISTS "admin_only_notification_templates" ON public.notification_templates;
         CREATE POLICY "admin_only_notification_templates"
         ON public.notification_templates
@@ -62,7 +64,6 @@ BEGIN
         USING (public.has_admin_role())
         WITH CHECK (public.has_admin_role());
 
-        -- Admin only access to notification logs
         DROP POLICY IF EXISTS "admin_only_notification_logs" ON public.notification_logs;
         CREATE POLICY "admin_only_notification_logs"
         ON public.notification_logs
@@ -70,12 +71,14 @@ BEGIN
         TO authenticated
         USING (public.has_admin_role())
         WITH CHECK (public.has_admin_role());
+        RAISE NOTICE 'RLS policies for notifications checked/created.';
 
         -- 6. Create updated_at triggers for new tables
         DROP TRIGGER IF EXISTS update_notification_templates_updated_at ON public.notification_templates;
         CREATE TRIGGER update_notification_templates_updated_at
             BEFORE UPDATE ON public.notification_templates
             FOR EACH ROW EXECUTE FUNCTION public.update_updated_at();
+        RAISE NOTICE 'Triggers for notifications checked/created.';
 
         -- 7. Insert default notification templates
         INSERT INTO public.notification_templates (name, subject, content, type, category, is_active) VALUES
@@ -104,9 +107,7 @@ BEGIN
         CREATE INDEX IF NOT EXISTS idx_notification_logs_recipient_type ON public.notification_logs(recipient_type);
         CREATE INDEX IF NOT EXISTS idx_notification_logs_created_at ON public.notification_logs(created_at);
         CREATE INDEX IF NOT EXISTS idx_notification_logs_sent_at ON public.notification_logs(sent_at);
+        RAISE NOTICE 'Indexes for notifications checked/created.';
 
         RAISE NOTICE 'Notification migration applied successfully!';
-    ELSE
-        RAISE NOTICE 'Notification migration already applied.';
-    END IF;
 END $$;
