@@ -2,6 +2,29 @@ import { supabase } from '../lib/supabase';
 import { logger } from '../utils/logger';
 
 export const reviewService = {
+  // Get approved reviews
+  getApprovedReviews: async () => {
+    try {
+      const { data, error } = await supabase
+        ?.from('member_reviews')
+        ?.select(`
+          *,
+          user:user_profiles(full_name, email)
+        `)
+        ?.eq('status', 'approved')
+        ?.order('created_at', { ascending: false });
+
+      if (error) {
+        return { data: null, error: error?.message };
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      logger.error('getApprovedReviews error:', error);
+      return { data: null, error: error?.message };
+    }
+  },
+
   // Get user's review
   getUserReview: async (userId) => {
     try {

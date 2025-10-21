@@ -97,6 +97,8 @@ BEGIN
             ('Subscription Reminder', 'Subscription Renewal Reminder', 
              'Dear {{full_name}},\n\nThis is a friendly reminder that your subscription to Basic Intelligence AI School will expire on {{subscription_expiry}}.\n\nTo continue enjoying our premium content and features, please renew your subscription before the expiry date.\n\nYou can renew your subscription from your dashboard: {{dashboard_url}}\n\nBest regards,\nBasic Intelligence AI School Team',
              'both', 'subscription', true);
+             'both', 'subscription', true)
+        ON CONFLICT (name) DO NOTHING;
 
         -- 8. Create indexes for performance
         CREATE INDEX IF NOT EXISTS idx_notification_templates_type ON public.notification_templates(type);
