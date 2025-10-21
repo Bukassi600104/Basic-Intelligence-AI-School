@@ -19,18 +19,19 @@ const StudentDashboard = () => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // Check if user is a paid student
+  // Check if user is a paid student - only redirect when profile is loaded and user is not a member
   useEffect(() => {
     if (!user) {
       navigate('/signin');
       return;
     }
 
-    if (!isMember) {
+    // Only redirect if user profile is loaded and user is not a member
+    if (userProfile && !isMember) {
       navigate('/join-membership-page');
       return;
     }
-  }, [user, isMember, navigate]);
+  }, [user, userProfile, isMember, navigate]);
 
   // Load recent content
   useEffect(() => {

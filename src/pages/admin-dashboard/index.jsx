@@ -27,7 +27,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Check admin access
+  // Check admin access - only redirect when profile is loaded and user is not admin
   useEffect(() => {
     if (userProfile && userProfile?.role !== 'admin') {
       navigate('/');
