@@ -199,7 +199,12 @@ export const AuthProvider = ({ children }) => {
   const canAccessContent = (requiredAccessLevel) => {
     if (!userProfile) return false;
     
-    // Check membership status
+    // Admin users can access all content
+    if (userProfile?.role === 'admin') {
+      return true;
+    }
+    
+    // Check membership status for non-admin users
     if (userProfile?.membership_status !== 'active') {
       return false;
     }
@@ -230,7 +235,8 @@ export const AuthProvider = ({ children }) => {
     canAccessContent,
     isAdmin: userProfile?.role === 'admin',
     isStudent: userProfile?.role === 'student',
-    isMember: userProfile?.membership_status === 'active',
+    // Admin users bypass membership requirements, students need active membership
+    isMember: userProfile?.role === 'admin' || userProfile?.membership_status === 'active',
     membershipTier: userProfile?.membership_tier || 'starter',
     membershipStatus: userProfile?.membership_status || 'inactive',
     isPending: userProfile?.membership_status === 'pending',
