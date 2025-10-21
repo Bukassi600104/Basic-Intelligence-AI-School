@@ -15,7 +15,7 @@ const PublicHeader = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  const { user, userProfile, signOut, isAdmin, isMember, membershipTier } = useAuth();
+  const { user, userProfile, signOut, isAdmin, isMember, membershipTier, profileLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -81,10 +81,18 @@ const PublicHeader = () => {
                   </div>
                   <div className="text-sm">
                     <div className="font-medium text-foreground">
-                      {userProfile?.full_name || (isAdmin ? 'Admin' : user?.email)}
+                      {profileLoading ? (
+                        <div className="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
+                      ) : (
+                        userProfile?.full_name || (isAdmin ? 'Admin' : user?.email?.split('@')[0] || user?.email)
+                      )}
                     </div>
                     <div className="text-xs text-muted-foreground capitalize">
-                      {isAdmin ? 'Administrator' : `${membershipTier} Member`}
+                      {profileLoading ? (
+                        <div className="w-16 h-3 bg-gray-200 rounded animate-pulse mt-1"></div>
+                      ) : (
+                        isAdmin ? 'Administrator' : `${membershipTier} Member`
+                      )}
                     </div>
                   </div>
                 </div>
@@ -159,10 +167,18 @@ const PublicHeader = () => {
                       </div>
                       <div>
                         <div className="font-medium text-foreground">
-                          {userProfile?.full_name || (isAdmin ? 'Admin' : user?.email)}
+                          {profileLoading ? (
+                            <div className="w-20 h-4 bg-gray-200 rounded animate-pulse"></div>
+                          ) : (
+                            userProfile?.full_name || (isAdmin ? 'Admin' : user?.email?.split('@')[0] || user?.email)
+                          )}
                         </div>
                         <div className="text-sm text-muted-foreground capitalize">
-                          {isAdmin ? 'Administrator' : `${membershipTier} Member`}
+                          {profileLoading ? (
+                            <div className="w-16 h-3 bg-gray-200 rounded animate-pulse mt-1"></div>
+                          ) : (
+                            isAdmin ? 'Administrator' : `${membershipTier} Member`
+                          )}
                         </div>
                       </div>
                     </div>
