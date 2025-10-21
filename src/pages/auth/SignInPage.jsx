@@ -32,14 +32,29 @@ const SignInPage = () => {
 
   // Redirect if already logged in or after successful sign in
   useEffect(() => {
+    console.log('SignInPage useEffect triggered:', { 
+      user: !!user, 
+      userProfile: !!userProfile, 
+      isAdmin, 
+      isMember 
+    });
+    
     if (user) {
       // Show loading state while determining user role
       setLoading(true);
       
       // Wait for user profile to load before making redirection decisions
       const redirectUser = () => {
+        console.log('redirectUser called:', { 
+          userProfile: !!userProfile, 
+          isAdmin, 
+          isMember,
+          userEmail: user?.email 
+        });
+        
         // If user profile is still loading, wait a bit more
         if (!userProfile) {
+          console.log('User profile not loaded yet, retrying in 500ms');
           const retryTimer = setTimeout(redirectUser, 500);
           return () => clearTimeout(retryTimer);
         }
@@ -68,6 +83,7 @@ const SignInPage = () => {
       };
 
       // Use a timeout to ensure user profile has time to load
+      console.log('Setting redirect timer for 1000ms');
       const timer = setTimeout(redirectUser, 1000);
       return () => clearTimeout(timer);
     }

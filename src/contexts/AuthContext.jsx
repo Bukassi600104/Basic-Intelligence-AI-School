@@ -39,6 +39,12 @@ export const AuthProvider = ({ children }) => {
           ?.single()
         
         if (!error && data) {
+          console.log('User profile loaded:', { 
+            id: data.id, 
+            email: data.email, 
+            role: data.role,
+            membership_status: data.membership_status 
+          })
           setUserProfile(data)
         } else if (error) {
           console.log('Profile fetch error:', error?.message)
