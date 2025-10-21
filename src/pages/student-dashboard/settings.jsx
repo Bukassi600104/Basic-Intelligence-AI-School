@@ -156,8 +156,8 @@ const StudentSettings = () => {
           isCollapsed={sidebarCollapsed} 
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
         />
-        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
-        <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
+      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8 max-w-7xl mx-auto w-full">
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
                 <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4 animate-pulse">
@@ -201,16 +201,107 @@ const StudentSettings = () => {
             </div>
           </div>
 
+          {/* Profile Picture Section - Moved to Top */}
+          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-8 mb-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex-1">
+                <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-4">Your Profile</h2>
+                <p className="text-lg text-muted-foreground mb-6">
+                  Personalize your account with a profile picture and manage your information
+                </p>
+                
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center space-x-2 bg-white/50 rounded-lg px-4 py-2">
+                    <Icon name="User" size={20} className="text-primary" />
+                    <span className="text-sm font-medium text-foreground">
+                      Member ID: {userProfile?.member_id || 'Pending'}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-white/50 rounded-lg px-4 py-2">
+                    <Icon name="CheckCircle" size={20} className="text-success" />
+                    <span className="text-sm font-medium text-foreground">
+                      Active Membership
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 lg:mt-0 lg:ml-8">
+                <div className="flex flex-col items-center space-y-4">
+                  <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                    {userProfile?.avatar_url ? (
+                      <img 
+                        src={userProfile.avatar_url} 
+                        alt="Profile" 
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <Icon name="User" size={48} className="text-primary" />
+                    )}
+                  </div>
+                  
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                          alert('File size must be less than 5MB');
+                          return;
+                        }
+                        
+                        setProfilePicture(file);
+                        setUploadingPicture(true);
+                        
+                        // Simulate upload process
+                        setTimeout(() => {
+                          alert('Profile picture uploaded successfully!');
+                          setUploadingPicture(false);
+                          // In a real app, this would update the user profile with the new avatar URL
+                        }, 1500);
+                      }
+                    }}
+                    className="hidden"
+                    id="profile-picture-upload"
+                  />
+                  
+                  <label 
+                    htmlFor="profile-picture-upload"
+                    className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-xl cursor-pointer hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg"
+                  >
+                    <Icon name="Upload" size={18} className="mr-2" />
+                    {uploadingPicture ? 'Uploading...' : 'Update Photo'}
+                  </label>
+                  
+                  {profilePicture && (
+                    <p className="text-xs text-muted-foreground">
+                      Selected: {profilePicture.name}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Profile Settings */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Profile Information */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <h2 className="text-xl font-bold text-foreground mb-6">Profile Information</h2>
+              {/* Profile Information - Updated with colorful tiles */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-6">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <Icon name="User" size={24} className="text-blue-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-blue-900">Personal Information</h2>
+                    <p className="text-blue-700 text-sm">Update your personal details and contact information</p>
+                  </div>
+                </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-blue-900 mb-2">
                       Full Name
                     </label>
                     <input
@@ -218,13 +309,13 @@ const StudentSettings = () => {
                       name="full_name"
                       value={formData.full_name}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
                       placeholder="Enter your full name"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-blue-900 mb-2">
                       Email Address
                     </label>
                     <input
@@ -232,15 +323,15 @@ const StudentSettings = () => {
                       name="email"
                       value={formData.email}
                       disabled
-                      className="w-full px-4 py-3 border border-border rounded-xl bg-muted/50 text-muted-foreground"
+                      className="w-full px-4 py-3 border border-blue-200 rounded-xl bg-blue-50/50 text-blue-700"
                     />
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-blue-600 mt-1">
                       Email cannot be changed. Contact support for assistance.
                     </p>
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-blue-900 mb-2">
                       Phone Number
                     </label>
                     <input
@@ -248,13 +339,13 @@ const StudentSettings = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
                       placeholder="+234123456789"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className="block text-sm font-medium text-blue-900 mb-2">
                       Location
                     </label>
                     <input
@@ -262,14 +353,14 @@ const StudentSettings = () => {
                       name="location"
                       value={formData.location}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
                       placeholder="City, Country"
                     />
                   </div>
                 </div>
                 
                 <div className="mt-6">
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label className="block text-sm font-medium text-blue-900 mb-2">
                     Bio
                   </label>
                   <textarea
@@ -277,7 +368,7 @@ const StudentSettings = () => {
                     value={formData.bio}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary resize-vertical"
+                    className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80 resize-vertical"
                     placeholder="Tell us a bit about yourself..."
                   />
                 </div>
@@ -286,7 +377,7 @@ const StudentSettings = () => {
                   <Button 
                     onClick={handleSaveProfile}
                     loading={saveLoading}
-                    className="w-full md:w-auto"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <Icon name="Save" size={16} className="mr-2" />
                     Save Changes

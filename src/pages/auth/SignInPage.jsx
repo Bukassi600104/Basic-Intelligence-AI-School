@@ -33,35 +33,32 @@ const SignInPage = () => {
   // Redirect if already logged in or after successful sign in
   useEffect(() => {
     if (user) {
-      // If user profile is loaded, redirect immediately
-      if (userProfile) {
-        const timer = setTimeout(() => {
-          // Redirect based on user role/membership
-          if (isAdmin) {
-            navigate('/admin-dashboard', { replace: true });
-          } else if (isMember) {
-            navigate('/student-dashboard', { replace: true });
-          } else {
-            navigate('/', { replace: true });
-          }
-        }, 100);
-        
-        return () => clearTimeout(timer);
-      } else {
-        // If user profile is not loaded yet, wait for it or use fallback
-        const fallbackTimer = setTimeout(() => {
+      // Show loading state while determining user role
+      setLoading(true);
+      
+      // Redirect immediately based on available user data
+      const redirectUser = () => {
+        if (isAdmin) {
+          navigate('/admin-dashboard', { replace: true });
+        } else if (isMember) {
+          navigate('/student-dashboard', { replace: true });
+        } else if (userProfile) {
+          // If we have user profile but not membership, redirect to membership page
+          navigate('/join-membership-page', { replace: true });
+        } else {
           // Fallback: Redirect to appropriate dashboard based on best guess
-          // Admin users typically have specific email patterns or we can check localStorage
           const isLikelyAdmin = user?.email?.includes('admin') || user?.email?.includes('@basicintelligence');
           if (isLikelyAdmin) {
             navigate('/admin-dashboard', { replace: true });
           } else {
             navigate('/student-dashboard', { replace: true });
           }
-        }, 3000); // Wait 3 seconds for profile to load, then use fallback
-        
-        return () => clearTimeout(fallbackTimer);
-      }
+        }
+      };
+
+      // Use a small timeout to ensure the loading state is visible
+      const timer = setTimeout(redirectUser, 100);
+      return () => clearTimeout(timer);
     }
   }, [user, userProfile, isAdmin, isMember, navigate]);
 

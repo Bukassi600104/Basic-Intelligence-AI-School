@@ -150,12 +150,12 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                 <Link
                   to={item.href}
                   className={`
-                    flex items-center space-x-3 px-3 py-2 rounded-lg transition-all duration-200
+                    flex items-center px-3 py-2 rounded-lg transition-all duration-200
                     ${isActive(item.href) 
                       ? 'bg-primary text-white shadow-sm' 
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     }
-                    ${isCollapsed ? 'justify-center' : ''}
+                    ${isCollapsed ? 'justify-center' : 'space-x-3'}
                   `}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -165,7 +165,7 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                     className={isActive(item.href) ? 'text-white' : ''}
                   />
                   {!isCollapsed && (
-                    <span className="text-sm font-medium">{item.name}</span>
+                    <span className="text-sm font-medium text-center flex-1">{item.name}</span>
                   )}
                 </Link>
               </li>
