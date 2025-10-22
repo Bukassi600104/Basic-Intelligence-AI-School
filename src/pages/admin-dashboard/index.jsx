@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import AdminSidebar from '../../components/ui/AdminSidebar';
-import MetricsCard from './components/MetricsCard';
-import QuickActionCard from './components/QuickActionCard';
+import StatCard from '../../components/ui/StatCard';
+import ActionCard from '../../components/ui/ActionCard';
 import ActivityFeed from './components/ActivityFeed';
 import AlertsPanel from './components/AlertsPanel';
 import SystemStatusPanel from './components/SystemStatusPanel';
@@ -165,81 +165,81 @@ const AdminDashboard = () => {
     }
   };
 
-  // Metrics data based on real stats
+  // Metrics data based on real stats - Updated for StatCard
   const metricsData = dashboardData?.stats ? [
     {
       title: 'Total Users',
       value: dashboardData?.stats?.totalUsers?.toString() || '0',
       icon: 'Users',
-      trend: `+${dashboardData?.stats?.recentRegistrations || 0}`,
-      trendDirection: 'up',
+      change: `+${dashboardData?.stats?.recentRegistrations || 0}`,
+      changeType: 'positive',
       subtitle: 'All registered users',
-      color: 'primary',
+      variant: 'primary',
       onClick: () => navigate('/admin-users')
     },
     {
       title: 'Pending Payments',
       value: dashboardData?.stats?.pendingPayments?.toString() || '0',
       icon: 'Clock',
-      trend: 'Awaiting review',
-      trendDirection: 'neutral',
+      change: 'Awaiting review',
+      changeType: 'neutral',
       subtitle: 'Awaiting verification',
-      color: 'warning',
+      variant: 'warning',
       onClick: () => navigate('/admin-users?tab=payments&filter=pending')
     },
     {
       title: 'Active Members',
       value: dashboardData?.stats?.activeMembers?.toString() || '0',
       icon: 'CheckCircle',
-      trend: `${dashboardData?.stats?.activeMembers > 0 ? Math.round((dashboardData?.stats?.activeMembers / dashboardData?.stats?.totalUsers) * 100) : 0}%`,
-      trendDirection: 'up',
+      change: `${dashboardData?.stats?.activeMembers > 0 ? Math.round((dashboardData?.stats?.activeMembers / dashboardData?.stats?.totalUsers) * 100) : 0}%`,
+      changeType: 'positive',
       subtitle: 'Verified & paid',
-      color: 'success',
+      variant: 'success',
       onClick: () => navigate('/admin-users?filter=active')
     },
     {
       title: 'Total Revenue',
       value: `₦${dashboardData?.stats?.totalRevenue?.toLocaleString() || '0'}`,
       icon: 'DollarSign',
-      trend: `₦${dashboardData?.stats?.thisMonthRevenue?.toLocaleString() || '0'}`,
-      trendDirection: 'up',
+      change: `₦${dashboardData?.stats?.thisMonthRevenue?.toLocaleString() || '0'}`,
+      changeType: 'positive',
       subtitle: 'This month',
-      color: 'secondary'
+      variant: 'secondary'
     }
   ] : [];
 
-  // Quick actions - Updated with working buttons
+  // Quick actions - Updated to use ActionCard props
   const quickActions = [
     {
       title: 'Add User',
       description: 'Quickly add new users to the platform with admin approval',
       icon: 'UserPlus',
+      accentColor: 'blue',
       buttonText: 'Add User',
-      buttonVariant: 'default',
       onClick: () => handleQuickAction('add_user')
     },
     {
       title: 'New Course',
       description: 'Create new educational content and course materials',
       icon: 'BookOpen',
+      accentColor: 'purple',
       buttonText: 'New Course',
-      buttonVariant: 'outline',
       onClick: () => handleQuickAction('new_course')
     },
     {
       title: 'Reports',
       description: 'Generate and view analytics reports and user statistics',
       icon: 'BarChart3',
+      accentColor: 'emerald',
       buttonText: 'View Reports',
-      buttonVariant: 'outline',
       onClick: () => handleQuickAction('reports')
     },
     {
       title: 'Verify Payments',
       description: 'Review and approve pending payment submissions',
       icon: 'CreditCard',
+      accentColor: 'amber',
       buttonText: 'Review Payments',
-      buttonVariant: 'default',
       badge: `${dashboardData?.stats?.pendingPayments || 0} pending`,
       onClick: () => handleQuickAction('verify_payments')
     }
@@ -247,7 +247,7 @@ const AdminDashboard = () => {
 
   if (loading && !dashboardData?.stats) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
         <AdminSidebar 
           isCollapsed={sidebarCollapsed} 
           onToggleCollapse={handleToggleSidebar} 
@@ -255,8 +255,11 @@ const AdminDashboard = () => {
         <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">
-              <Icon name="Loader2" size={32} className="animate-spin mx-auto text-primary mb-4" />
-              <p className="text-muted-foreground">Loading dashboard...</p>
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl animate-pulse">
+                <Icon name="Loader2" size={36} className="animate-spin text-white" />
+              </div>
+              <p className="text-lg font-semibold text-gray-900 mb-2">Loading Dashboard</p>
+              <p className="text-sm text-gray-600">Fetching your latest data...</p>
             </div>
           </div>
         </div>
@@ -266,17 +269,28 @@ const AdminDashboard = () => {
 
   if (error && !dashboardData?.stats) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
         <AdminSidebar 
           isCollapsed={sidebarCollapsed} 
           onToggleCollapse={handleToggleSidebar} 
         />
         <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
-          <div className="flex items-center justify-center min-h-screen">
-            <div className="text-center">
-              <Icon name="AlertCircle" size={32} className="mx-auto text-red-500 mb-4" />
-              <p className="text-red-600 mb-4">{error}</p>
-              <Button onClick={handleRefresh}>Try Again</Button>
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <div className="text-center max-w-md">
+              <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <Icon name="AlertCircle" size={36} className="text-red-600" />
+              </div>
+              <p className="text-lg font-bold text-gray-900 mb-2">Failed to Load Dashboard</p>
+              <p className="text-sm text-gray-600 mb-6">{error}</p>
+              <button
+                onClick={handleRefresh}
+                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-glow-md hover:scale-105 transition-all duration-300"
+              >
+                <div className="flex items-center space-x-2">
+                  <Icon name="RefreshCw" size={18} />
+                  <span>Try Again</span>
+                </div>
+              </button>
             </div>
           </div>
         </div>
@@ -285,7 +299,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <AdminSidebar 
         isCollapsed={sidebarCollapsed} 
         onToggleCollapse={handleToggleSidebar} 
@@ -295,85 +309,126 @@ const AdminDashboard = () => {
         {/* Mobile spacing for header */}
         <div className="lg:hidden h-16"></div>
         
-        {/* Header */}
-        <div className="bg-card border-b border-border px-4 lg:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Admin Dashboard</h1>
-              <p className="text-muted-foreground">
-                Welcome back! Here's what's happening with your platform.
+        {/* Header - Enhanced Design */}
+        <div className="relative overflow-hidden bg-white border-b-2 border-gray-200 px-4 lg:px-6 py-6 lg:py-8">
+          {/* Background Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5"></div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-3xl"></div>
+          
+          <div className="relative flex items-center justify-between">
+            <div className="animate-fadeIn">
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Icon name="LayoutDashboard" size={20} className="text-white" />
+                </div>
+                <h1 className="text-3xl lg:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+                  Admin Dashboard
+                </h1>
+              </div>
+              <p className="text-gray-600 text-base lg:text-lg ml-13">
+                Welcome back! Here's what's happening with your{' '}
+                <span className="font-semibold text-gray-900">platform today</span>
               </p>
             </div>
             
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="outline"
-                size="sm"
+            <div className="flex items-center space-x-3 animate-slideUp">
+              <button
                 onClick={handleRefresh}
-                loading={refreshing}
-                iconName="RefreshCw"
-                iconPosition="left"
+                disabled={refreshing}
+                className="group px-4 py-2.5 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Refresh
-              </Button>
+                <div className="flex items-center space-x-2">
+                  <Icon 
+                    name="RefreshCw" 
+                    size={16} 
+                    className={`${refreshing ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-500`} 
+                  />
+                  <span className="hidden sm:inline">Refresh</span>
+                </div>
+              </button>
               
               {dashboardData?.stats?.pendingPayments > 0 && (
-                <Button
-                  variant="default"
-                  size="sm"
+                <button
                   onClick={() => navigate('/admin-users?tab=payments&filter=pending')}
-                  iconName="AlertCircle"
-                  iconPosition="left"
+                  className="group relative px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl shadow-lg hover:shadow-glow-md hover:scale-105 transition-all duration-300 overflow-hidden"
                 >
-                  {dashboardData?.stats?.pendingPayments} Pending
-                </Button>
+                  <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative flex items-center space-x-2">
+                    <Icon name="AlertCircle" size={16} className="animate-pulse" />
+                    <span>{dashboardData?.stats?.pendingPayments} Pending</span>
+                  </div>
+                </button>
               )}
             </div>
           </div>
         </div>
 
         {/* Dashboard Content */}
-        <div className="p-4 lg:p-6 space-y-6">
+        <div className="p-4 lg:p-6 space-y-8">
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-4 animate-slideDown">
               <div className="flex items-center">
-                <Icon name="AlertCircle" size={16} className="text-red-600 mr-2" />
-                <span className="text-red-600 text-sm">{error}</span>
+                <Icon name="AlertCircle" size={18} className="text-red-600 mr-2" />
+                <span className="text-red-700 font-medium text-sm">{error}</span>
               </div>
             </div>
           )}
 
-          {/* Metrics Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            {metricsData?.map((metric, index) => (
-              <MetricsCard
-                key={index}
-                title={metric?.title}
-                value={metric?.value}
-                icon={metric?.icon}
-                trend={metric?.trend}
-                trendDirection={metric?.trendDirection}
-                subtitle={metric?.subtitle}
-                color={metric?.color}
-                onClick={metric?.onClick}
-              />
-            ))}
+          {/* Metrics Grid - Using StatCard */}
+          <div>
+            <div className="flex items-center space-x-2 mb-6">
+              <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
+              <h2 className="text-xl font-bold text-gray-900">Key Metrics</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+              {metricsData?.map((metric, index) => (
+                <div 
+                  key={index}
+                  className="animate-slideUp"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <StatCard
+                    title={metric?.title}
+                    value={metric?.value}
+                    icon={metric?.icon}
+                    change={metric?.change}
+                    changeType={metric?.changeType}
+                    subtitle={metric?.subtitle}
+                    variant={metric?.variant}
+                    onClick={metric?.onClick}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Quick Actions - Updated to use working buttons */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-            {quickActions?.map((action, index) => (
-              <QuickActionCard
-                key={index}
-                title={action?.title}
-                description={action?.description}
-                icon={action?.icon}
-                buttonText={action?.buttonText}
-                buttonVariant={action?.buttonVariant}
-                badge={action?.badge}
-                onClick={action?.onClick}
-              />
-            ))}
+          {/* Quick Actions - Using ActionCard */}
+          <div>
+            <div className="flex items-center space-x-2 mb-6">
+              <div className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full"></div>
+              <h2 className="text-xl font-bold text-gray-900">Quick Actions</h2>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+              {quickActions?.map((action, index) => (
+                <div 
+                  key={index}
+                  className="animate-slideUp"
+                  style={{ animationDelay: `${index * 0.1 + 0.4}s` }}
+                >
+                  <ActionCard
+                    title={action?.title}
+                    description={action?.description}
+                    icon={action?.icon}
+                    accentColor={action?.accentColor}
+                    buttonText={action?.buttonText}
+                    badge={action?.badge}
+                    onClick={action?.onClick}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Main Dashboard Grid */}
@@ -390,50 +445,70 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Additional Admin Tools */}
-          <div className="bg-card border border-border rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-4">Administrative Tools</h3>
+          {/* Additional Admin Tools - Enhanced */}
+          <div className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-white rounded-2xl shadow-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-purple-50 rounded-2xl opacity-50"></div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <button 
-                onClick={() => navigate('/admin-users')}
-                className="flex flex-col items-center p-4 rounded-lg border border-border hover:bg-muted transition-colors duration-200"
-              >
-                <Icon name="Users" size={24} className="text-primary mb-2" />
-                <span className="text-sm font-medium text-foreground">User Management</span>
-                <span className="text-xs text-muted-foreground">
-                  {dashboardData?.stats?.totalUsers || 0} users
-                </span>
-              </button>
+            <div className="relative p-6 lg:p-8">
+              <div className="flex items-center space-x-2 mb-6">
+                <div className="w-1 h-6 bg-gradient-to-b from-cyan-500 to-blue-600 rounded-full"></div>
+                <h3 className="text-xl font-bold text-gray-900">Administrative Tools</h3>
+              </div>
               
-              <button 
-                onClick={() => navigate('/admin-courses')}
-                className="flex flex-col items-center p-4 rounded-lg border border-border hover:bg-muted transition-colors duration-200"
-              >
-                <Icon name="BookOpen" size={24} className="text-secondary mb-2" />
-                <span className="text-sm font-medium text-foreground">Course Library</span>
-                <span className="text-xs text-muted-foreground">
-                  {dashboardData?.stats?.publishedCourses || 0} published
-                </span>
-              </button>
-              
-              <button 
-                onClick={() => console.log('Analytics clicked')}
-                className="flex flex-col items-center p-4 rounded-lg border border-border hover:bg-muted transition-colors duration-200"
-              >
-                <Icon name="BarChart3" size={24} className="text-success mb-2" />
-                <span className="text-sm font-medium text-foreground">Analytics</span>
-                <span className="text-xs text-muted-foreground">View reports</span>
-              </button>
-              
-              <button 
-                onClick={() => console.log('Settings clicked')}
-                className="flex flex-col items-center p-4 rounded-lg border border-border hover:bg-muted transition-colors duration-200"
-              >
-                <Icon name="Settings" size={24} className="text-warning mb-2" />
-                <span className="text-sm font-medium text-foreground">Settings</span>
-                <span className="text-xs text-muted-foreground">Platform config</span>
-              </button>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button 
+                  onClick={() => navigate('/admin-users')}
+                  className="group flex flex-col items-center p-6 rounded-xl bg-white border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform mb-3">
+                    <Icon name="Users" size={26} className="text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-gray-900 mb-1">User Management</span>
+                  <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">
+                    {dashboardData?.stats?.totalUsers || 0} users
+                  </span>
+                </button>
+                
+                <button 
+                  onClick={() => navigate('/admin-courses')}
+                  className="group flex flex-col items-center p-6 rounded-xl bg-white border-2 border-gray-200 hover:border-purple-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform mb-3">
+                    <Icon name="BookOpen" size={26} className="text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-gray-900 mb-1">Course Library</span>
+                  <span className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-lg">
+                    {dashboardData?.stats?.publishedCourses || 0} published
+                  </span>
+                </button>
+                
+                <button 
+                  onClick={() => console.log('Analytics clicked')}
+                  className="group flex flex-col items-center p-6 rounded-xl bg-white border-2 border-gray-200 hover:border-emerald-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform mb-3">
+                    <Icon name="BarChart3" size={26} className="text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-gray-900 mb-1">Analytics</span>
+                  <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">
+                    View reports
+                  </span>
+                </button>
+                
+                <button 
+                  onClick={() => console.log('Settings clicked')}
+                  className="group flex flex-col items-center p-6 rounded-xl bg-white border-2 border-gray-200 hover:border-amber-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform mb-3">
+                    <Icon name="Settings" size={26} className="text-white" />
+                  </div>
+                  <span className="text-sm font-bold text-gray-900 mb-1">Settings</span>
+                  <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-lg">
+                    Platform config
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

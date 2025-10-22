@@ -48,13 +48,13 @@ const CourseHighlights = () => {
   const getLevelColor = (level) => {
     switch (level?.toLowerCase()) {
       case 'beginner':
-        return 'bg-success/20 text-success';
+        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
       case 'intermediate':
-        return 'bg-warning/20 text-warning';
+        return 'bg-amber-100 text-amber-700 border-amber-200';
       case 'advanced':
-        return 'bg-error/20 text-error';
+        return 'bg-red-100 text-red-700 border-red-200';
       default:
-        return 'bg-muted text-muted-foreground';
+        return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
 
@@ -64,11 +64,11 @@ const CourseHighlights = () => {
 
   if (loading) {
     return (
-      <section className="py-20 lg:py-24 bg-background">
+      <section className="py-24 lg:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
           <div className="text-center">
-            <Icon name="Loader2" size={32} className="animate-spin mx-auto text-primary" />
-            <p className="mt-4 text-muted-foreground">Loading courses...</p>
+            <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading amazing courses...</p>
           </div>
         </div>
       </section>
@@ -77,14 +77,17 @@ const CourseHighlights = () => {
 
   if (error) {
     return (
-      <section className="py-20 lg:py-24 bg-background">
+      <section className="py-24 lg:py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">
-          <div className="text-center">
-            <Icon name="AlertCircle" size={32} className="mx-auto text-red-500 mb-4" />
-            <p className="text-red-600 mb-4">{error}</p>
+          <div className="text-center bg-white rounded-2xl p-12 shadow-lg">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Icon name="AlertCircle" size={32} className="text-red-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Oops! Something went wrong</h3>
+            <p className="text-gray-600 mb-6">{error}</p>
             <button
               onClick={() => window.location?.reload()}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300"
             >
               Try Again
             </button>
@@ -95,35 +98,45 @@ const CourseHighlights = () => {
   }
 
   return (
-    <section className="py-20 lg:py-24 bg-background">
+    <section className="py-24 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
         {/* Course Highlights */}
-        <div className="mb-20">
+        <div className="mb-24">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Featured Courses
+            <div className="inline-block px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full mb-6">
+              <span className="text-sm font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Featured Courses
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
+              <span className="bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
+                Start Your AI Journey
+              </span>
             </h2>
-            <p className="text-lg text-muted-foreground">
-              Explore our comprehensive AI curriculum designed to take you from beginner to expert
+            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+              Explore our comprehensive AI curriculum designed to take you from{' '}
+              <span className="font-semibold text-gray-900">beginner to expert</span>
             </p>
           </div>
 
           {courses?.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {courses?.map((course) => (
+              {courses?.map((course, index) => (
                 <div 
                   key={course?.id}
-                  className="group bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg hover:border-primary/20 transition-all duration-300"
+                  className="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:shadow-card-hover hover:border-blue-400 hover:-translate-y-2 transition-all duration-300 animate-slideUp"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {/* Course Image */}
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100">
                     <Image 
                       src={course?.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=250&fit=crop'}
                       alt={course?.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     <div className="absolute top-4 left-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getLevelColor(course?.level)}`}>
+                      <span className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 backdrop-blur-sm ${getLevelColor(course?.level)}`}>
                         {formatLevel(course?.level)}
                       </span>
                     </div>
@@ -132,32 +145,44 @@ const CourseHighlights = () => {
                   {/* Course Content */}
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-xl font-semibold text-foreground">
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
                         {course?.title}
                       </h3>
-                      <div className="flex items-center space-x-1 text-muted-foreground text-sm">
-                        <Icon name="Clock" size={14} />
+                    </div>
+
+                    <div className="flex items-center space-x-3 text-sm text-gray-600 mb-4">
+                      <div className="flex items-center space-x-1">
+                        <Icon name="Clock" size={16} className="text-gray-400" />
                         <span>{formatDuration(course?.duration_weeks)}</span>
+                      </div>
+                      <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                      <div className="flex items-center space-x-1">
+                        <Icon name="Users" size={16} className="text-gray-400" />
+                        <span>{course?.enrollment_count || 0} enrolled</span>
                       </div>
                     </div>
 
-                    <p className="text-muted-foreground mb-4 leading-relaxed">
+                    <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                      {course?.description}
+                    </p>
+
+                    <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
                       {course?.description}
                     </p>
 
                     {/* Topics */}
                     {course?.topics?.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="flex flex-wrap gap-2 mb-5">
                         {course?.topics?.slice(0, 3)?.map?.((topic, index) => (
                           <span 
                             key={index}
-                            className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-md"
+                            className="px-2.5 py-1 bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 text-xs font-medium rounded-lg border border-blue-200"
                           >
                             {topic}
                           </span>
                         ))}
                         {course?.topics?.length > 3 && (
-                          <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded-md">
+                          <span className="px-2.5 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-lg border border-gray-200">
                             +{course?.topics?.length - 3} more
                           </span>
                         )}
@@ -165,18 +190,25 @@ const CourseHighlights = () => {
                     )}
 
                     {/* Course Stats */}
-                    <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                    <div className="flex items-center justify-between pt-4 border-t-2 border-gray-100">
+                      {course?.rating > 0 && (
                         <div className="flex items-center space-x-1">
-                          <Icon name="Users" size={14} />
-                          <span>{course?.enrollment_count || 0} enrolled</span>
+                          {[...Array(5)].map((_, i) => (
+                            <Icon
+                              key={i}
+                              name="Star"
+                              size={14}
+                              className={i < Math.round(course?.rating) ? 'text-amber-400 fill-current' : 'text-gray-300'}
+                            />
+                          ))}
+                          <span className="text-sm font-semibold text-gray-700 ml-1">
+                            {course?.rating?.toFixed?.(1)}
+                          </span>
                         </div>
-                        {course?.rating > 0 && (
-                          <div className="flex items-center space-x-1">
-                            <Icon name="Star" size={14} className="text-warning" />
-                            <span>{course?.rating?.toFixed?.(1) || '0.0'}</span>
-                          </div>
-                        )}
+                      )}
+                      <div className="flex items-center space-x-1 text-blue-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
+                        <span>View Course</span>
+                        <Icon name="ArrowRight" size={16} />
                       </div>
                     </div>
                   </div>
@@ -184,73 +216,99 @@ const CourseHighlights = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <Icon name="BookOpen" size={48} className="mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No Featured Courses Yet</h3>
-              <p className="text-muted-foreground">Check back soon for our latest AI courses!</p>
+            <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Icon name="BookOpen" size={40} className="text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No Featured Courses Yet</h3>
+              <p className="text-gray-600">Check back soon for our latest AI courses!</p>
             </div>
           )}
         </div>
 
-        {/* Testimonials */}
-        <div className="bg-muted/30 rounded-2xl p-8 lg:p-12">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              What Our Members Say
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Join hundreds of satisfied learners who have transformed their careers with AI
-            </p>
-          </div>
+        {/* Testimonials - Enhanced Design */}
+        <div className="relative">
+          {/* Background Decoration */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-100 via-blue-50 to-pink-100 rounded-3xl"></div>
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-sm rounded-3xl"></div>
+          
+          <div className="relative p-8 lg:p-16">
+            <div className="text-center mb-16">
+              <div className="inline-block px-4 py-2 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-full mb-6">
+                <span className="text-sm font-semibold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
+                  Success Stories
+                </span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
+                <span className="bg-gradient-to-r from-gray-900 via-orange-900 to-pink-900 bg-clip-text text-transparent">
+                  What Our Members Say
+                </span>
+              </h2>
+              <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Join hundreds of satisfied learners who have{' '}
+                <span className="font-semibold text-gray-900">transformed their careers</span> with AI
+              </p>
+            </div>
 
-          {testimonials?.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {testimonials?.slice(0, 4)?.map?.((testimonial) => (
-                <div 
-                  key={testimonial?.id}
-                  className="bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow duration-300"
-                >
-                  {/* Rating */}
-                  <div className="flex items-center space-x-1 mb-4">
-                    {[...Array(testimonial?.rating || 5)]?.map?.((_, index) => (
-                      <Icon key={index} name="Star" size={16} className="text-warning fill-current" />
-                    ))}
-                  </div>
-
-                  {/* Content */}
-                  <p className="text-muted-foreground mb-6 leading-relaxed">
-                    "{testimonial?.content}"
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-semibold text-lg">
-                        {testimonial?.user?.full_name?.charAt?.(0)?.toUpperCase() || 'U'}
-                      </span>
+            {testimonials?.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {testimonials?.slice(0, 4)?.map?.((testimonial, index) => (
+                  <div 
+                    key={testimonial?.id}
+                    className="group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:shadow-card-hover hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 animate-slideUp"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    {/* Quote Icon */}
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                      </svg>
                     </div>
-                    <div>
-                      <div className="font-medium text-foreground">
-                        {testimonial?.user?.full_name || 'Anonymous User'}
+
+                    {/* Rating */}
+                    <div className="flex items-center space-x-1 mb-5">
+                      {[...Array(testimonial?.rating || 5)]?.map?.((_, i) => (
+                        <Icon key={i} name="Star" size={18} className="text-amber-400 fill-current" />
+                      ))}
+                    </div>
+
+                    {/* Content */}
+                    <p className="text-gray-700 mb-6 leading-relaxed text-lg">
+                      "{testimonial?.content}"
+                    </p>
+
+                    {/* Author */}
+                    <div className="flex items-center space-x-4 pt-6 border-t-2 border-gray-100">
+                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                        <span className="text-white font-bold text-xl">
+                          {testimonial?.user?.full_name?.charAt?.(0)?.toUpperCase() || 'U'}
+                        </span>
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        {testimonial?.user?.bio && testimonial?.user?.location
-                          ? `${testimonial?.user?.bio?.split(' ')?.slice(0, 2)?.join(' ')} • ${testimonial?.user?.location}`
-                          : testimonial?.user?.location || 'Community Member'
-                        }
+                      <div>
+                        <div className="font-bold text-gray-900 text-lg">
+                          {testimonial?.user?.full_name || 'Anonymous User'}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          {testimonial?.user?.bio && testimonial?.user?.location
+                            ? `${testimonial?.user?.bio?.split(' ')?.slice(0, 2)?.join(' ')} • ${testimonial?.user?.location}`
+                            : testimonial?.user?.location || 'Community Member'
+                          }
+                        </div>
                       </div>
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Icon name="MessageCircle" size={40} className="text-purple-600" />
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12">
-              <Icon name="MessageCircle" size={48} className="mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No Testimonials Yet</h3>
-              <p className="text-muted-foreground">Be the first to share your experience!</p>
-            </div>
-          )}
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No Testimonials Yet</h3>
+                <p className="text-gray-600">Be the first to share your experience!</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </section>

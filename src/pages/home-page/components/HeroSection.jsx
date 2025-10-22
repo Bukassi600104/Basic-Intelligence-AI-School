@@ -5,96 +5,108 @@ import Button from '../../../components/ui/Button';
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-br from-primary/5 via-background to-secondary/5 py-20 lg:py-32 overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-primary rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-40 h-40 bg-secondary rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-accent rounded-full blur-3xl"></div>
+    <section className="relative bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-24 lg:py-32 overflow-hidden">
+      {/* Animated Background Gradients */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-400/30 to-pink-400/30 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-cyan-300/20 to-blue-300/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+      </div>
+
+      {/* Floating Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-20 h-20 border-4 border-blue-400/20 rounded-2xl rotate-12 animate-float"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 border-4 border-purple-400/20 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute bottom-32 left-1/4 w-12 h-12 border-4 border-pink-400/20 rounded-lg -rotate-6 animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-20 right-1/3 w-14 h-14 border-4 border-cyan-400/20 rounded-full animate-float" style={{ animationDelay: '1.5s' }}></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 lg:px-6">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center space-x-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-primary text-sm font-medium mb-8">
-            <Icon name="Sparkles" size={16} />
+          {/* Animated Badge */}
+          <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-sm font-semibold mb-8 shadow-lg animate-scaleIn hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <Icon name="Sparkles" size={18} className="animate-pulse" />
             <span>AI Education Platform</span>
+            <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
           </div>
 
-          {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Learn AI. Get Real Results.
+          {/* Main Heading with Gradient Text */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight animate-fadeIn">
+            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Learn AI.
+            </span>
+            <br />
+            <span className="text-gray-900">
+              Get Real Results.
+            </span>
           </h1>
 
-          {/* Subheading */}
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-            Welcome to Basic Intelligence, the simplest way to learn how AI can grow your business or career. We'll show you exactly how to use it to create new things, open up revenue streams, and innovate in your field.
-            <span className="block mt-4 font-medium">
-              No jargon, just practical skills for the real world.
-            </span>
+          {/* Subheading with enhanced styling */}
+          <p className="text-lg md:text-xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed animate-slideUp" style={{ animationDelay: '0.2s' }}>
+            Welcome to{' '}
+            <span className="font-bold text-gray-900">Basic Intelligence</span>, the simplest way to learn how AI can grow your business or career. We'll show you exactly how to use it to create new things, open up revenue streams, and innovate in your field.
+          </p>
+          <p className="text-base md:text-lg font-semibold text-gray-800 mb-10 animate-slideUp" style={{ animationDelay: '0.3s' }}>
+            No jargon, just practical skills for the real world.
           </p>
 
-          {/* Key Benefits */}
-          <div className="flex flex-wrap justify-center items-center gap-6 mb-10 text-sm text-muted-foreground">
-            <div className="flex items-center space-x-2">
-              <Icon name="CheckCircle" size={16} className="text-success" />
-              <span>Practical AI Projects</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Icon name="CheckCircle" size={16} className="text-success" />
-              <span>Expert Instructors</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Icon name="CheckCircle" size={16} className="text-success" />
-              <span>Community Support</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Icon name="CheckCircle" size={16} className="text-success" />
-              <span>Prompt Library</span>
-            </div>
+          {/* Key Benefits with Icons */}
+          <div className="flex flex-wrap justify-center items-center gap-6 mb-12 animate-slideUp" style={{ animationDelay: '0.4s' }}>
+            {[
+              { icon: 'CheckCircle', text: 'Practical AI Projects', color: 'text-emerald-600' },
+              { icon: 'Users', text: 'Expert Instructors', color: 'text-blue-600' },
+              { icon: 'MessageCircle', text: 'Community Support', color: 'text-purple-600' },
+              { icon: 'Zap', text: 'Prompt Library', color: 'text-amber-600' },
+            ].map((benefit, index) => (
+              <div
+                key={index}
+                className="flex items-center space-x-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300"
+              >
+                <Icon name={benefit.icon} size={18} className={benefit.color} />
+                <span className="text-sm font-medium text-gray-700">{benefit.text}</span>
+              </div>
+            ))}
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <Link to="/join-membership-page">
-              <Button 
-                variant="default" 
-                size="lg" 
-                iconName="ArrowRight" 
-                iconPosition="right"
-                className="w-full sm:w-auto"
-              >
-                Join Now
-              </Button>
+          {/* CTA Buttons with Glow Effect */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-14 animate-slideUp" style={{ animationDelay: '0.5s' }}>
+            <Link to="/join-membership-page" className="w-full sm:w-auto">
+              <button className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/50 hover:scale-105 transition-all duration-300 overflow-hidden">
+                <span className="relative z-10 flex items-center justify-center space-x-2">
+                  <span>Join Now</span>
+                  <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
             </Link>
             
-            <Link to="/about-page">
-              <Button 
-                variant="outline" 
-                size="lg" 
-                iconName="Info" 
-                iconPosition="left"
-                className="w-full sm:w-auto"
-              >
-                Learn More
-              </Button>
+            <Link to="/about-page" className="w-full sm:w-auto">
+              <button className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-sm text-gray-900 font-semibold rounded-xl border-2 border-gray-300 hover:border-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-300">
+                <span className="flex items-center justify-center space-x-2">
+                  <Icon name="Info" size={18} />
+                  <span>Learn More</span>
+                </span>
+              </button>
             </Link>
           </div>
 
-          {/* Trust Indicators */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-muted-foreground">
-            <div className="flex items-center space-x-2">
-              <Icon name="Users" size={16} />
-              <span>500+ Active Members</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Icon name="Star" size={16} className="text-warning" />
-              <span>4.9/5 Member Rating</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Icon name="Video" size={16} />
-              <span>Practical Livestream Lessons</span>
-            </div>
+          {/* Trust Indicators with Enhanced Design */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 animate-slideUp" style={{ animationDelay: '0.6s' }}>
+            {[
+              { icon: 'Users', text: '500+ Active Members', color: 'from-blue-500 to-cyan-500' },
+              { icon: 'Star', text: '4.9/5 Rating', color: 'from-amber-500 to-orange-500' },
+              { icon: 'Video', text: 'Live Lessons', color: 'from-purple-500 to-pink-500' },
+            ].map((indicator, index) => (
+              <div
+                key={index}
+                className="flex items-center space-x-3 px-5 py-3 bg-white/90 backdrop-blur-sm rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+              >
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${indicator.color} flex items-center justify-center shadow-md`}>
+                  <Icon name={indicator.icon} size={20} className="text-white" />
+                </div>
+                <span className="text-sm font-semibold text-gray-800">{indicator.text}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
