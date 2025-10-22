@@ -85,7 +85,23 @@ const SignInPage = () => {
 
       // Use the redirectAfterLogin helper to handle role-based redirection
       console.log('Using redirectAfterLogin helper');
-      redirectAfterLogin(navigate, user.id);
+      
+      // Add more error handling and debugging
+      try {
+        redirectAfterLogin(navigate, user.id);
+      } catch (error) {
+        console.error('Error in redirectAfterLogin:', error);
+        
+        // Fallback redirect based on user email pattern if redirect fails
+        if (user.email && (user.email.includes('admin') || user.email === 'bukassi@gmail.com')) {
+          console.log('Fallback: Redirecting to admin dashboard based on email');
+          navigate('/admin-dashboard');
+        } else {
+          console.log('Fallback: Redirecting to student dashboard');
+          navigate('/student-dashboard');
+        }
+      }
+      
       return () => {};
     }
   }, [user, userProfile, isAdmin, isMember, navigate]);

@@ -46,8 +46,21 @@ async function createAdmin() {
   try {
     console.log('Creating admin account...');
     
-    // Check if user already exists
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    // Check if user already exists - with better error handling
+    const { data: existingUsers, error: listError } = await supabase.auth.admin.listUsers();
+    
+    if (listError) {
+      console.error('Error listing users:', listError.message);
+      console.error('This may indicate an issue with your service role key or Supabase configuration');
+      process.exit(1);
+    }
+    
+    if (!existingUsers || !existingUsers.users) {
+      console.error('No users data returned from listUsers(). Check your Supabase configuration.');
+      process.exit(1);
+    }
+    
+    console.log(`Found ${existingUsers.users.length} existing users in the system`);
     const userExists = existingUsers.users.some(user => user.email === email);
     
     if (userExists) {
@@ -56,6 +69,7 @@ async function createAdmin() {
       
       // Find user by email
       const user = existingUsers.users.find(user => user.email === email);
+      console.log('Found user with ID:', user.id);
       
       // Update user metadata to include admin role
       const { data: updatedUser, error: updateError } = await supabase.auth.admin.updateUserById(
@@ -67,19 +81,58 @@ async function createAdmin() {
       
       console.log('✅ User metadata updated successfully.');
       
-      // Update user_profiles table
-      const { error: profileError } = await supabase
+      // First check if profile exists
+      const { data: existingProfile, error: checkProfileError } = await supabase
         .from('user_profiles')
-        .update({ 
-          role: 'admin',
-          is_active: true,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
+        .select('*')
+        .eq('id', user.id)
+        .single();
+        
+      if (checkProfileError && checkProfileError.code !== 'PGRST116') {  // Not found error is okay
+        console.error('Error checking for existing profile:', checkProfileError);
+      }
       
-      if (profileError) throw profileError;
-      
-      console.log('✅ User profile updated to admin role.');
+      if (existingProfile) {
+        console.log('Found existing profile, updating to admin role');
+        // Update user_profiles table
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .update({ 
+            role: 'admin',
+            is_active: true,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', user.id);
+        
+        if (profileError) {
+          console.error('Error updating profile:', profileError);
+          throw profileError;
+        }
+        
+        console.log('✅ User profile updated to admin role.');
+      } else {
+        console.log('Profile not found, creating new admin profile');
+        // Insert new profile
+        const { error: insertProfileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            id: user.id,
+            email: email,
+            full_name: 'Admin User',
+            role: 'admin',
+            is_active: true,
+            membership_status: 'active',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+          
+        if (insertProfileError) {
+          console.error('Error creating profile:', insertProfileError);
+          throw insertProfileError;
+        }
+        
+        console.log('✅ Admin profile created successfully');
+      }
       
       // Reset password if requested
       const resetPassword = true; // Set to false if you don't want to reset password

@@ -22,11 +22,19 @@ export async function redirectAfterLogin(navigate, userId) {
       return;
     }
 
+    // Log the profile data for debugging
+    console.log('Profile data for redirect:', profile);
+    
     // Redirect based on role
     if (profile?.role === 'admin') {
+      console.log('Redirecting to admin dashboard');
       navigate('/admin-dashboard');
+    } else if (profile?.role === 'student') {
+      console.log('Redirecting to student dashboard');
+      navigate('/student-dashboard');
     } else {
-      navigate('/student-dashboard'); // Student dashboard route
+      console.log('No specific role found, defaulting to dashboard');
+      navigate('/dashboard'); // Default dashboard route
     }
   } catch (err) {
     console.error('Error during redirect:', err);
