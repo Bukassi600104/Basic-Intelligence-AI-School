@@ -17,7 +17,7 @@ const SignInPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const { signIn, user, userProfile, isAdmin, isMember } = useAuth();
+  const { signIn, user, userProfile, isAdmin, isMember, profileLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -33,13 +33,25 @@ const SignInPage = () => {
 
   // Redirect if already logged in or after successful sign in
   useEffect(() => {
-    if (user && userProfile) {
-      console.log('User logged in, redirecting based on role:', {
+    // Log state for debugging
+    console.log('SignIn useEffect:', { 
+      hasUser: !!user, 
+      hasProfile: !!userProfile, 
+      role: userProfile?.role,
+      isAdmin,
+      profileLoading 
+    });
+    
+    if (user && userProfile && !profileLoading) {
+      console.log('🔄 Redirecting user based on role:', {
         email: user.email,
         role: userProfile.role,
         isAdmin,
         isMember
       });
+      
+      // Stop loading spinner
+      setLoading(false);
       
       // Direct redirection based on user role from profile
       if (userProfile.role === 'admin') {
@@ -50,11 +62,11 @@ const SignInPage = () => {
         navigate('/student-dashboard', { replace: true });
       } else {
         // Fallback for unknown roles
-        console.log('⚠️ Unknown role, redirecting to student dashboard');
+        console.log('⚠️ Unknown role:', userProfile.role, '- redirecting to student dashboard');
         navigate('/student-dashboard', { replace: true });
       }
     }
-  }, [user, userProfile, isAdmin, isMember, navigate]);
+  }, [user, userProfile, profileLoading, isAdmin, isMember, navigate]);
 
   const validateForm = () => {
     if (!formData?.email?.trim()) {
@@ -128,7 +140,7 @@ const SignInPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <PublicHeader />
       
-      <div className="max-w-md w-full space-y-8 animate-fadeIn">
+      <div className="max-w-md w-full space-y-8 animate-fadeIn mt-20">
         {/* Compact Card Container */}
         <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transform transition-all duration-300 hover:shadow-3xl">
           {/* Compact Header */}
