@@ -94,15 +94,16 @@ const SignInPage = () => {
 
       if (signInError) {
         setError(signInError);
+        setLoading(false);
         return;
       }
 
-      // Sign in successful - user will be redirected by useEffect
-      // The useEffect above will handle role-based redirection
+      // Sign in successful - keep loading true until redirect happens
+      // The useEffect will handle the redirect based on user role
+      console.log('Sign in successful, waiting for profile to load and redirect...');
       
     } catch (error) {
       setError('Sign in failed. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
@@ -124,165 +125,161 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <PublicHeader />
       
-      <main className="pt-20 pb-16">
-        <div className="max-w-3xl mx-auto px-4 lg:px-8">
-          {/* Enhanced Card Container - Much Wider */}
-          <div className="bg-card border border-border rounded-2xl p-10 lg:p-12 shadow-xl backdrop-blur-sm bg-white/95">
-            {/* Enhanced Header */}
-            <div className="text-center mb-12">
-              <div className="flex justify-center mb-6">
-                <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <Icon name="LogIn" size={36} className="text-primary" />
-                </div>
+      <div className="max-w-md w-full space-y-8 animate-fadeIn">
+        {/* Compact Card Container */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transform transition-all duration-300 hover:shadow-3xl">
+          {/* Compact Header */}
+          <div className="text-center mb-6">
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-110">
+                <Icon name="LogIn" size={28} className="text-white" />
               </div>
-              <h1 className="text-4xl font-bold text-foreground mb-4">
-                Welcome Back
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Sign in to access your AI learning dashboard and continue your journey
-              </p>
             </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              Welcome Back
+            </h1>
+            <p className="text-sm text-gray-600">
+              Sign in to continue your learning journey
+            </p>
+          </div>
 
-            {/* Enhanced Success Message */}
-            {successMessage && (
-              <div className="mb-10 p-5 bg-green-50 border border-green-200 rounded-xl">
-                <div className="flex items-center space-x-4">
-                  <Icon name="CheckCircle" size={24} className="text-green-600 flex-shrink-0" />
-                  <span className="text-green-600 text-base font-medium">{successMessage}</span>
-                </div>
+          {/* Success Message */}
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg animate-slideDown">
+              <div className="flex items-center space-x-2">
+                <Icon name="CheckCircle" size={18} className="text-green-600 flex-shrink-0" />
+                <span className="text-green-700 text-sm">{successMessage}</span>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Enhanced Error Message */}
-            {error && (
-              <div className="mb-10 p-5 bg-red-50 border border-red-200 rounded-xl">
-                <div className="flex items-center space-x-4">
-                  <Icon name="AlertCircle" size={24} className="text-red-600 flex-shrink-0" />
-                  <span className="text-red-600 text-base font-medium">{error}</span>
-                </div>
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
+              <div className="flex items-center space-x-2">
+                <Icon name="AlertCircle" size={18} className="text-red-600 flex-shrink-0" />
+                <span className="text-red-700 text-sm">{error}</span>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Enhanced Sign In Form */}
-            <form onSubmit={handleSubmit} className="space-y-10">
-              <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+          {/* Compact Sign In Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-4">
+              <Input
+                label="Email Address"
+                name="email"
+                type="email"
+                required
+                value={formData?.email}
+                onChange={handleInputChange}
+                placeholder="youremail@gmail.com"
+                disabled={loading}
+                className="h-11 text-sm"
+              />
+
+              <div className="relative">
                 <Input
-                  label="Email Address"
-                  name="email"
-                  type="email"
+                  label="Password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
                   required
-                  value={formData?.email}
+                  value={formData?.password}
                   onChange={handleInputChange}
-                  placeholder="youremail@gmail.com"
+                  placeholder="Enter your password"
                   disabled={loading}
-                  className="text-lg h-14"
+                  className="h-11 text-sm pr-12"
                 />
-
-                <div className="relative">
-                  <Input
-                    label="Password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={formData?.password}
-                    onChange={handleInputChange}
-                    placeholder="Enter your password"
-                    disabled={loading}
-                    className="text-lg h-14 pr-14"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-11 text-muted-foreground hover:text-foreground transition-colors p-2 rounded-md hover:bg-muted/50"
-                    title={showPassword ? "Hide password" : "Show password"}
-                  >
-                    <Icon name={showPassword ? "EyeOff" : "Eye"} size={24} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <label htmlFor="remember-me" className="text-base text-muted-foreground">
-                    Remember me
-                  </label>
-                </div>
-
                 <button
                   type="button"
-                  onClick={handleForgotPassword}
-                  className="text-base text-primary hover:text-primary/80 font-medium hover:underline transition-colors"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
+                  title={showPassword ? "Hide password" : "Show password"}
                 >
-                  Forgot password?
+                  <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
                 </button>
               </div>
-
-              {/* Enhanced Submit Button */}
-              <Button
-                type="submit"
-                fullWidth
-                loading={loading}
-                disabled={loading}
-                size="lg"
-                className="h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                {loading ? (
-                  <div className="flex items-center space-x-3">
-                    <Icon name="Loader" size={24} className="animate-spin" />
-                    <span>Signing In...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-3">
-                    <Icon name="LogIn" size={24} />
-                    <span>Sign In</span>
-                  </div>
-                )}
-              </Button>
-            </form>
-
-
-            {/* Enhanced WhatsApp Contact */}
-            <div className="mt-10 p-6 bg-green-50 border border-green-200 rounded-xl">
-              <div className="flex items-center justify-center space-x-4">
-                <Icon name="MessageCircle" size={24} className="text-green-600 flex-shrink-0" />
-                <span className="text-base text-green-700 font-medium">
-                  Need help? Contact us on WhatsApp:{' '}
-                  <a 
-                    href="https://wa.me/2349062284074" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="hover:underline text-green-800"
-                  >
-                    +2349062284074
-                  </a>
-                </span>
-              </div>
             </div>
 
-            {/* Enhanced Sign Up Link */}
-            <div className="mt-10 pt-8 border-t border-border text-center">
-              <p className="text-lg text-muted-foreground">
-                Don't have an account?{' '}
-                <Link 
-                  to="/signup" 
-                  className="text-primary hover:text-primary/80 font-semibold hover:underline transition-colors"
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="remember-me" className="ml-2 text-gray-600">
+                  Remember me
+                </label>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            {/* Compact Submit Button */}
+            <Button
+              type="submit"
+              fullWidth
+              loading={loading}
+              disabled={loading}
+              className="h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <Icon name="Loader" size={18} className="animate-spin" />
+                  <span>Signing In...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center space-x-2">
+                  <Icon name="LogIn" size={18} />
+                  <span>Sign In</span>
+                </div>
+              )}
+            </Button>
+          </form>
+
+          {/* WhatsApp Contact - Compact */}
+          <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center justify-center space-x-2 text-sm">
+              <Icon name="MessageCircle" size={16} className="text-green-600" />
+              <span className="text-green-700">
+                Need help?{' '}
+                <a 
+                  href="https://wa.me/2349062284074" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="font-medium hover:underline"
                 >
-                  Sign Up Here
-                </Link>
-              </p>
+                  WhatsApp Us
+                </a>
+              </span>
             </div>
           </div>
+
+          {/* Sign Up Link - Compact */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <Link 
+                to="/signup" 
+                className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors"
+              >
+                Sign Up Here
+              </Link>
+            </p>
+          </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
