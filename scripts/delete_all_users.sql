@@ -13,20 +13,11 @@ DELETE FROM public.automated_notifications;
 -- Delete notification logs
 DELETE FROM public.notification_logs;
 
--- Delete email logs (if exists)
-DELETE FROM public.email_logs WHERE true;
-
 -- Delete memberships
 DELETE FROM public.memberships;
 
 -- Delete member reviews
 DELETE FROM public.member_reviews;
-
--- Delete course enrollments (if exists)
-DELETE FROM public.course_enrollments WHERE true;
-
--- Delete user progress (if exists)
-DELETE FROM public.user_progress WHERE true;
 
 -- Step 2: Delete all user profiles
 DELETE FROM public.user_profiles;
