@@ -108,18 +108,18 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
 
   return (
     <>
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border h-16 flex items-center justify-between px-4">
+      {/* Mobile Header - Enhanced */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b-2 border-gray-200 h-16 flex items-center justify-between px-4 shadow-md">
           <Link to="/admin-dashboard" className="flex items-center space-x-3">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">BI</span>
+              <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-extrabold text-sm">BI</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-lg font-semibold text-foreground leading-tight">
+                <span className="text-lg font-extrabold text-gray-900 leading-tight">
                   Admin Panel
                 </span>
-                <span className="text-xs text-muted-foreground leading-tight">
+                <span className="text-xs text-gray-600 font-medium leading-tight">
                   Basic Intelligence
                 </span>
               </div>
@@ -128,83 +128,96 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
         
         <button
           onClick={toggleMobileMenu}
-          className="p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors duration-200"
+          className="p-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all duration-200"
           aria-label="Toggle admin menu"
         >
           <Icon name={isMobileMenuOpen ? 'X' : 'Menu'} size={24} />
         </button>
       </div>
       
-      {/* Desktop Sidebar - Optimized spacing for logout icon visibility */}
-      <aside className={`hidden lg:flex lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex-col bg-card border-r border-border transition-all duration-300 ${
+      {/* Desktop Sidebar - Enhanced with Gradients */}
+      <aside className={`hidden lg:flex lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex-col bg-white border-r-2 border-gray-200 transition-all duration-300 shadow-xl ${
         isCollapsed ? 'lg:w-16' : 'lg:w-64'
       }`}>
-        {/* Sidebar Header */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-border">
-          {!isCollapsed && (
-            <Link to="/admin-dashboard" className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">BI</span>
+        {/* Sidebar Header - Enhanced with Gradient */}
+        <div className="relative overflow-hidden h-16 border-b-2 border-gray-200">
+          {/* Gradient Background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+          
+          <div className="relative flex items-center justify-between h-full px-4">
+            {!isCollapsed && (
+              <Link to="/admin-dashboard" className="flex items-center space-x-2 group">
+                <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg border border-white/30 group-hover:scale-110 transition-transform">
+                  <span className="text-white font-extrabold text-sm">BI</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-foreground leading-tight">
+                  <span className="text-sm font-extrabold text-white leading-tight">
                     Admin Panel
                   </span>
-                  <span className="text-xs text-muted-foreground leading-tight">
+                  <span className="text-xs text-white/80 font-medium leading-tight">
                     Basic Intelligence
                   </span>
                 </div>
-              </div>
-            </Link>
-          )}
-          
-          {isCollapsed && (
-            <Link to="/admin-dashboard" className="flex items-center justify-center mx-auto">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">BI</span>
-              </div>
-            </Link>
-          )}
+              </Link>
+            )}
+            
+            {isCollapsed && (
+              <Link to="/admin-dashboard" className="flex items-center justify-center mx-auto group">
+                <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg border border-white/30 group-hover:scale-110 transition-transform">
+                  <span className="text-white font-extrabold text-sm">BI</span>
+                </div>
+              </Link>
+            )}
 
-          {onToggleCollapse && (
-            <button
-              onClick={onToggleCollapse}
-              className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors duration-200"
-              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              <Icon name={isCollapsed ? 'ChevronRight' : 'ChevronLeft'} size={16} />
-            </button>
-          )}
+            {onToggleCollapse && (
+              <button
+                onClick={onToggleCollapse}
+                className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/20 transition-all duration-200"
+                aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                <Icon name={isCollapsed ? 'ChevronRight' : 'ChevronLeft'} size={16} />
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Navigation - Reduced spacing */}
-        <nav className="flex-1 px-3 py-3 space-y-1">
+        {/* Navigation - Enhanced with Gradients and Glow */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navigationItems?.map((item) => (
             <Link
               key={item?.path}
               to={item?.path}
-              className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 group ${
+              className={`group flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                 isActivePath(item?.path)
-                  ? 'text-primary bg-primary/10 border-r-2 border-primary' :'text-muted-foreground hover:text-foreground hover:bg-muted'
+                  ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg shadow-blue-500/50 scale-[1.02]' 
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:scale-[1.01]'
               }`}
               title={isCollapsed ? item?.name : ''}
             >
-              <Icon name={item?.icon} size={18} className="flex-shrink-0" />
+              <div className={`flex-shrink-0 ${isActivePath(item?.path) ? 'animate-pulse' : ''}`}>
+                <Icon name={item?.icon} size={20} />
+              </div>
               {!isCollapsed && (
                 <div className="ml-3 flex-1">
-                  <div className="text-sm font-medium">{item?.name}</div>
-                  <div className="text-xs text-muted-foreground">{item?.description}</div>
+                  <div className="text-sm font-bold">{item?.name}</div>
+                  <div className={`text-xs ${isActivePath(item?.path) ? 'text-white/80' : 'text-gray-500'}`}>
+                    {item?.description}
+                  </div>
                 </div>
+              )}
+              {isActivePath(item?.path) && !isCollapsed && (
+                <div className="w-1.5 h-8 bg-white rounded-full shadow-lg"></div>
               )}
             </Link>
           ))}
         </nav>
 
-        {/* Quick Actions - Reduced spacing and padding */}
+        {/* Quick Actions - Enhanced */}
         {!isCollapsed && (
-          <div className="px-3 py-3 border-t border-border">
-            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+          <div className="px-3 py-4 border-t-2 border-gray-200">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+              <div className="w-1 h-3 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full mr-2"></div>
               Quick Actions
             </div>
             <div className="space-y-1">
@@ -212,9 +225,9 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
                 <button
                   key={action?.action}
                   onClick={() => handleQuickAction(action?.action)}
-                  className="w-full flex items-center px-3 py-1.5 rounded-md text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors duration-200"
+                  className="group w-full flex items-center px-3 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-cyan-50 transition-all duration-200 hover:scale-[1.02]"
                 >
-                  <Icon name={action?.icon} size={16} className="mr-3" />
+                  <Icon name={action?.icon} size={18} className="mr-3 group-hover:scale-110 transition-transform" />
                   {action?.label}
                 </button>
               ))}
@@ -222,95 +235,105 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
           </div>
         )}
 
-        {/* User Profile & Logout - Compact design to ensure logout is visible */}
-        <div className="px-3 py-3 border-t border-border">
+        {/* User Profile & Logout - Enhanced */}
+        <div className="px-3 py-4 border-t-2 border-gray-200 bg-gradient-to-br from-gray-50 to-blue-50">
           {!isCollapsed && (
-            <div className="flex items-center px-3 py-1.5 mb-2">
-              <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-                <Icon name="User" size={16} color="white" />
+            <div className="flex items-center px-3 py-2 mb-3 bg-white rounded-xl shadow-sm border border-gray-200">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Icon name="User" size={18} color="white" />
               </div>
               <div className="ml-3 flex-1">
-                <div className="text-sm font-medium text-foreground">Admin User</div>
-                <div className="text-xs text-muted-foreground">admin@basicintelligence.com</div>
+                <div className="text-sm font-bold text-gray-900">Admin User</div>
+                <div className="text-xs text-gray-600">admin@basicintelligence.com</div>
               </div>
             </div>
           )}
           
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={handleLogout}
-            className={`w-full ${isCollapsed ? 'px-2' : 'justify-start'}`}
+            className={`group w-full flex items-center ${isCollapsed ? 'justify-center px-2' : 'px-3'} py-2.5 rounded-xl text-sm font-bold text-red-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-600 hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 hover:scale-[1.02]`}
             title={isCollapsed ? 'Logout' : ''}
           >
-            <Icon name="LogOut" size={16} className={isCollapsed ? '' : 'mr-3'} />
+            <Icon name="LogOut" size={18} className={`${isCollapsed ? '' : 'mr-3'} group-hover:scale-110 transition-transform`} />
             {!isCollapsed && 'Logout'}
-          </Button>
+          </button>
         </div>
       </aside>
       
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation - Enhanced */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 bg-black/50" onClick={toggleMobileMenu}>
-          <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border max-h-[80vh] overflow-y-auto">
-            <div className="p-4">
-              {/* Mobile Navigation Items */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                {navigationItems?.map((item) => (
+        <div className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={toggleMobileMenu}>
+          <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl border-t-2 border-gray-200 max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div className="p-6">
+              {/* Handle Bar */}
+              <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-6"></div>
+              
+              {/* Mobile Navigation Items - Enhanced */}
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {navigationItems?.map((item, index) => (
                   <Link
                     key={item?.path}
                     to={item?.path}
                     onClick={toggleMobileMenu}
-                    className={`flex flex-col items-center p-4 rounded-lg text-center transition-colors duration-200 ${
+                    className={`group flex flex-col items-center p-5 rounded-2xl text-center transition-all duration-300 ${
                       isActivePath(item?.path)
-                        ? 'text-primary bg-primary/10' :'text-muted-foreground hover:text-foreground hover:bg-muted'
+                        ? 'text-white bg-gradient-to-br from-blue-600 to-purple-600 shadow-lg shadow-blue-500/50 scale-[1.02]' 
+                        : 'text-gray-700 bg-gradient-to-br from-gray-50 to-blue-50 hover:from-blue-50 hover:to-purple-50 hover:scale-[1.02] border-2 border-gray-200'
                     }`}
+                    style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    <Icon name={item?.icon} size={24} className="mb-2" />
-                    <span className="text-sm font-medium">{item?.name}</span>
-                    <span className="text-xs text-muted-foreground">{item?.description}</span>
+                    <div className={`w-12 h-12 ${isActivePath(item?.path) ? 'bg-white/20' : 'bg-white'} rounded-2xl flex items-center justify-center mb-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                      <Icon name={item?.icon} size={24} className={isActivePath(item?.path) ? 'text-white' : 'text-blue-600'} />
+                    </div>
+                    <span className="text-sm font-bold mb-1">{item?.name}</span>
+                    <span className={`text-xs ${isActivePath(item?.path) ? 'text-white/80' : 'text-gray-600'}`}>
+                      {item?.description}
+                    </span>
                   </Link>
                 ))}
               </div>
 
-              {/* Mobile Quick Actions */}
+              {/* Mobile Quick Actions - Enhanced */}
               <div className="mb-6">
-                <div className="text-sm font-medium text-foreground mb-3">Quick Actions</div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="flex items-center mb-4">
+                  <div className="w-1 h-5 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full mr-2"></div>
+                  <span className="text-sm font-bold text-gray-900">Quick Actions</span>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
                   {quickActions?.map((action) => (
                     <button
                       key={action?.action}
                       onClick={() => handleQuickAction(action?.action)}
-                      className="flex flex-col items-center p-3 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors duration-200"
+                      className="group flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-cyan-50 border-2 border-emerald-200 hover:from-emerald-100 hover:to-cyan-100 hover:scale-105 transition-all duration-300"
                     >
-                      <Icon name={action?.icon} size={20} className="mb-1" />
-                      <span className="text-xs">{action?.label}</span>
+                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 transition-transform">
+                        <Icon name={action?.icon} size={20} className="text-white" />
+                      </div>
+                      <span className="text-xs font-bold text-gray-900">{action?.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Mobile User Profile */}
-              <div className="border-t border-border pt-4">
-                <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                    <Icon name="User" size={20} color="white" />
+              {/* Mobile User Profile - Enhanced */}
+              <div className="border-t-2 border-gray-200 pt-6">
+                <div className="flex items-center mb-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl border-2 border-blue-200">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                    <Icon name="User" size={24} color="white" />
                   </div>
                   <div className="ml-3">
-                    <div className="text-sm font-medium text-foreground">Admin User</div>
-                    <div className="text-xs text-muted-foreground">admin@basicintelligence.com</div>
+                    <div className="text-sm font-bold text-gray-900">Admin User</div>
+                    <div className="text-xs text-gray-600">admin@basicintelligence.com</div>
                   </div>
                 </div>
                 
-                <Button
-                  variant="outline"
-                  fullWidth
+                <button
                   onClick={handleLogout}
-                  className="justify-start"
+                  className="group w-full flex items-center justify-center px-6 py-4 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 shadow-lg hover:shadow-glow-md hover:scale-105 transition-all duration-300"
                 >
-                  <Icon name="LogOut" size={16} className="mr-3" />
+                  <Icon name="LogOut" size={20} className="mr-3 group-hover:scale-110 transition-transform" />
                   Logout
-                </Button>
+                </button>
               </div>
             </div>
           </div>
