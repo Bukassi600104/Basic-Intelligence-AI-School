@@ -150,7 +150,7 @@ BEGIN
             'elite',
             'active',
             NOW(),
-            NULL,
+            NOW() + INTERVAL '1 year', -- Set end date 1 year from now
             NOW(),
             NOW()
         );
