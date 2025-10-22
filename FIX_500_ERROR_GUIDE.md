@@ -73,22 +73,14 @@ Now that the database is fixed, create your admin account:
 
 ### Step 4: Set Admin Role
 
-1. Copy the user ID from the created user
-2. Go to **SQL Editor**
-3. Run this query (replace `USER_ID_HERE` with actual user ID):
+1. Go to **SQL Editor** in Supabase
+2. Open the file: `scripts/set_admin_role.sql`
+3. Copy all contents and paste into SQL Editor
+4. Click **Run**
+
+Or manually run this query:
 
 ```sql
--- Set admin role for bukassi@gmail.com
-UPDATE public.user_profiles
-SET 
-  role = 'admin'::public.user_role,
-  membership_status = 'active'::public.membership_status,
-  is_active = true,
-  full_name = 'Administrator',
-  updated_at = NOW()
-WHERE id = 'USER_ID_HERE';
-
--- Or use email if you don't have the ID handy
 UPDATE public.user_profiles
 SET 
   role = 'admin'::public.user_role,
@@ -97,8 +89,11 @@ SET
   full_name = 'Administrator',
   updated_at = NOW()
 WHERE email = 'bukassi@gmail.com';
+```
 
--- Verify
+Then verify with:
+
+```sql
 SELECT id, email, role, membership_status, is_active
 FROM public.user_profiles
 WHERE email = 'bukassi@gmail.com';

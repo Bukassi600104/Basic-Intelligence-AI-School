@@ -48,20 +48,10 @@ This causes Postgres to return **500 Internal Server Error**.
 ### Step 3: Set Admin Role
 
 1. In Supabase Dashboard → **SQL Editor**
-2. Run this query:
-
-```sql
-UPDATE public.user_profiles
-SET 
-  role = 'admin'::public.user_role,
-  membership_status = 'active'::public.membership_status,
-  is_active = true,
-  full_name = 'Administrator'
-WHERE email = 'bukassi@gmail.com';
-
--- Verify it worked
-SELECT email, role, membership_status FROM public.user_profiles WHERE email = 'bukassi@gmail.com';
-```
+2. Open the file: `scripts/set_admin_role.sql`
+3. **Copy all content** and paste into SQL Editor
+4. Click **RUN** button
+5. You should see 1 row updated and verification showing role='admin'
 
 ## Test It
 
