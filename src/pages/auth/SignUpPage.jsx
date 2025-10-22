@@ -21,7 +21,7 @@ const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { signUp, user } = useAuth();
+  const { signUp, user, userProfile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -36,10 +36,15 @@ const SignUpPage = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
-      navigate('/');
+    if (user && userProfile) {
+      // Redirect based on role
+      if (userProfile.role === 'admin') {
+        navigate('/admin-dashboard');
+      } else {
+        navigate('/student-dashboard');
+      }
     }
-  }, [user, navigate]);
+  }, [user, userProfile, navigate]);
 
   const validateForm = () => {
     if (!formData?.fullName?.trim()) {
@@ -217,7 +222,7 @@ const SignUpPage = () => {
                   required
                   value={formData?.email}
                   onChange={handleInputChange}
-                  placeholder={process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL || 'your.email@example.com'}
+                  placeholder="youremail@gmail.com"
                   disabled={loading}
                   className="text-lg h-14"
                 />

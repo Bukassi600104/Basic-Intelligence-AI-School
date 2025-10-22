@@ -26,8 +26,7 @@ import StudentPrompts from './pages/student-dashboard/prompts';
 import StudentSubscription from './pages/student-dashboard/subscription';
 import StudentSettings from './pages/student-dashboard/settings';
 import CoursesPage from './pages/courses';
-import TestPage from './pages/test-page';
-import TestAuthState from './pages/test-auth-state';
+
 
 const Routes = () => {
   return (
@@ -47,8 +46,6 @@ const Routes = () => {
         <Route path="/admin-notifications" element={<AdminNotifications />} />
         <Route path="/admin-notification-wizard" element={<AdminNotificationWizard />} />
         <Route path="/admin-reviews" element={<AdminReviews />} />
-        <Route path="/test-reviews" element={<TestPage />} />
-        <Route path="/test-auth-state" element={<TestAuthState />} />
         <Route path="/join-membership-page" element={<JoinMembershipPage />} />
         <Route path="/about-page" element={<AboutPage />} />
         <Route path="/home-page" element={<HomePage />} />

@@ -33,76 +33,26 @@ const SignInPage = () => {
 
   // Redirect if already logged in or after successful sign in
   useEffect(() => {
-    console.log('SignInPage useEffect triggered:', { 
-      user: !!user, 
-      userProfile: !!userProfile, 
-      isAdmin, 
-      isMember 
-    });
-    
-    if (user) {
-      // Show loading state while determining user role
-      setLoading(true);
+    if (user && userProfile) {
+      console.log('User logged in, redirecting based on role:', {
+        email: user.email,
+        role: userProfile.role,
+        isAdmin,
+        isMember
+      });
       
-      // Wait for user profile to load before making redirection decisions
-      const redirectUser = () => {
-        console.log('redirectUser called:', { 
-          userProfile: !!userProfile, 
-          isAdmin, 
-          isMember,
-          userEmail: user?.email 
-        });
-        
-        // If user profile is still loading, wait a bit more
-        if (!userProfile) {
-          console.log('User profile not loaded yet, retrying in 500ms');
-          const retryTimer = setTimeout(redirectUser, 500);
-          return () => clearTimeout(retryTimer);
-        }
-        
-        // Now we have user profile, make proper redirection decision
-        if (isAdmin) {
-          console.log('Redirecting to admin dashboard - user is admin');
-          navigate('/admin-dashboard', { replace: true });
-        } else if (isMember) {
-          console.log('Redirecting to student dashboard - user is member');
-          navigate('/student-dashboard', { replace: true });
-        } else if (userProfile) {
-          // If we have user profile but not membership, redirect to membership page
-          console.log('Redirecting to membership page - user needs membership');
-          navigate('/join-membership-page', { replace: true });
-        } else {
-          // Fallback: Redirect to appropriate dashboard based on best guess
-          const isLikelyAdmin = user?.email?.includes('admin') || user?.email?.includes('@basicintelligence');
-          console.log('Using fallback redirection - likely admin:', isLikelyAdmin);
-          if (isLikelyAdmin) {
-            navigate('/admin-dashboard', { replace: true });
-          } else {
-            navigate('/student-dashboard', { replace: true });
-          }
-        }
-      };
-
-      // Use the redirectAfterLogin helper to handle role-based redirection
-      console.log('Using redirectAfterLogin helper');
-      
-      // Add more error handling and debugging
-      try {
-        redirectAfterLogin(navigate, user.id);
-      } catch (error) {
-        console.error('Error in redirectAfterLogin:', error);
-        
-        // Fallback redirect based on user email pattern if redirect fails
-        if (user.email && (user.email.includes('admin') || user.email === 'bukassi@gmail.com')) {
-          console.log('Fallback: Redirecting to admin dashboard based on email');
-          navigate('/admin-dashboard');
-        } else {
-          console.log('Fallback: Redirecting to student dashboard');
-          navigate('/student-dashboard');
-        }
+      // Direct redirection based on user role from profile
+      if (userProfile.role === 'admin') {
+        console.log('✅ Admin detected - redirecting to /admin-dashboard');
+        navigate('/admin-dashboard', { replace: true });
+      } else if (userProfile.role === 'student') {
+        console.log('✅ Student detected - redirecting to /student-dashboard');
+        navigate('/student-dashboard', { replace: true });
+      } else {
+        // Fallback for unknown roles
+        console.log('⚠️ Unknown role, redirecting to student dashboard');
+        navigate('/student-dashboard', { replace: true });
       }
-      
-      return () => {};
     }
   }, [user, userProfile, isAdmin, isMember, navigate]);
 
@@ -226,7 +176,7 @@ const SignInPage = () => {
                   required
                   value={formData?.email}
                   onChange={handleInputChange}
-                  placeholder={process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL || 'your.email@example.com'}
+                  placeholder="youremail@gmail.com"
                   disabled={loading}
                   className="text-lg h-14"
                 />
