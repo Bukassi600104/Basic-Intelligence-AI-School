@@ -52,6 +52,12 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
       icon: 'Settings',
       path: '/admin-settings',
       description: 'System configuration'
+    },
+    {
+      name: 'Password Settings',
+      icon: 'Lock',
+      path: '/admin-dashboard/settings',
+      description: 'Change password'
     }
   ];
 

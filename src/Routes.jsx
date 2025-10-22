@@ -9,6 +9,7 @@ import JoinMembershipPage from './pages/join-membership-page';
 import AdminCourses from './pages/admin-courses';
 import AdminContentPage from './pages/admin-content';
 import AdminSettings from './pages/admin-settings';
+import AdminSettingsNew from './pages/admin-dashboard/Settings';
 import AdminAnalytics from './pages/admin-analytics';
 import AdminNotifications from './pages/admin-notifications';
 import AdminNotificationWizard from './pages/admin-notification-wizard';
@@ -41,6 +42,7 @@ const Routes = () => {
         <Route path="/admin-courses" element={<AdminCourses />} />
         <Route path="/admin-content" element={<AdminContentPage />} />
         <Route path="/admin-settings" element={<AdminSettings />} />
+        <Route path="/admin-dashboard/settings" element={<AdminSettingsNew />} />
         <Route path="/admin-analytics" element={<AdminAnalytics />} />
         <Route path="/admin-notifications" element={<AdminNotifications />} />
         <Route path="/admin-notification-wizard" element={<AdminNotificationWizard />} />

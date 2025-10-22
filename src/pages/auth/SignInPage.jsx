@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { redirectAfterLogin } from '../../services/authHelpers';
 import PublicHeader from '../../components/ui/PublicHeader';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -82,10 +83,10 @@ const SignInPage = () => {
         }
       };
 
-      // Use a timeout to ensure user profile has time to load
-      console.log('Setting redirect timer for 1000ms');
-      const timer = setTimeout(redirectUser, 1000);
-      return () => clearTimeout(timer);
+      // Use the redirectAfterLogin helper to handle role-based redirection
+      console.log('Using redirectAfterLogin helper');
+      redirectAfterLogin(navigate, user.id);
+      return () => {};
     }
   }, [user, userProfile, isAdmin, isMember, navigate]);
 
