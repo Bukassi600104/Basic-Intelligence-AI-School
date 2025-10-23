@@ -55,31 +55,7 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
     }
   ];
 
-  const quickActions = [
-    { label: 'Add User', icon: 'UserPlus', action: 'add-user' },
-    { label: 'New Course', icon: 'Plus', action: 'add-course' },
-    { label: 'Reports', icon: 'FileText', action: 'reports' },
-  ];
-
   const isActivePath = (path) => location?.pathname === path;
-
-  const handleQuickAction = (action) => {
-    try {
-      switch (action) {
-        case 'add-user': navigate('/admin-users?action=create');
-          break;
-        case 'add-course': navigate('/admin-courses?action=create');
-          break;
-        case 'reports': navigate('/admin/reports');
-          break;
-        default:
-          console.log(`Unknown quick action: ${action}`);
-      }
-    } catch (error) {
-      console.error('Quick action failed:', error);
-    }
-    setIsMobileMenuOpen(false);
-  };
 
   const handleLogout = async () => {
     try {
@@ -207,28 +183,6 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
           ))}
         </nav>
 
-        {/* Quick Actions - Enhanced */}
-        {!isCollapsed && (
-          <div className="px-3 py-4 border-t-2 border-gray-200">
-            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
-              <div className="w-1 h-3 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full mr-2"></div>
-              Quick Actions
-            </div>
-            <div className="space-y-1">
-              {quickActions?.map((action) => (
-                <button
-                  key={action?.action}
-                  onClick={() => handleQuickAction(action?.action)}
-                  className="group w-full flex items-center px-3 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-cyan-50 transition-all duration-200 hover:scale-[1.02]"
-                >
-                  <Icon name={action?.icon} size={18} className="mr-3 group-hover:scale-110 transition-transform" />
-                  {action?.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* User Profile & Logout - Enhanced */}
         <div className="px-3 py-4 border-t-2 border-gray-200 bg-gradient-to-br from-gray-50 to-blue-50">
           {!isCollapsed && (
@@ -285,28 +239,6 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
                     </span>
                   </Link>
                 ))}
-              </div>
-
-              {/* Mobile Quick Actions - Enhanced */}
-              <div className="mb-6">
-                <div className="flex items-center mb-4">
-                  <div className="w-1 h-5 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full mr-2"></div>
-                  <span className="text-sm font-bold text-gray-900">Quick Actions</span>
-                </div>
-                <div className="grid grid-cols-3 gap-3">
-                  {quickActions?.map((action) => (
-                    <button
-                      key={action?.action}
-                      onClick={() => handleQuickAction(action?.action)}
-                      className="group flex flex-col items-center p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-cyan-50 border-2 border-emerald-200 hover:from-emerald-100 hover:to-cyan-100 hover:scale-105 transition-all duration-300"
-                    >
-                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl flex items-center justify-center mb-2 shadow-lg group-hover:scale-110 transition-transform">
-                        <Icon name={action?.icon} size={20} className="text-white" />
-                      </div>
-                      <span className="text-xs font-bold text-gray-900">{action?.label}</span>
-                    </button>
-                  ))}
-                </div>
               </div>
 
               {/* Mobile User Profile - Enhanced */}
