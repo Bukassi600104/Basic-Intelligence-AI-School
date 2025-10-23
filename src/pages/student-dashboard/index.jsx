@@ -181,14 +181,14 @@ const StudentDashboard = () => {
       />
       <div className="flex-1 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
-          {/* Welcome Section - Ultra Modern Redesign */}
+          {/* Welcome Section - Orange Theme */}
           <div className="relative overflow-hidden rounded-3xl mb-8 animate-fadeIn shadow-2xl">
-            {/* Animated Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient"></div>
+            {/* Animated Background Gradient - Orange Theme */}
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 animate-gradient"></div>
             
-            {/* Enhanced Decorative Elements */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-400/30 to-rose-400/30 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            {/* Enhanced Decorative Elements - Orange Theme */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-400/30 to-orange-500/30 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-orange-500/30 to-orange-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
             
             {/* Floating Icons */}
@@ -215,7 +215,7 @@ const StudentDashboard = () => {
                     <h1 className="text-4xl lg:text-5xl font-black text-white mb-3 leading-tight">
                       Welcome back,
                       <br />
-                      <span className="bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent">
+                      <span className="bg-gradient-to-r from-yellow-200 via-orange-100 to-white bg-clip-text text-transparent">
                         {userProfile?.full_name || 'Student'}!
                       </span>
                     </h1>
@@ -251,12 +251,12 @@ const StudentDashboard = () => {
                     </div>
                     
                     {userProfile?.membership_status === 'active' && daysRemaining !== null && (
-                      <div className="group flex items-center space-x-3 bg-orange-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-orange-300/40 hover:bg-orange-500/50 hover:border-orange-300/60 transition-all shadow-lg">
-                        <div className="w-10 h-10 bg-orange-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <div className="group flex items-center space-x-3 bg-yellow-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-yellow-300/40 hover:bg-yellow-500/50 hover:border-yellow-300/60 transition-all shadow-lg">
+                        <div className="w-10 h-10 bg-yellow-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                           <Icon name="Clock" size={20} className="text-white" />
                         </div>
                         <div>
-                          <div className="text-xs text-orange-100 font-medium">Days Remaining</div>
+                          <div className="text-xs text-yellow-100 font-medium">Days Remaining</div>
                           <div className="text-sm font-bold text-white">
                             {daysRemaining} {daysRemaining === 1 ? 'Day' : 'Days'}
                           </div>
@@ -279,10 +279,10 @@ const StudentDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Access Cards - Enhanced with FeatureCard */}
+          {/* Quick Access Cards - Orange Theme */}
           <div className="mb-8">
             <div className="flex items-center space-x-2 mb-6">
-              <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
+              <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full"></div>
               <h2 className="text-xl font-bold text-gray-900">Quick Access</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -292,7 +292,7 @@ const StudentDashboard = () => {
               >
                 <FeatureCard
                   variant="default"
-                  colorScheme="red"
+                  colorScheme="orange"
                   title="PDF Library"
                   description="Access comprehensive guides, tutorials, and resources"
                   icon="FileText"
@@ -306,7 +306,7 @@ const StudentDashboard = () => {
               >
                 <FeatureCard
                   variant="default"
-                  colorScheme="blue"
+                  colorScheme="orange"
                   title="Video Library"
                   description="Watch instructional videos and tutorials"
                   icon="Video"
@@ -320,7 +320,7 @@ const StudentDashboard = () => {
               >
                 <FeatureCard
                   variant="default"
-                  colorScheme="green"
+                  colorScheme="orange"
                   title="Prompt Library"
                   description="Explore and use AI prompts for various use cases"
                   icon="MessageSquare"
@@ -334,7 +334,7 @@ const StudentDashboard = () => {
               >
                 <FeatureCard
                   variant="default"
-                  colorScheme="purple"
+                  colorScheme="orange"
                   title="Subscription"
                   description="Manage your membership and billing details"
                   icon="CreditCard"
@@ -343,11 +343,11 @@ const StudentDashboard = () => {
             </div>
           </div>
 
-          {/* Referral Sharing Section - Enhanced */}
+          {/* Referral Sharing Section - Orange Theme */}
           {userProfile?.membership_status === 'active' && (
             <div className="relative overflow-hidden rounded-3xl mb-8 animate-slideUp" style={{ animationDelay: '0.4s' }}>
-              {/* Background Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-600"></div>
+              {/* Background Gradient - Orange Theme */}
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500"></div>
               
               {/* Decorative Elements */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
@@ -390,15 +390,14 @@ const StudentDashboard = () => {
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                      <button
+                      <Button
                         onClick={() => setShowReferralModal(true)}
-                        className="group px-6 py-3 bg-white text-emerald-600 font-bold rounded-xl shadow-2xl hover:shadow-glow-lg hover:scale-105 transition-all duration-300 overflow-hidden"
+                        variant="orange-outline"
+                        className="shadow-2xl hover:shadow-glow-lg hover:scale-105 transition-all duration-300"
                       >
-                        <div className="flex items-center space-x-2">
-                          <Icon name="Share2" size={18} className="group-hover:rotate-12 transition-transform" />
-                          <span>Share Referral Link</span>
-                        </div>
-                      </button>
+                        <Icon name="Share2" size={18} className="mr-2" />
+                        Share Referral Link
+                      </Button>
                       <button
                         onClick={async () => {
                           if (referralInfo?.referral_code) {
@@ -430,15 +429,15 @@ const StudentDashboard = () => {
             </div>
           )}
 
-          {/* Recent Content Section - Enhanced */}
+          {/* Recent Content Section - Orange Theme */}
           <div className="relative overflow-hidden rounded-2xl animate-slideUp" style={{ animationDelay: '0.5s' }}>
             <div className="absolute inset-0 bg-white shadow-xl"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-purple-50 opacity-50"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-transparent to-orange-50 opacity-50"></div>
             
             <div className="relative p-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-2">
-                  <div className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full"></div>
+                  <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full"></div>
                   <h2 className="text-2xl font-bold text-gray-900">Recently Added Content</h2>
                 </div>
                 <button
@@ -454,8 +453,8 @@ const StudentDashboard = () => {
 
               {recentContent.length === 0 ? (
                 <div className="text-center py-16">
-                  <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Icon name="FileText" size={40} className="text-purple-600" />
+                  <div className="w-20 h-20 bg-gradient-to-br from-orange-100 to-orange-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Icon name="FileText" size={40} className="text-orange-600" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">No Recent Content</h3>
                   <p className="text-gray-600">
@@ -467,7 +466,7 @@ const StudentDashboard = () => {
                   {recentContent.map((content) => (
                     <div 
                       key={content.id}
-                      className="group bg-white border-2 border-gray-200 rounded-xl p-6 hover:shadow-card-hover hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                      className="group bg-white border-2 border-gray-200 rounded-xl p-6 hover:shadow-card-hover hover:border-orange-400 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
                       onClick={() => {
                         if (content.type === 'pdf') {
                           navigate('/student-dashboard/pdfs');
@@ -480,9 +479,9 @@ const StudentDashboard = () => {
                     >
                       <div className="flex items-center space-x-3 mb-4">
                         <div className={`w-14 h-14 bg-gradient-to-br ${
-                          content.type === 'pdf' ? 'from-red-500 to-pink-600' :
-                          content.type === 'video' ? 'from-blue-500 to-cyan-600' :
-                          content.type === 'prompt' ? 'from-emerald-500 to-green-600' :
+                          content.type === 'pdf' ? 'from-orange-500 to-orange-600' :
+                          content.type === 'video' ? 'from-orange-500 to-orange-600' :
+                          content.type === 'prompt' ? 'from-orange-500 to-orange-600' :
                           'from-gray-500 to-gray-600'
                         } rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
                           <Icon name={getContentIcon(content.type)} size={26} className="text-white" />
@@ -496,7 +495,7 @@ const StudentDashboard = () => {
                           </div>
                         </div>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
                         {content.title}
                       </h3>
                       <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
