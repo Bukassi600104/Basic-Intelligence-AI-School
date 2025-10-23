@@ -31,6 +31,14 @@ const AdminSettings = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  
+  // Password change state
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   // Load settings on component mount
   useEffect(() => {
@@ -134,10 +142,60 @@ const AdminSettings = () => {
     }));
   };
 
+  // Password validation
+  const isPasswordValid = () => {
+    return (
+      passwordData.currentPassword &&
+      passwordData.newPassword &&
+      passwordData.confirmPassword &&
+      passwordData.newPassword === passwordData.confirmPassword &&
+      passwordData.newPassword.length >= 8 &&
+      /[A-Z]/.test(passwordData.newPassword) &&
+      /[0-9]/.test(passwordData.newPassword)
+    );
+  };
+
+  // Handle password change
+  const handlePasswordChange = async () => {
+    if (!isPasswordValid()) {
+      setError('Please ensure all password requirements are met');
+      return;
+    }
+
+    setPasswordLoading(true);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const { supabase } = await import('../../lib/supabase');
+      
+      // Update password using Supabase Auth
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: passwordData.newPassword
+      });
+
+      if (updateError) throw updateError;
+
+      setSuccessMessage('Password updated successfully!');
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+      
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      setError('Failed to update password: ' + err?.message);
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   const tabs = [
     { id: 'general', name: 'General', icon: 'Settings' },
     { id: 'membership', name: 'Membership Plans', icon: 'CreditCard' },
     { id: 'notifications', name: 'Notifications', icon: 'Bell' },
+    { id: 'password', name: 'Password Settings', icon: 'Lock' },
     { id: 'security', name: 'Security', icon: 'Shield' },
     { id: 'system', name: 'System', icon: 'Monitor' }
   ];
@@ -268,6 +326,109 @@ const AdminSettings = () => {
                 </button>
               </div>
             ))}
+          </div>
+        );
+        
+      case 'password':
+        return (
+          <div className="space-y-6">
+            <div className="text-sm text-muted-foreground mb-4">
+              Change your admin account password
+            </div>
+            
+            <div className="border border-border rounded-lg p-6">
+              <div className="space-y-5">
+                <div>
+                  <label className="flex items-center space-x-2 text-sm font-medium text-foreground mb-2">
+                    <Icon name="Lock" size={16} className="text-muted-foreground" />
+                    <span>Current Password</span>
+                  </label>
+                  <Input
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                    placeholder="Enter your current password"
+                    className="border-2"
+                  />
+                </div>
+                
+                <div>
+                  <label className="flex items-center space-x-2 text-sm font-medium text-foreground mb-2">
+                    <Icon name="Key" size={16} className="text-muted-foreground" />
+                    <span>New Password</span>
+                  </label>
+                  <Input
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    placeholder="Enter new password"
+                    className="border-2"
+                  />
+                  {passwordData.newPassword && (
+                    <div className="mt-2 space-y-1">
+                      <div className={`flex items-center space-x-2 text-xs ${passwordData.newPassword.length >= 8 ? 'text-green-500' : 'text-muted-foreground'}`}>
+                        <Icon name={passwordData.newPassword.length >= 8 ? 'CheckCircle' : 'Circle'} size={12} />
+                        <span>At least 8 characters</span>
+                      </div>
+                      <div className={`flex items-center space-x-2 text-xs ${/[A-Z]/.test(passwordData.newPassword) ? 'text-green-500' : 'text-muted-foreground'}`}>
+                        <Icon name={/[A-Z]/.test(passwordData.newPassword) ? 'CheckCircle' : 'Circle'} size={12} />
+                        <span>At least one uppercase letter</span>
+                      </div>
+                      <div className={`flex items-center space-x-2 text-xs ${/[0-9]/.test(passwordData.newPassword) ? 'text-green-500' : 'text-muted-foreground'}`}>
+                        <Icon name={/[0-9]/.test(passwordData.newPassword) ? 'CheckCircle' : 'Circle'} size={12} />
+                        <span>At least one number</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="flex items-center space-x-2 text-sm font-medium text-foreground mb-2">
+                    <Icon name="ShieldCheck" size={16} className="text-muted-foreground" />
+                    <span>Confirm New Password</span>
+                  </label>
+                  <Input
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                    placeholder="Confirm new password"
+                    className="border-2"
+                  />
+                  {passwordData.confirmPassword && passwordData.newPassword !== passwordData.confirmPassword && (
+                    <p className="mt-2 text-xs text-red-500 flex items-center space-x-1">
+                      <Icon name="AlertCircle" size={12} />
+                      <span>Passwords do not match</span>
+                    </p>
+                  )}
+                  {passwordData.confirmPassword && passwordData.newPassword === passwordData.confirmPassword && (
+                    <p className="mt-2 text-xs text-green-500 flex items-center space-x-1">
+                      <Icon name="CheckCircle" size={12} />
+                      <span>Passwords match</span>
+                    </p>
+                  )}
+                </div>
+                
+                <div className="pt-4">
+                  <button
+                    onClick={handlePasswordChange}
+                    disabled={passwordLoading || !isPasswordValid()}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-lg font-medium hover:from-indigo-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                  >
+                    {passwordLoading ? (
+                      <>
+                        <Icon name="Loader" size={20} className="animate-spin" />
+                        <span>Updating Password...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Lock" size={20} />
+                        <span>Update Password</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         );
         
