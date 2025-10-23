@@ -54,10 +54,8 @@ const AdminNotificationWizard = () => {
 
   // Load users and templates
   useEffect(() => {
-    if (!error) {
-      loadData();
-    }
-  }, [error]);
+    loadData();
+  }, []);
 
   const loadData = async () => {
     setLoading(true);
@@ -68,15 +66,25 @@ const AdminNotificationWizard = () => {
         notificationService.getTemplates()
       ]);
 
-      if (usersResult.data) {
+      if (usersResult?.error) {
+        console.error('Error loading users:', usersResult.error);
+        setError('Failed to load users: ' + usersResult.error);
+      } else if (usersResult?.data) {
         setUsers(usersResult.data);
+      } else {
+        setUsers([]);
       }
 
-      if (templatesResult.data) {
+      if (templatesResult?.error) {
+        console.error('Error loading templates:', templatesResult.error);
+      } else if (templatesResult?.data) {
         setTemplates(templatesResult.data);
+      } else {
+        setTemplates([]);
       }
     } catch (error) {
       console.error('Failed to load data:', error);
+      setError('Failed to load data: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -103,7 +111,7 @@ const AdminNotificationWizard = () => {
   };
 
   const handleSelectAll = (isSelected) => {
-    if (isSelected) {
+    if (isSelected && users && users.length > 0) {
       setSelectedUsers(users.map(user => user.id));
     } else {
       setSelectedUsers([]);
@@ -239,30 +247,37 @@ const AdminNotificationWizard = () => {
 
                 {/* Users List */}
                 <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {users.map(user => (
-                    <div key={user.id} className="flex items-center p-3 hover:bg-muted/50 rounded-lg transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={selectedUsers.includes(user.id)}
-                        onChange={(e) => handleUserSelection(user.id, e.target.checked)}
-                        className="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2"
-                      />
-                      <div className="ml-3 flex-1 min-w-0">
-                        <div className="text-sm font-medium text-foreground truncate">
-                          {user.full_name}
-                        </div>
-                        <div className="text-xs text-muted-foreground truncate">
-                          {user.email}
-                        </div>
-                        {user.whatsapp_phone && (
-                          <div className="text-xs text-green-600 flex items-center mt-1">
-                            <Icon name="Phone" size={12} className="mr-1" />
-                            WhatsApp: {user.whatsapp_phone}
+                  {users && users.length > 0 ? (
+                    users.map(user => (
+                      <div key={user.id} className="flex items-center p-3 hover:bg-muted/50 rounded-lg transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={selectedUsers.includes(user.id)}
+                          onChange={(e) => handleUserSelection(user.id, e.target.checked)}
+                          className="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2"
+                        />
+                        <div className="ml-3 flex-1 min-w-0">
+                          <div className="text-sm font-medium text-foreground truncate">
+                            {user?.full_name || user?.email || 'Unknown User'}
                           </div>
-                        )}
+                          <div className="text-xs text-muted-foreground truncate">
+                            {user?.email || 'No email'}
+                          </div>
+                          {user?.whatsapp_phone && (
+                            <div className="text-xs text-green-600 flex items-center mt-1">
+                              <Icon name="Phone" size={12} className="mr-1" />
+                              WhatsApp: {user.whatsapp_phone}
+                            </div>
+                          )}
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Icon name="Users" size={48} className="mx-auto mb-2 opacity-50" />
+                      <p>No users found</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
