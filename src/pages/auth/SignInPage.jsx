@@ -139,9 +139,9 @@ const SignInPage = () => {
   return (
     <div className="flex min-h-screen">
       {/* Left Panel - Geometric Pattern Background */}
-      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white">
+      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white relative">
         {/* Logo at top */}
-        <div className="absolute top-8 left-8">
+        <div className="absolute top-8 left-8 z-20">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
               <Icon name="GraduationCap" size={24} className="text-white" />
@@ -150,26 +150,26 @@ const SignInPage = () => {
           </div>
         </div>
         
-        {/* Central content */}
-        <div className="max-w-md text-center">
+        {/* Central content - with proper spacing */}
+        <div className="max-w-md text-center z-10 px-6">
           <div className="inline-block mb-6">
             <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium">
-              Welcome to Basic Intelligence AI School
+              Welcome Back
             </span>
           </div>
           
-          <h1 className="text-5xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
             Master AI & Unlock Your Potential
           </h1>
           
-          <p className="text-xl text-gray-300 leading-relaxed">
+          <p className="text-lg lg:text-xl text-gray-300 leading-relaxed">
             Join thousands of students learning cutting-edge AI skills, prompt engineering, 
-            and machine learning techniques with our comprehensive courses.
+            and machine learning techniques.
           </p>
         </div>
         
         {/* Pagination dots at bottom */}
-        <div className="absolute bottom-8 flex gap-2">
+        <div className="absolute bottom-8 flex gap-2 z-20">
           <div className="w-2 h-2 rounded-full bg-orange-500"></div>
           <div className="w-2 h-2 rounded-full bg-gray-600"></div>
           <div className="w-2 h-2 rounded-full bg-gray-600"></div>
