@@ -87,83 +87,88 @@ const PricingPlansPage = () => {
       ? calculateAnnualPrice(plan?.monthlyPrice)
       : plan?.monthlyPrice;
 
+    const gradientColors = 
+      plan?.id === 'starter' ? 'from-amber-500 to-orange-600' :
+      plan?.id === 'pro' ? 'from-emerald-500 to-green-600' :
+      'from-blue-500 to-purple-600';
+
     return (
       <div 
-        className={`relative bg-white rounded-xl p-8 transition-all duration-300 hover:shadow-xl border-2 ${
+        className={`relative bg-white rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 border-2 ${
           plan?.popular 
-            ? 'border-primary shadow-lg scale-105' 
+            ? 'border-emerald-400 shadow-xl scale-105 ring-4 ring-emerald-100' 
             : isSelected 
-              ? 'border-primary shadow-lg' 
-              : 'border-gray-200 hover:border-gray-300'
+              ? 'border-blue-400 shadow-xl' 
+              : 'border-gray-200 hover:border-blue-300'
         }`}
-        style={{ borderRadius: plan?.borderRadius }}
       >
         {plan?.popular && (
-          <div 
-            className="absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-1 text-sm font-medium text-white rounded-full"
-            style={{ backgroundColor: plan?.accentColor }}
-          >
-            Most Popular
+          <div className={`absolute -top-4 left-1/2 transform -translate-x-1/2 px-6 py-2 text-sm font-bold text-white rounded-full shadow-lg bg-gradient-to-r ${gradientColors} animate-pulse-slow`}>
+            ⭐ Most Popular
           </div>
         )}
 
         {billingPeriod === 'annual' && (
-          <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+          <div className="absolute -top-3 -right-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs px-3 py-2 rounded-full font-bold shadow-lg border-2 border-white">
             Save 20%
           </div>
         )}
 
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold text-foreground mb-2">
+        <div className="text-center mb-8">
+          <div className={`w-16 h-16 bg-gradient-to-br ${gradientColors} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+            <Icon 
+              name={plan?.id === 'starter' ? 'Zap' : plan?.id === 'pro' ? 'Award' : 'Crown'} 
+              size={32} 
+              className="text-white" 
+            />
+          </div>
+          <h3 className="text-2xl font-extrabold text-gray-900 mb-4">
             {plan?.name}
           </h3>
           <div className="flex items-baseline justify-center mb-4">
-            <span className="text-4xl font-bold text-foreground">
+            <span className={`text-5xl font-extrabold bg-gradient-to-r ${gradientColors} bg-clip-text text-transparent`}>
               {displayPrice}
             </span>
-            <span className="text-muted-foreground ml-1">
+            <span className="text-gray-600 ml-2 font-medium">
               {plan?.period}
             </span>
           </div>
           {billingPeriod === 'annual' && (
-            <div className="text-sm text-muted-foreground mb-2">
+            <div className="text-sm text-gray-600 mb-4 font-medium">
               Billed annually • {plan?.monthlyPrice} per month
             </div>
           )}
-          <p className="text-muted-foreground">
+          <p className="text-gray-600 leading-relaxed">
             {plan?.description}
           </p>
         </div>
 
         <div className="space-y-4 mb-8">
           {plan?.features?.map?.((feature, index) => (
-            <div key={index} className="flex items-start">
-              <Icon 
-                name="Check" 
-                size={20} 
-                className="text-green-500 mr-3 mt-0.5 flex-shrink-0" 
-              />
-              <span className="text-gray-700">{feature}</span>
+            <div key={index} className="flex items-start group">
+              <div className={`w-6 h-6 bg-gradient-to-br ${gradientColors} rounded-lg flex items-center justify-center mr-3 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform`}>
+                <Icon 
+                  name="Check" 
+                  size={14} 
+                  className="text-white font-bold" 
+                />
+              </div>
+              <span className="text-gray-700 leading-relaxed">{feature}</span>
             </div>
           ))}
         </div>
 
         <Button
           fullWidth
-          variant={plan?.popular ? 'default' : 'outline'}
           size="lg"
           onClick={() => handlePlanSelect(plan?.id)}
-          className={`font-semibold ${
+          className={`font-bold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 ${
             plan?.popular 
-              ? 'bg-primary hover:bg-primary/90' :'hover:bg-gray-50'
+              ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white border-0'
+              : `bg-gradient-to-r ${gradientColors} hover:opacity-90 text-white border-0`
           }`}
-          style={{
-            backgroundColor: plan?.popular ? plan?.accentColor : undefined,
-            borderColor: !plan?.popular ? plan?.accentColor : undefined,
-            color: !plan?.popular ? plan?.accentColor : undefined
-          }}
         >
-          {plan?.buttonText}
+          {plan?.buttonText} →
         </Button>
       </div>
     );
@@ -180,29 +185,44 @@ const PricingPlansPage = () => {
     ];
 
     return (
-      <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+      <div className="overflow-x-auto bg-white rounded-2xl shadow-xl border-2 border-gray-200">
         <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Features</th>
-              <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Starter</th>
-              <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Pro</th>
-              <th className="px-6 py-4 text-center text-sm font-semibold text-gray-900">Elite</th>
+          <thead>
+            <tr className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
+              <th className="px-6 py-5 text-left text-sm font-extrabold text-white">Features</th>
+              <th className="px-6 py-5 text-center text-sm font-extrabold text-white">
+                <div className="flex flex-col items-center">
+                  <Icon name="Zap" size={20} className="mb-1" />
+                  Starter
+                </div>
+              </th>
+              <th className="px-6 py-5 text-center text-sm font-extrabold text-white">
+                <div className="flex flex-col items-center">
+                  <Icon name="Award" size={20} className="mb-1" />
+                  Pro
+                </div>
+              </th>
+              <th className="px-6 py-5 text-center text-sm font-extrabold text-white">
+                <div className="flex flex-col items-center">
+                  <Icon name="Crown" size={20} className="mb-1" />
+                  Elite
+                </div>
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y-2 divide-gray-200">
             {features?.map?.((feature, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
+              <tr key={index} className="hover:bg-blue-50 transition-colors">
+                <td className="px-6 py-4 text-sm font-bold text-gray-900">
                   {feature?.name}
                 </td>
-                <td className="px-6 py-4 text-sm text-center text-gray-700">
+                <td className="px-6 py-4 text-sm text-center text-gray-700 font-medium">
                   {feature?.starter}
                 </td>
-                <td className="px-6 py-4 text-sm text-center text-gray-700">
+                <td className="px-6 py-4 text-sm text-center font-bold bg-emerald-50 text-emerald-700">
                   {feature?.pro}
                 </td>
-                <td className="px-6 py-4 text-sm text-center text-gray-700">
+                <td className="px-6 py-4 text-sm text-center text-gray-700 font-medium">
                   {feature?.elite}
                 </td>
               </tr>
@@ -242,20 +262,22 @@ const PricingPlansPage = () => {
     return (
       <div className="space-y-4">
         {faqs?.map?.((faq, index) => (
-          <div key={index} className="bg-white rounded-lg border border-gray-200">
+          <div key={index} className="bg-white rounded-2xl border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all">
             <button
-              className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50"
+              className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-blue-50 rounded-2xl transition-colors group"
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
             >
-              <span className="font-medium text-gray-900">{faq?.question}</span>
-              <Icon 
-                name={openIndex === index ? 'ChevronUp' : 'ChevronDown'} 
-                size={20} 
-                className="text-gray-500" 
-              />
+              <span className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{faq?.question}</span>
+              <div className={`w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ${openIndex === index ? 'rotate-180' : ''}`}>
+                <Icon 
+                  name="ChevronDown" 
+                  size={20} 
+                  className="text-white" 
+                />
+              </div>
             </button>
             {openIndex === index && (
-              <div className="px-6 pb-4 text-gray-700">
+              <div className="px-6 pb-5 text-gray-700 leading-relaxed animate-slideDown">
                 {faq?.answer}
               </div>
             )}
@@ -266,43 +288,46 @@ const PricingPlansPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <PublicHeader />
       
       <main className="pt-24 pb-16">
-        {/* Hero Section */}
-        <section className="text-center mb-16">
+        {/* Hero Section - Enhanced */}
+        <section className="text-center mb-16 animate-fadeIn">
           <div className="max-w-4xl mx-auto px-4 lg:px-6">
-            <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-              Choose Your <span className="text-primary">AI Learning</span> Journey
+            <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-bold text-blue-600 mb-4">
+              Pricing Plans
+            </span>
+            <h1 className="text-4xl lg:text-5xl font-extrabold mb-6">
+              Choose Your <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">AI Learning</span> Journey
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Select the perfect membership tier to unlock access to our comprehensive AI education platform. 
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Select the perfect membership tier to unlock access to our <span className="font-bold text-gray-900">comprehensive AI education platform</span>. 
               From beginner-friendly resources to advanced personalized support.
             </p>
             
-            {/* Billing Period Toggle */}
-            <div className="flex items-center justify-center mb-12">
-              <span className={`mr-3 ${billingPeriod === 'monthly' ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+            {/* Billing Period Toggle - Enhanced */}
+            <div className="flex items-center justify-center mb-12 bg-white rounded-2xl p-2 inline-flex border-2 border-gray-200 shadow-lg">
+              <span className={`mr-3 px-4 py-2 rounded-xl transition-all ${billingPeriod === 'monthly' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold' : 'text-gray-600'}`}>
                 Monthly
               </span>
               <button
                 onClick={() => setBillingPeriod(billingPeriod === 'monthly' ? 'annual' : 'monthly')}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  billingPeriod === 'annual' ? 'bg-primary' : 'bg-gray-200'
+                className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all shadow-inner ${
+                  billingPeriod === 'annual' ? 'bg-gradient-to-r from-emerald-500 to-green-600' : 'bg-gray-300'
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    billingPeriod === 'annual' ? 'translate-x-6' : 'translate-x-1'
+                  className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform shadow-lg ${
+                    billingPeriod === 'annual' ? 'translate-x-7' : 'translate-x-1'
                   }`}
                 />
               </button>
-              <span className={`ml-3 ${billingPeriod === 'annual' ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+              <span className={`ml-3 px-4 py-2 rounded-xl transition-all ${billingPeriod === 'annual' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold' : 'text-gray-600'}`}>
                 Annual
               </span>
               {billingPeriod === 'annual' && (
-                <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-sm rounded-full">
+                <span className="ml-3 px-3 py-1 bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-700 text-sm rounded-full font-bold border-2 border-emerald-300 animate-pulse-slow">
                   Save 20%
                 </span>
               )}
@@ -314,70 +339,88 @@ const PricingPlansPage = () => {
         <section className="mb-16">
           <div className="max-w-7xl mx-auto px-4 lg:px-6">
             <div className="grid md:grid-cols-3 gap-8 lg:gap-6">
-              {pricingPlans?.map?.((plan) => (
-                <PricingCard 
-                  key={plan?.id} 
-                  plan={plan} 
-                  isSelected={selectedTier === plan?.id}
-                />
+              {pricingPlans?.map?.((plan, index) => (
+                <div key={plan?.id} className="animate-slideUp" style={{ animationDelay: `${0.1 * index}s` }}>
+                  <PricingCard 
+                    plan={plan} 
+                    isSelected={selectedTier === plan?.id}
+                  />
+                </div>
               ))}
             </div>
           </div>
         </section>
 
         {/* Comparison Table */}
-        <section className="mb-16">
+        <section className="mb-16 animate-slideUp" style={{ animationDelay: '0.3s' }}>
           <div className="max-w-6xl mx-auto px-4 lg:px-6">
-            <h2 className="text-3xl font-bold text-center text-foreground mb-8">
-              Compare Plans
-            </h2>
+            <div className="text-center mb-10">
+              <span className="inline-block px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-sm font-bold text-purple-600 mb-4">
+                Detailed Comparison
+              </span>
+              <h2 className="text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
+                Compare Plans
+              </h2>
+            </div>
             <ComparisonTable />
           </div>
         </section>
 
         {/* FAQ Section */}
-        <section className="mb-16">
+        <section className="mb-16 animate-slideUp" style={{ animationDelay: '0.4s' }}>
           <div className="max-w-4xl mx-auto px-4 lg:px-6">
-            <h2 className="text-3xl font-bold text-center text-foreground mb-8">
-              Frequently Asked Questions
-            </h2>
+            <div className="text-center mb-10">
+              <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-full text-sm font-bold text-blue-600 mb-4">
+                FAQ
+              </span>
+              <h2 className="text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-blue-900 to-cyan-900 bg-clip-text text-transparent">
+                Frequently Asked Questions
+              </h2>
+            </div>
             <FAQ />
           </div>
         </section>
 
-        {/* Footer Note */}
-        <section className="text-center">
+        {/* Footer Note - Enhanced */}
+        <section className="text-center animate-slideUp" style={{ animationDelay: '0.5s' }}>
           <div className="max-w-4xl mx-auto px-4 lg:px-6">
-            <div className="bg-white rounded-xl p-8 border border-gray-200">
-              <Icon name="Info" size={48} className="text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-foreground mb-4">
-                Ready to Get Started?
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                Choose a plan to unlock access. Once you select your tier, you'll be redirected to register 
-                and upload your payment proof for admin verification.
-              </p>
-              {!user && (
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="lg"
-                  >
-                    <Link to="/signin">
-                      Already have an account? Sign In
-                    </Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="lg"
-                  >
-                    <Link to="/signup">
-                      Create New Account
-                    </Link>
-                  </Button>
+            <div className="relative overflow-hidden bg-white rounded-3xl p-10 border-2 border-gray-200 shadow-2xl">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-50"></div>
+              
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <Icon name="Info" size={40} className="text-white" />
                 </div>
-              )}
+                <h3 className="text-2xl font-extrabold text-gray-900 mb-4">
+                  Ready to Get Started?
+                </h3>
+                <p className="text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+                  Choose a plan to unlock access. Once you select your tier, you'll be redirected to <span className="font-bold text-blue-600">register 
+                  and upload your payment proof</span> for admin verification.
+                </p>
+                {!user && (
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="border-2 border-blue-500 hover:bg-blue-50 font-bold text-blue-600"
+                    >
+                      <Link to="/signin">
+                        Already have an account? Sign In →
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl border-0"
+                    >
+                      <Link to="/signup">
+                        Create New Account →
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>
