@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import PublicHeader from '../../components/ui/PublicHeader';
+import WhatsAppButton from '../../components/ui/WhatsAppButton';
 import HeroSection from './components/HeroSection';
 import MissionSection from './components/MissionSection';
 import MethodologySection from './components/MethodologySection';
@@ -70,13 +71,14 @@ const AboutPage = () => {
                 <div className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-2"></div>
                 Contact
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <p className="text-sm text-gray-300 hover:text-white transition-colors">
                   📧 hello@basicintelligence.com
                 </p>
-                <p className="text-sm text-gray-300 hover:text-white transition-colors">
-                  💬 WhatsApp: +2349062284074
-                </p>
+                <div className="flex items-center">
+                  <span className="mr-2">💬</span>
+                  <WhatsAppButton variant="inline" className="text-sm text-gray-300 hover:text-green-300" />
+                </div>
                 <p className="text-sm text-gray-300 hover:text-white transition-colors">
                   📍 Lagos, Nigeria
                 </p>

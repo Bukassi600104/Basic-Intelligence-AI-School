@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import WhatsAppButton from '../../../components/ui/WhatsAppButton';
 
 const CallToActionSection = () => {
   const benefits = [
@@ -135,15 +136,12 @@ const CallToActionSection = () => {
                 </p>
                 
                 <div className="space-y-3">
-                  <Button 
-                    variant="outline" 
-                    fullWidth 
-                    className="justify-start border-2 hover:border-blue-500 hover:bg-blue-50 font-medium"
-                    iconName="MessageCircle" 
-                    iconPosition="left"
-                  >
-                    WhatsApp: +2349062284074
-                  </Button>
+                  <div className="w-full">
+                    <WhatsAppButton 
+                      variant="icon" 
+                      className="w-full bg-green-500 hover:bg-green-600 text-white font-medium" 
+                    />
+                  </div>
                   
                   <Button 
                     variant="outline" 
