@@ -172,57 +172,56 @@ const SignUpPage = () => {
   return (
     <div className="flex min-h-screen">
       {/* Left Panel - Geometric Pattern Background */}
-      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white relative">
+      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-8 text-white relative">
         {/* Logo at top */}
-        <div className="absolute top-8 left-8 z-20">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Icon name="GraduationCap" size={24} className="text-white" />
+        <div className="absolute top-6 left-6 z-20">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={20} className="text-white" />
             </div>
-            <span className="text-xl font-bold">Basic Intelligence</span>
+            <span className="text-lg font-bold">Basic Intelligence</span>
           </div>
         </div>
         
         {/* Central content */}
         <div className="max-w-md text-center z-10 px-6">
-          <div className="inline-block mb-6">
-            <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium">
+          <div className="inline-block mb-4">
+            <span className="bg-orange-500/20 text-orange-300 px-3 py-1.5 rounded-full text-xs border border-orange-500/30 font-medium">
               Start Your Journey
             </span>
           </div>
           
-          <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
+          <h1 className="text-3xl font-bold mb-4 leading-tight">
             Join Thousands of Students
           </h1>
           
-          <p className="text-lg lg:text-xl text-gray-300 leading-relaxed">
-            Get instant access to our comprehensive AI courses, prompt engineering tutorials, 
-            and expert-led workshops. Start building your future today.
+          <p className="text-base text-gray-300 leading-relaxed">
+            Get instant access to our comprehensive AI courses and tutorials.
           </p>
         </div>
         
         {/* Pagination dots at bottom */}
-        <div className="absolute bottom-8 flex gap-2 z-20">
-          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
-          <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+        <div className="absolute bottom-6 flex gap-1.5 z-20">
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
         </div>
       </GeometricBackground>
       
       {/* Right Panel - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white overflow-y-auto">
-        <div className="w-full max-w-md py-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 bg-white overflow-y-auto">
+        <div className="w-full max-w-md py-6">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Icon name="GraduationCap" size={24} className="text-white" />
+          <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={20} className="text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Basic Intelligence</span>
+            <span className="text-lg font-bold text-gray-900">Basic Intelligence</span>
           </div>
           
           {/* Form Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-5">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">
               Create your account
             </h2>
             <p className="text-gray-600">

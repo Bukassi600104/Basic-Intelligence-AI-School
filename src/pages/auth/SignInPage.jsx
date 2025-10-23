@@ -138,87 +138,86 @@ const SignInPage = () => {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Panel - Geometric Pattern Background */}
-      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white relative">
+            {/* Left Panel - Geometric Pattern Background */}
+      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-8 text-white relative">
         {/* Logo at top */}
-        <div className="absolute top-8 left-8 z-20">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Icon name="GraduationCap" size={24} className="text-white" />
+        <div className="absolute top-6 left-6 z-20">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={20} className="text-white" />
             </div>
-            <span className="text-xl font-bold">Basic Intelligence</span>
+            <span className="text-lg font-bold">Basic Intelligence</span>
           </div>
         </div>
         
-        {/* Central content - with proper spacing */}
+        {/* Central content */}
         <div className="max-w-md text-center z-10 px-6">
-          <div className="inline-block mb-6">
-            <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium">
+          <div className="inline-block mb-4">
+            <span className="bg-orange-500/20 text-orange-300 px-3 py-1.5 rounded-full text-xs border border-orange-500/30 font-medium">
               Welcome Back
             </span>
           </div>
           
-          <h1 className="text-4xl lg:text-5xl font-bold mb-6 leading-tight">
-            Master AI & Unlock Your Potential
+          <h1 className="text-3xl font-bold mb-4 leading-tight">
+            Continue Your AI Journey
           </h1>
           
-          <p className="text-lg lg:text-xl text-gray-300 leading-relaxed">
-            Join thousands of students learning cutting-edge AI skills, prompt engineering, 
-            and machine learning techniques.
+          <p className="text-base text-gray-300 leading-relaxed">
+            Access your courses, prompt library, and exclusive AI tutorials.
           </p>
         </div>
         
         {/* Pagination dots at bottom */}
-        <div className="absolute bottom-8 flex gap-2 z-20">
-          <div className="w-2 h-2 rounded-full bg-orange-500"></div>
-          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
-          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+        <div className="absolute bottom-6 flex gap-1.5 z-20">
+          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
         </div>
       </GeometricBackground>
       
       {/* Right Panel - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 bg-white">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Icon name="GraduationCap" size={24} className="text-white" />
+          <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={20} className="text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Basic Intelligence</span>
+            <span className="text-lg font-bold text-gray-900">Basic Intelligence</span>
           </div>
           
           {/* Form Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">
               Welcome back!
             </h2>
-            <p className="text-gray-600">
+            <p className="text-sm text-gray-600">
               Enter your email and password to continue your learning.
             </p>
           </div>
 
           {/* Success Message */}
           {successMessage && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg animate-slideDown">
+            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg animate-slideDown">
               <div className="flex items-center space-x-2">
-                <Icon name="CheckCircle" size={20} className="text-green-600 flex-shrink-0" />
-                <span className="text-green-700 text-sm">{successMessage}</span>
+                <Icon name="CheckCircle" size={18} className="text-green-600 flex-shrink-0" />
+                <span className="text-green-700 text-xs">{successMessage}</span>
               </div>
             </div>
           )}
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
               <div className="flex items-center space-x-2">
-                <Icon name="AlertCircle" size={20} className="text-red-600 flex-shrink-0" />
-                <span className="text-red-700 text-sm">{error}</span>
+                <Icon name="AlertCircle" size={18} className="text-red-600 flex-shrink-0" />
+                <span className="text-red-700 text-xs">{error}</span>
               </div>
             </div>
           )}
 
           {/* Sign In Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <Input
               label="Email"
               name="email"
@@ -278,18 +277,18 @@ const SignInPage = () => {
               fullWidth
               loading={loading}
               disabled={loading}
-              size="lg"
+              size="md"
             >
               {loading ? 'Signing In...' : 'Log in'}
             </Button>
           </form>
 
           {/* Divider */}
-          <div className="relative my-6">
+          <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
+            <div className="relative flex justify-center text-xs">
               <span className="px-2 bg-white text-gray-500">Or contact us</span>
             </div>
           </div>
@@ -299,14 +298,14 @@ const SignInPage = () => {
             href="https://wa.me/2349062284074"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700"
+            className="flex items-center justify-center gap-2 w-full py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
           >
-            <Icon name="MessageCircle" size={20} className="text-green-600" />
+            <Icon name="MessageCircle" size={18} className="text-green-600" />
             <span>WhatsApp Support</span>
           </a>
 
           {/* Sign Up Link */}
-          <p className="text-center text-sm text-gray-600 mt-6">
+          <p className="text-center text-xs text-gray-600 mt-4">
             Don't have an account?{' '}
             <Link 
               to="/signup" 
@@ -317,7 +316,7 @@ const SignInPage = () => {
           </p>
 
           {/* Terms and Privacy */}
-          <p className="text-center text-xs text-gray-500 mt-8">
+          <p className="text-center text-xs text-gray-500 mt-4">
             By logging in, you agree to our{' '}
             <a href="#" className="text-orange-500 hover:underline">Terms of Service</a>
             {' '}and{' '}

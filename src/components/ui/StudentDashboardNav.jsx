@@ -85,20 +85,20 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
           
-          <div className="relative flex items-center justify-between p-4">
+          <div className="relative flex items-center justify-between p-3">
             {!isCollapsed && (
-              <Link to="/student-dashboard" className="flex items-center space-x-3 group">
+              <Link to="/student-dashboard" className="flex items-center space-x-2 group">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-white/30 rounded-xl blur-md group-hover:blur-lg transition-all"></div>
-                  <div className="relative w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center shadow-xl border-2 border-white/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                    <span className="text-white font-black text-base">BI</span>
+                  <div className="absolute inset-0 bg-white/30 rounded-lg blur-sm group-hover:blur-md transition-all"></div>
+                  <div className="relative w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center shadow-lg border border-white/40 group-hover:scale-110 transition-all duration-300">
+                    <span className="text-white font-black text-sm">BI</span>
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-base font-black text-white leading-tight tracking-tight">
+                  <span className="text-sm font-black text-white leading-tight tracking-tight">
                     Basic Intelligence
                   </span>
-                  <span className="text-xs text-white/90 font-semibold leading-tight">
+                  <span className="text-xs text-white/90 font-medium leading-tight">
                     Student Portal
                   </span>
                 </div>
@@ -127,30 +127,30 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
         </div>
 
         {/* User Profile - Orange Theme */}
-        <div className="p-4 border-b-2 border-gray-200 bg-gradient-to-br from-orange-50 to-orange-100">
+        <div className="p-3 border-b border-gray-200 bg-gradient-to-br from-orange-50 to-orange-100">
           {!isCollapsed ? (
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity"></div>
-              <div className="relative flex items-center space-x-3 p-4 bg-white rounded-xl shadow-md border-2 border-gray-200 hover:border-orange-300 transition-all hover:shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg blur-md opacity-0 group-hover:opacity-20 transition-opacity"></div>
+              <div className="relative flex items-center space-x-2 p-2.5 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-orange-300 transition-all hover:shadow-md">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl blur-md opacity-50"></div>
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg animate-gradient" style={{ backgroundSize: '200% 200%' }}>
-                    <span className="text-white font-black text-lg">
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg blur-sm opacity-50"></div>
+                  <div className="relative w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md animate-gradient" style={{ backgroundSize: '200% 200%' }}>
+                    <span className="text-white font-black text-base">
                       {userProfile?.full_name?.charAt?.(0)?.toUpperCase() || 'S'}
                     </span>
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold text-gray-900 truncate">
+                  <div className="text-xs font-bold text-gray-900 truncate">
                     {userProfile?.full_name || 'Student'}
                   </div>
                   <div className="flex items-center gap-1 text-xs text-gray-600 truncate">
-                    <Icon name="Hash" size={12} />
+                    <Icon name="Hash" size={10} />
                     {userProfile?.member_id || 'Pending'}
                   </div>
                 </div>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Icon name="ChevronRight" size={16} className="text-orange-600" />
+                  <Icon name="ChevronRight" size={14} className="text-orange-600" />
                 </div>
               </div>
             </div>
@@ -202,23 +202,23 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                   {/* Icon with gradient background */}
                   <div className={`relative flex-shrink-0 ${isActive(item.href) ? 'animate-pulse' : ''}`}>
                     {isActive(item.href) ? (
-                      <div className="w-9 h-9 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
-                        <Icon name={item.icon} size={20} />
+                      <div className="w-7 h-7 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
+                        <Icon name={item.icon} size={16} />
                       </div>
                     ) : (
-                      <div className="w-9 h-9 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform border border-gray-200">
-                        <Icon name={item.icon} size={20} className="text-orange-600" />
+                      <div className="w-7 h-7 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform border border-gray-200">
+                        <Icon name={item.icon} size={16} className="text-orange-600" />
                       </div>
                     )}
                   </div>
                   
                   {!isCollapsed && (
                     <>
-                      <span className="relative text-sm font-bold flex-1">{item.name}</span>
+                      <span className="relative text-xs font-bold flex-1">{item.name}</span>
                       {isActive(item.href) && (
                         <div className="relative flex items-center gap-1">
-                          <div className="w-1.5 h-6 bg-white rounded-full shadow-lg"></div>
-                          <Icon name="ChevronRight" size={16} className="opacity-80" />
+                          <div className="w-1 h-5 bg-white rounded-full shadow-md"></div>
+                          <Icon name="ChevronRight" size={14} className="opacity-80" />
                         </div>
                       )}
                     </>
@@ -230,14 +230,14 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
         </nav>
 
         {/* Footer Actions - Orange Theme */}
-        <div className="p-4 border-t-2 border-gray-200 bg-gradient-to-br from-gray-50 to-orange-50 space-y-2">
+        <div className="p-3 border-t border-gray-200 bg-gradient-to-br from-gray-50 to-orange-50 space-y-1.5">
           {/* Support Button */}
           <button
             onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
             className={`
-              group relative flex items-center px-4 py-3.5 rounded-xl transition-all duration-300 font-medium w-full overflow-hidden
-              text-gray-700 hover:text-white hover:shadow-xl hover:scale-[1.02]
-              ${isCollapsed ? 'justify-center' : 'space-x-3'}
+              group relative flex items-center px-3 py-2 rounded-lg transition-all duration-300 font-medium w-full overflow-hidden text-xs
+              text-gray-700 hover:text-white hover:shadow-lg hover:scale-[1.02]
+              ${isCollapsed ? 'justify-center' : 'space-x-2'}
             `}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>

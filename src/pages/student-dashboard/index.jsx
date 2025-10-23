@@ -199,65 +199,65 @@ const StudentDashboard = () => {
               <Icon name="Zap" size={28} className="text-white" />
             </div>
             
-            <div className="relative p-8 lg:p-12">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-                <div className="flex-1 space-y-6">
+            <div className="relative p-4 lg:p-6">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <div className="flex-1 space-y-3">
                   {/* Badge */}
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span className="text-xs font-bold text-white uppercase tracking-wider">
-                      ✨ Your Learning Hub
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-md hover:bg-white/30 transition-all">
+                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs font-bold text-white uppercase tracking-wide">
+                      Your Learning Hub
                     </span>
                   </div>
                   
                   {/* Main Heading */}
                   <div>
-                    <h1 className="text-4xl lg:text-5xl font-black text-white mb-3 leading-tight">
+                    <h1 className="text-2xl lg:text-3xl font-black text-white mb-2 leading-tight">
                       Welcome back,
                       <br />
                       <span className="bg-gradient-to-r from-yellow-200 via-orange-100 to-white bg-clip-text text-transparent">
                         {userProfile?.full_name || 'Student'}!
                       </span>
                     </h1>
-                    <p className="text-lg lg:text-xl text-white/95 leading-relaxed font-medium">
-                      Continue your AI learning journey. Access your resources, track your progress, and explore new content.
+                    <p className="text-sm lg:text-base text-white/95 leading-relaxed font-medium">
+                      Continue your AI learning journey.
                     </p>
                   </div>
                   
                   {/* Stats Cards */}
-                  <div className="flex flex-wrap gap-3">
-                    <div className="group flex items-center space-x-3 bg-white/20 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-white/30 hover:bg-white/30 hover:border-white/50 transition-all shadow-lg">
-                      <div className="w-10 h-10 bg-white/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon name="User" size={20} className="text-white" />
+                  <div className="flex flex-wrap gap-2">
+                    <div className="group flex items-center space-x-2 bg-white/20 backdrop-blur-md rounded-lg px-3 py-2 border border-white/30 hover:bg-white/30 hover:border-white/50 transition-all shadow-md">
+                      <div className="w-8 h-8 bg-white/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon name="User" size={16} className="text-white" />
                       </div>
                       <div>
                         <div className="text-xs text-white/80 font-medium">Member ID</div>
-                        <div className="text-sm font-bold text-white">
+                        <div className="text-xs font-bold text-white">
                           {userProfile?.member_id || 'Pending'}
                         </div>
                       </div>
                     </div>
                     
-                    <div className="group flex items-center space-x-3 bg-emerald-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-emerald-300/40 hover:bg-emerald-500/50 hover:border-emerald-300/60 transition-all shadow-lg">
-                      <div className="w-10 h-10 bg-emerald-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon name="CheckCircle" size={20} className="text-white" />
+                    <div className="group flex items-center space-x-2 bg-emerald-500/40 backdrop-blur-md rounded-lg px-3 py-2 border border-emerald-300/40 hover:bg-emerald-500/50 hover:border-emerald-300/60 transition-all shadow-md">
+                      <div className="w-8 h-8 bg-emerald-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon name="CheckCircle" size={16} className="text-white" />
                       </div>
                       <div>
                         <div className="text-xs text-emerald-100 font-medium">Status</div>
-                        <div className="text-sm font-bold text-white capitalize">
+                        <div className="text-xs font-bold text-white capitalize">
                           {userProfile?.membership_status || 'Pending'}
                         </div>
                       </div>
                     </div>
                     
                     {userProfile?.membership_status === 'active' && daysRemaining !== null && (
-                      <div className="group flex items-center space-x-3 bg-yellow-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-yellow-300/40 hover:bg-yellow-500/50 hover:border-yellow-300/60 transition-all shadow-lg">
-                        <div className="w-10 h-10 bg-yellow-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <Icon name="Clock" size={20} className="text-white" />
+                      <div className="group flex items-center space-x-2 bg-yellow-500/40 backdrop-blur-md rounded-lg px-3 py-2 border border-yellow-300/40 hover:bg-yellow-500/50 hover:border-yellow-300/60 transition-all shadow-md">
+                        <div className="w-8 h-8 bg-yellow-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Icon name="Clock" size={16} className="text-white" />
                         </div>
                         <div>
                           <div className="text-xs text-yellow-100 font-medium">Days Remaining</div>
-                          <div className="text-sm font-bold text-white">
+                          <div className="text-xs font-bold text-white">
                             {daysRemaining} {daysRemaining === 1 ? 'Day' : 'Days'}
                           </div>
                         </div>
@@ -267,11 +267,11 @@ const StudentDashboard = () => {
                 </div>
                 
                 {/* Enhanced Icon Display */}
-                <div className="flex lg:flex-col gap-4">
+                <div className="flex lg:flex-col gap-2">
                   <div className="relative group">
-                    <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl group-hover:bg-white/30 transition-all"></div>
-                    <div className="relative w-32 h-32 lg:w-36 lg:h-36 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border-2 border-white/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                      <Icon name="BookOpen" size={64} className="text-white group-hover:scale-110 transition-transform" />
+                    <div className="absolute inset-0 bg-white/20 rounded-2xl blur-md group-hover:bg-white/30 transition-all"></div>
+                    <div className="relative w-20 h-20 lg:w-24 lg:h-24 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-xl border border-white/40 group-hover:scale-110 transition-all duration-300">
+                      <Icon name="BookOpen" size={40} className="text-white group-hover:scale-110 transition-transform" />
                     </div>
                   </div>
                 </div>
