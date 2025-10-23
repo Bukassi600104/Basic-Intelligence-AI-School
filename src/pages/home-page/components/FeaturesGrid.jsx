@@ -38,28 +38,28 @@ const FeaturesGrid = () => {
   ];
 
   return (
-    <section className="py-24 lg:py-32 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-12 lg:py-16 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
         {/* Section Header with Animation - Orange Theme */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <div className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-orange-200 rounded-full mb-6">
-            <span className="text-sm font-semibold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-block px-3 py-1 bg-gradient-to-r from-orange-100 to-orange-200 rounded-full mb-3">
+            <span className="text-xs font-semibold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
               Why Choose Us
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
+          <h2 className="text-2xl md:text-3xl font-extrabold mb-3">
             <span className="bg-gradient-to-r from-gray-900 via-orange-900 to-orange-800 bg-clip-text text-transparent">
               Why Choose Basic Intelligence?
             </span>
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+          <p className="text-sm md:text-base text-gray-600 leading-relaxed">
             We're built for busy professionals, creators, and entrepreneurs who need{' '}
             <span className="font-semibold text-gray-900">results, not just knowledge</span>. Here's what sets us apart:
           </p>
         </div>
 
         {/* Features Grid with New Component */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
           {features?.map((feature, index) => (
             <div
               key={feature?.id}
