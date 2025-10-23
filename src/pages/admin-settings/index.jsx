@@ -374,7 +374,7 @@ const AdminSettings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-indigo-50 to-purple-50">
       <AdminSidebar 
         isCollapsed={sidebarCollapsed} 
         onToggleCollapse={handleToggleSidebar} 
@@ -385,73 +385,86 @@ const AdminSettings = () => {
         {/* Mobile spacing for header */}
         <div className="lg:hidden h-16"></div>
         
-        {/* Header */}
-        <div className="bg-card border-b border-border px-4 lg:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-              <p className="text-muted-foreground">
-                Configure system settings and preferences
-              </p>
+        {/* Enhanced Header with Gradient */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 px-4 lg:px-6 py-8 shadow-xl">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+          
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center animate-float">
+                <Icon name="Settings" size={32} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-extrabold text-white mb-1 animate-fadeIn">Settings</h1>
+                <p className="text-white/90 animate-slideUp">
+                  Configure system settings and preferences
+                </p>
+              </div>
             </div>
             
-            <Button
+            <button
               onClick={handleSaveSettings}
-              loading={loading}
-              iconName="Save"
-              iconPosition="left"
+              disabled={loading}
+              className="bg-white text-indigo-600 hover:bg-gray-50 px-6 py-3 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Save Changes
-            </Button>
+              <Icon name="Save" size={20} className="mr-2" />
+              {loading ? 'Saving...' : 'Save Changes'}
+            </button>
           </div>
         </div>
 
         {/* Content */}
         <div className="p-4 lg:p-6">
-          {/* Success/Error Messages */}
+          {/* Enhanced Success/Error Messages */}
           {successMessage && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div className="bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-2xl p-4 mb-6 shadow-lg animate-slideDown">
               <div className="flex items-center">
-                <Icon name="CheckCircle" size={16} className="text-green-600 mr-2" />
-                <span className="text-green-700 text-sm">{successMessage}</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center mr-3">
+                  <Icon name="CheckCircle" size={20} className="text-white" />
+                </div>
+                <span className="text-emerald-700 font-medium">{successMessage}</span>
               </div>
             </div>
           )}
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-200 rounded-2xl p-4 mb-6 shadow-lg animate-slideDown">
               <div className="flex items-center">
-                <Icon name="AlertCircle" size={16} className="text-red-600 mr-2" />
-                <span className="text-red-700 text-sm">{error}</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center mr-3">
+                  <Icon name="AlertCircle" size={20} className="text-white" />
+                </div>
+                <span className="text-red-700 font-medium">{error}</span>
               </div>
             </div>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Settings Tabs */}
+            {/* Enhanced Settings Tabs */}
             <div className="lg:col-span-1">
-              <nav className="space-y-1">
+              <nav className="bg-white/80 backdrop-blur-md rounded-2xl p-3 shadow-lg border-2 border-gray-200 space-y-2">
                 {tabs?.map((tab) => (
                   <button
                     key={tab?.id}
                     onClick={() => setActiveTab(tab?.id)}
-                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    className={`w-full flex items-center px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
                       activeTab === tab?.id
-                        ? 'text-primary bg-primary/10 border-r-2 border-primary' :'text-muted-foreground hover:text-foreground hover:bg-muted'
+                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg transform scale-105'
+                        : 'text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-600'
                     }`}
                   >
-                    <Icon name={tab?.icon} size={18} className="mr-3" />
+                    <Icon name={tab?.icon} size={20} className="mr-3" />
                     {tab?.name}
                   </button>
                 ))}
               </nav>
             </div>
 
-            {/* Settings Content */}
+            {/* Enhanced Settings Content */}
             <div className="lg:col-span-3">
-              <div className="bg-card border border-border rounded-lg p-6">
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold text-foreground">
+              <div className="bg-white/90 backdrop-blur-md border-2 border-gray-200 rounded-2xl p-8 shadow-xl">
+                <div className="mb-8">
+                  <h2 className="text-2xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                     {tabs?.find(tab => tab?.id === activeTab)?.name}
                   </h2>
                 </div>
