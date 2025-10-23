@@ -748,79 +748,94 @@ const AdminUsersPage = () => {
             loading={actionLoading}
           />
 
-          {/* User Creation Modal */}
+          {/* Enhanced User Creation Modal */}
           {showUserModal && (
-            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-              <div className="bg-card border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-                <div className="p-6 border-b border-border">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-foreground">Create New User</h2>
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+              <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-gray-200 animate-slideUp">
+                {/* Gradient Header */}
+                <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-600 p-6">
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                  
+                  <div className="relative flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                        <Icon name="UserPlus" size={28} className="text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-extrabold text-white">Create New User</h2>
+                        <p className="text-white/90 mt-1">
+                          Add a new user to the platform. Required fields are marked with *
+                        </p>
+                      </div>
+                    </div>
                     <button
                       onClick={handleCloseUserModal}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-white hover:bg-white/20 p-2 rounded-xl transition-colors"
                     >
                       <Icon name="X" size={24} />
                     </button>
                   </div>
-                  <p className="text-muted-foreground mt-2">
-                    Add a new user to the platform. Required fields are marked with *
-                  </p>
                 </div>
 
-                <form onSubmit={handleUserFormSubmit} className="p-6">
+                <form onSubmit={handleUserFormSubmit} className="p-6 bg-gradient-to-br from-gray-50 to-blue-50">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Left Column - Required Fields */}
+                    {/* Enhanced Left Column - Required Fields */}
                     <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                      <div className="bg-white rounded-xl p-4 border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                          <Icon name="Mail" size={16} className="mr-2 text-blue-600" />
                           Email Address *
                         </label>
                         <input
                           type="email"
                           value={userFormData.email}
                           onChange={(e) => handleUserFormChange('email', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                           placeholder="user@example.com"
                           required
                         />
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                      <div className="bg-white rounded-xl p-4 border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                          <Icon name="User" size={16} className="mr-2 text-blue-600" />
                           Full Name *
                         </label>
                         <input
                           type="text"
                           value={userFormData.full_name}
                           onChange={(e) => handleUserFormChange('full_name', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                           placeholder="John Doe"
                           required
                         />
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                      <div className="bg-white rounded-xl p-4 border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                          <Icon name="Shield" size={16} className="mr-2 text-blue-600" />
                           Role
                         </label>
                         <select
                           value={userFormData.role}
                           onChange={(e) => handleUserFormChange('role', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
                         >
                           <option value="student">Student</option>
                           <option value="admin">Admin</option>
                         </select>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                      <div className="bg-white rounded-xl p-4 border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                          <Icon name="Award" size={16} className="mr-2 text-blue-600" />
                           Membership Tier
                         </label>
                         <select
                           value={userFormData.membership_tier}
                           onChange={(e) => handleUserFormChange('membership_tier', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
                         >
                           <option value="starter">Starter</option>
                           <option value="pro">Pro</option>
@@ -829,16 +844,17 @@ const AdminUsersPage = () => {
                       </div>
                     </div>
 
-                    {/* Right Column - Optional Fields */}
+                    {/* Enhanced Right Column - Optional Fields */}
                     <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                      <div className="bg-white rounded-xl p-4 border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                          <Icon name="CheckCircle" size={16} className="mr-2 text-blue-600" />
                           Membership Status
                         </label>
                         <select
                           value={userFormData.membership_status}
                           onChange={(e) => handleUserFormChange('membership_status', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white"
                         >
                           <option value="pending">Pending</option>
                           <option value="active">Active</option>
@@ -847,8 +863,8 @@ const AdminUsersPage = () => {
                         </select>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                      <div className="bg-white rounded-xl p-4 border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
                           Phone Number
                         </label>
                         <input
@@ -1002,22 +1018,23 @@ const AdminUsersPage = () => {
                     )}
                   </div>
 
-                  {/* Form Actions */}
-                  <div className="flex justify-end space-x-3 mt-8 pt-6 border-t border-border">
-                    <Button
+                  {/* Enhanced Form Actions */}
+                  <div className="flex justify-end space-x-4 mt-8 pt-6 border-t-2 border-gray-200">
+                    <button
                       type="button"
-                      variant="outline"
                       onClick={handleCloseUserModal}
+                      className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all"
                     >
                       Cancel
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="submit"
-                      loading={actionLoading}
+                      disabled={actionLoading}
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-cyan-700 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                     >
-                      <Icon name="UserPlus" size={16} className="mr-2" />
-                      Create User
-                    </Button>
+                      <Icon name="UserPlus" size={20} className="mr-2" />
+                      {actionLoading ? 'Creating User...' : 'Create User'}
+                    </button>
                   </div>
                 </form>
               </div>
