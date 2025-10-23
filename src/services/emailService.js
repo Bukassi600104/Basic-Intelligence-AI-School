@@ -103,6 +103,16 @@ export const emailService = {
     }
   },
 
+  // Simple send email method (used by notificationService)
+  async sendEmail({ to, subject, html, from = 'Basic Intelligence <notifications@basicintelligence.ng>' }) {
+    try {
+      return await this.sendEmailViaResend({ to, subject, html, from });
+    } catch (error) {
+      logger.error('Error in sendEmail:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
   // Real Resend API integration
   async sendEmailViaResend(emailData) {
     try {

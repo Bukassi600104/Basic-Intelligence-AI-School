@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
 import AdminSidebar from '../../components/ui/AdminSidebar';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
-import NotificationWizardError from '../../components/errors/NotificationWizardError';
-import { validateEnv } from '../../utils/validateEnv';
-import { logger } from '../../utils/logger';
 
 const AdminNotificationWizard = () => {
   const { userProfile } = useAuth();
@@ -29,13 +27,10 @@ const AdminNotificationWizard = () => {
   const [sending, setSending] = useState(false);
   const [results, setResults] = useState(null);
 
-  // Check admin access and validate environment
+  // Check admin access
   useEffect(() => {
     const checkAccess = async () => {
       try {
-        // Validate environment variables
-        validateEnv();
-
         // Check if user is authenticated
         if (!userProfile) {
           navigate('/login');
@@ -43,32 +38,19 @@ const AdminNotificationWizard = () => {
         }
 
         // Check if user is admin
-        const { data: isAdmin, error: adminCheckError } = await supabase.rpc('has_admin_role');
-        
-        if (adminCheckError || !isAdmin) {
-          logger.error('Admin check failed:', adminCheckError);
+        if (userProfile.role !== 'admin') {
           navigate('/');
           return;
         }
 
       } catch (error) {
         setError(error.message);
-        logger.error('Access validation failed:', error);
+        console.error('Access validation failed:', error);
       }
     };
 
     checkAccess();
   }, [userProfile, navigate]);
-
-  // Validate environment variables
-  useEffect(() => {
-    try {
-      validateEnv();
-    } catch (err) {
-      setError(err.message);
-      logger.error('Environment validation failed:', err);
-    }
-  }, []);
 
   // Load users and templates
   useEffect(() => {
@@ -130,40 +112,41 @@ const AdminNotificationWizard = () => {
 
   const handleSendNotifications = async () => {
     if (selectedUsers.length === 0) {
-      alert('Please select at least one user');
+      setError('Please select at least one user');
       return;
     }
 
     if (!notificationData.message.trim()) {
-      alert('Please enter a message');
+      setError('Please enter a message');
       return;
     }
 
     setSending(true);
     setResults(null);
+    setError(null);
 
     try {
       const result = await notificationService.sendBulkNotifications({
         userIds: selectedUsers,
-        templateName: notificationData.templateName || 'Custom Notification',
+        templateName: notificationData.templateName || 'custom_message',
         variables: {
-          custom_message: notificationData.message
+          custom_message: notificationData.message,
+          subject: notificationData.subject || 'New Notification'
         },
         recipientType: notificationData.recipientType
       });
 
       setResults(result);
       
-      if (result.successful > 0) {
-        alert(`Successfully sent ${result.successful} notifications`);
-      }
-      
-      if (result.failed > 0) {
-        alert(`${result.failed} notifications failed to send. Check the logs for details.`);
+      if (result.successful > 0 && result.failed === 0) {
+        setError(null);
+      } else if (result.failed > 0) {
+        setError(`${result.failed} notifications failed to send. Check the results below for details.`);
       }
 
     } catch (error) {
-      alert('Failed to send notifications: ' + error.message);
+      console.error('Send notifications error:', error);
+      setError('Failed to send notifications: ' + error.message);
     } finally {
       setSending(false);
     }
@@ -213,13 +196,24 @@ const AdminNotificationWizard = () => {
             <div className="flex items-center space-x-3 mt-4 lg:mt-0">
               <Button 
                 variant="outline"
-                onClick={() => navigate('/admin-users')}
+                onClick={() => navigate('/admin-dashboard')}
               >
                 <Icon name="ArrowLeft" size={16} className="mr-2" />
-                Back to Users
+                Back to Dashboard
               </Button>
             </div>
           </div>
+
+          {/* Error Display */}
+          {error && (
+            <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start">
+              <Icon name="AlertCircle" size={20} className="text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-red-900 mb-1">Error</h3>
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - User Selection */}
