@@ -11,7 +11,7 @@
     @apply bg-gray-50 dark:bg-dark-900 text-gray-900 dark:text-white;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
-}
+
   :root {
     /* Core Colors */
     --color-background: #FAFAFA; /* gray-50 */
@@ -61,11 +61,6 @@
 
   * {
     @apply border-border;
-  }
-  
-  body {
-    @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
