@@ -6,6 +6,7 @@ import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { reviewService } from '../../services/reviewService';
 import { passwordService } from '../../services/passwordService';
+import { avatarService } from '../../services/avatarService';
 
 const StudentSettings = () => {
   const { user, userProfile, isMember, updateProfile } = useAuth();
@@ -41,6 +42,9 @@ const StudentSettings = () => {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
   const [uploadingPicture, setUploadingPicture] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   // Check if user is a paid student - only redirect when profile is loaded and user is not a member
   useEffect(() => {
@@ -149,6 +153,102 @@ const StudentSettings = () => {
     window.open('https://wa.me/2349062284074', '_blank');
   };
 
+  // Avatar upload handler
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file
+    const validation = avatarService.validateAvatarFile(file);
+    if (!validation.isValid) {
+      setUploadError(validation.error);
+      setTimeout(() => setUploadError(''), 5000);
+      return;
+    }
+
+    // Create preview
+    const preview = avatarService.getPreviewUrl(file);
+    setPreviewUrl(preview);
+    setUploadError('');
+  };
+
+  // Upload avatar to Supabase
+  const handleUploadAvatar = async () => {
+    const fileInput = document.getElementById('profile-picture-upload');
+    const file = fileInput?.files[0];
+    
+    if (!file || !user?.id) return;
+
+    setUploadingPicture(true);
+    setUploadError('');
+    setUploadSuccess('');
+
+    try {
+      const { avatarUrl, error } = await avatarService.uploadAvatar(file, user.id);
+      
+      if (error) {
+        setUploadError(error);
+      } else {
+        setUploadSuccess('Profile picture updated successfully!');
+        // Update local user profile state
+        setUserProfile(prev => ({ ...prev, avatar_url: avatarUrl }));
+        
+        // Clean up preview
+        if (previewUrl) {
+          avatarService.revokePreviewUrl(previewUrl);
+          setPreviewUrl(null);
+        }
+        
+        // Clear file input
+        if (fileInput) fileInput.value = '';
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => setUploadSuccess(''), 3000);
+      }
+    } catch (error) {
+      console.error('Avatar upload error:', error);
+      setUploadError('Failed to upload profile picture. Please try again.');
+    } finally {
+      setUploadingPicture(false);
+    }
+  };
+
+  // Delete avatar from Supabase
+  const handleDeleteAvatar = async () => {
+    if (!userProfile?.avatar_url || !user?.id) return;
+
+    if (!confirm('Are you sure you want to remove your profile picture?')) return;
+
+    setUploadingPicture(true);
+    setUploadError('');
+
+    try {
+      const { error } = await avatarService.deleteAvatar(userProfile.avatar_url, user.id);
+      
+      if (error) {
+        setUploadError(error);
+      } else {
+        setUploadSuccess('Profile picture removed successfully!');
+        setUserProfile(prev => ({ ...prev, avatar_url: null }));
+        setTimeout(() => setUploadSuccess(''), 3000);
+      }
+    } catch (error) {
+      console.error('Avatar delete error:', error);
+      setUploadError('Failed to remove profile picture. Please try again.');
+    } finally {
+      setUploadingPicture(false);
+    }
+  };
+
+  // Cleanup preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        avatarService.revokePreviewUrl(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex">
@@ -181,45 +281,61 @@ const StudentSettings = () => {
       />
       <div className="flex-1 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">Account Settings</h1>
-              <p className="text-muted-foreground">
-                Manage your account preferences and personal information
-              </p>
-            </div>
+          {/* Enhanced Gradient Header */}
+          <div className="relative mb-8 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-blue-400/20 to-cyan-400/20 rounded-full blur-2xl"></div>
             
-            <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-              <Button 
-                variant="outline"
-                onClick={() => navigate('/student-dashboard')}
-              >
-                <Icon name="ArrowLeft" size={16} className="mr-2" />
-                Back to Dashboard
-              </Button>
+            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-8">
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                  Account Settings
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Manage your account preferences and personal information
+                </p>
+              </div>
+              
+              <div className="flex items-center space-x-3 mt-4 lg:mt-0">
+                <Button 
+                  variant="outline"
+                  onClick={() => navigate('/student-dashboard')}
+                  className="border-2 hover:bg-white/80"
+                >
+                  <Icon name="ArrowLeft" size={16} className="mr-2" />
+                  Back to Dashboard
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Profile Picture Section - Moved to Top */}
-          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl p-8 mb-8">
+          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-8 mb-8 shadow-lg border-2 border-blue-200">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
               <div className="flex-1">
-                <h2 className="text-2xl lg:text-3xl font-bold text-foreground mb-4">Your Profile</h2>
-                <p className="text-lg text-muted-foreground mb-6">
-                  Personalize your account with a profile picture and manage your information
-                </p>
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-md">
+                    <Icon name="Camera" size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">Your Profile</h2>
+                    <p className="text-gray-600">
+                      Personalize your account with a profile picture
+                    </p>
+                  </div>
+                </div>
                 
-                <div className="flex flex-wrap gap-4">
-                  <div className="flex items-center space-x-2 bg-white/50 rounded-lg px-4 py-2">
-                    <Icon name="User" size={20} className="text-primary" />
-                    <span className="text-sm font-medium text-foreground">
+                <div className="flex flex-wrap gap-4 mt-4">
+                  <div className="flex items-center space-x-2 bg-white/80 rounded-xl px-4 py-2.5 border-2 border-blue-200 shadow-sm">
+                    <Icon name="User" size={20} className="text-blue-600" />
+                    <span className="text-sm font-medium text-blue-900">
                       Member ID: {userProfile?.member_id || 'Pending'}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2 bg-white/50 rounded-lg px-4 py-2">
-                    <Icon name="CheckCircle" size={20} className="text-success" />
-                    <span className="text-sm font-medium text-foreground">
+                  <div className="flex items-center space-x-2 bg-white/80 rounded-xl px-4 py-2.5 border-2 border-green-200 shadow-sm">
+                    <Icon name="CheckCircle" size={20} className="text-green-600" />
+                    <span className="text-sm font-medium text-green-900">
                       Active Membership
                     </span>
                   </div>
@@ -228,57 +344,108 @@ const StudentSettings = () => {
               
               <div className="mt-6 lg:mt-0 lg:ml-8">
                 <div className="flex flex-col items-center space-y-4">
-                  <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                    {userProfile?.avatar_url ? (
-                      <img 
-                        src={userProfile.avatar_url} 
-                        alt="Profile" 
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <Icon name="User" size={48} className="text-primary" />
+                  {/* Avatar Display */}
+                  <div className="relative">
+                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
+                      {previewUrl || userProfile?.avatar_url ? (
+                        <img 
+                          src={previewUrl || userProfile.avatar_url} 
+                          alt="Profile" 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Icon name="User" size={48} className="text-primary" />
+                      )}
+                    </div>
+                    
+                    {/* Delete button for existing avatar */}
+                    {userProfile?.avatar_url && !previewUrl && (
+                      <button
+                        onClick={handleDeleteAvatar}
+                        disabled={uploadingPicture}
+                        className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 disabled:opacity-50"
+                        title="Remove profile picture"
+                      >
+                        <Icon name="X" size={16} />
+                      </button>
                     )}
                   </div>
                   
+                  {/* File Input */}
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                          alert('File size must be less than 5MB');
-                          return;
-                        }
-                        
-                        setProfilePicture(file);
-                        setUploadingPicture(true);
-                        
-                        // Simulate upload process
-                        setTimeout(() => {
-                          alert('Profile picture uploaded successfully!');
-                          setUploadingPicture(false);
-                          // In a real app, this would update the user profile with the new avatar URL
-                        }, 1500);
-                      }
-                    }}
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleAvatarChange}
                     className="hidden"
                     id="profile-picture-upload"
+                    disabled={uploadingPicture}
                   />
                   
-                  <label 
-                    htmlFor="profile-picture-upload"
-                    className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-xl cursor-pointer hover:bg-primary/90 transition-all duration-300 shadow-md hover:shadow-lg"
-                  >
-                    <Icon name="Upload" size={18} className="mr-2" />
-                    {uploadingPicture ? 'Uploading...' : 'Update Photo'}
-                  </label>
-                  
-                  {profilePicture && (
-                    <p className="text-xs text-muted-foreground">
-                      Selected: {profilePicture.name}
-                    </p>
+                  {/* Upload Button */}
+                  {!previewUrl ? (
+                    <label 
+                      htmlFor="profile-picture-upload"
+                      className={`inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl cursor-pointer hover:shadow-lg transition-all duration-300 ${
+                        uploadingPicture ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                      }`}
+                    >
+                      <Icon name="Upload" size={18} className="mr-2" />
+                      {userProfile?.avatar_url ? 'Change Photo' : 'Upload Photo'}
+                    </label>
+                  ) : (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleUploadAvatar}
+                        disabled={uploadingPicture}
+                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+                      >
+                        {uploadingPicture ? (
+                          <>
+                            <Icon name="Loader" size={18} className="mr-2 animate-spin" />
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <Icon name="Check" size={18} className="mr-2" />
+                            Save Photo
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (previewUrl) {
+                            avatarService.revokePreviewUrl(previewUrl);
+                            setPreviewUrl(null);
+                          }
+                          const fileInput = document.getElementById('profile-picture-upload');
+                          if (fileInput) fileInput.value = '';
+                        }}
+                        disabled={uploadingPicture}
+                        className="inline-flex items-center px-4 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all duration-300 disabled:opacity-50"
+                      >
+                        <Icon name="X" size={18} />
+                      </button>
+                    </div>
                   )}
+                  
+                  {/* Error/Success Messages */}
+                  {uploadError && (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm">
+                      <Icon name="AlertCircle" size={16} />
+                      {uploadError}
+                    </div>
+                  )}
+                  {uploadSuccess && (
+                    <div className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm">
+                      <Icon name="CheckCircle" size={16} />
+                      {uploadSuccess}
+                    </div>
+                  )}
+                  
+                  <p className="text-xs text-muted-foreground text-center">
+                    Max size: 5MB<br />
+                    Formats: JPG, PNG, GIF, WebP
+                  </p>
                 </div>
               </div>
             </div>
@@ -386,80 +553,88 @@ const StudentSettings = () => {
               </div>
 
               {/* Notification Settings */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <h2 className="text-xl font-bold text-foreground mb-6">Notification Preferences</h2>
+              <div className="bg-gradient-to-br from-purple-50 to-pink-100 border-2 border-purple-200 rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-md">
+                    <Icon name="Bell" size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold bg-gradient-to-r from-purple-900 to-pink-900 bg-clip-text text-transparent">Notification Preferences</h2>
+                    <p className="text-purple-700 text-sm">Manage how you receive updates and alerts</p>
+                  </div>
+                </div>
                 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-4 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
                     <div>
-                      <div className="text-sm font-medium text-foreground">Email Updates</div>
-                      <div className="text-xs text-muted-foreground">Receive important updates via email</div>
+                      <div className="text-sm font-medium text-purple-900">Email Updates</div>
+                      <div className="text-xs text-purple-600">Receive important updates via email</div>
                     </div>
                     <button
                       onClick={() => handleNotificationChange('emailUpdates')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        notifications.emailUpdates ? 'bg-primary' : 'bg-muted'
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                        notifications.emailUpdates ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'
                       }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-md ${
                           notifications.emailUpdates ? 'translate-x-6' : 'translate-x-1'
                         }`}
                       />
                     </button>
                   </div>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-4 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
                     <div>
-                      <div className="text-sm font-medium text-foreground">Content Alerts</div>
-                      <div className="text-xs text-muted-foreground">Get notified when new content is added</div>
+                      <div className="text-sm font-medium text-purple-900">Content Alerts</div>
+                      <div className="text-xs text-purple-600">Get notified when new content is added</div>
                     </div>
                     <button
                       onClick={() => handleNotificationChange('contentAlerts')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        notifications.contentAlerts ? 'bg-primary' : 'bg-muted'
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                        notifications.contentAlerts ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'
                       }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-md ${
                           notifications.contentAlerts ? 'translate-x-6' : 'translate-x-1'
                         }`}
                       />
                     </button>
                   </div>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-4 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
                     <div>
-                      <div className="text-sm font-medium text-foreground">Payment Reminders</div>
-                      <div className="text-xs text-muted-foreground">Receive reminders before subscription renewal</div>
+                      <div className="text-sm font-medium text-purple-900">Payment Reminders</div>
+                      <div className="text-xs text-purple-600">Receive reminders before subscription renewal</div>
                     </div>
                     <button
                       onClick={() => handleNotificationChange('paymentReminders')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        notifications.paymentReminders ? 'bg-primary' : 'bg-muted'
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                        notifications.paymentReminders ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'
                       }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-md ${
                           notifications.paymentReminders ? 'translate-x-6' : 'translate-x-1'
                         }`}
                       />
                     </button>
                   </div>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-4 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
                     <div>
-                      <div className="text-sm font-medium text-foreground">Support Messages</div>
-                      <div className="text-xs text-muted-foreground">Receive support team messages</div>
+                      <div className="text-sm font-medium text-purple-900">Support Messages</div>
+                      <div className="text-xs text-purple-600">Receive support team messages</div>
                     </div>
                     <button
                       onClick={() => handleNotificationChange('supportMessages')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        notifications.supportMessages ? 'bg-primary' : 'bg-muted'
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                        notifications.supportMessages ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'
                       }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-md ${
                           notifications.supportMessages ? 'translate-x-6' : 'translate-x-1'
                         }`}
                       />
@@ -469,32 +644,42 @@ const StudentSettings = () => {
               </div>
 
               {/* Password Change */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <h2 className="text-xl font-bold text-foreground mb-6">Change Password</h2>
+              <div className="bg-gradient-to-br from-orange-50 to-red-100 border-2 border-orange-200 rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center shadow-md">
+                    <Icon name="Shield" size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold bg-gradient-to-r from-orange-900 to-red-900 bg-clip-text text-transparent">Password & Security</h2>
+                    <p className="text-orange-700 text-sm">Update your password to keep your account secure</p>
+                  </div>
+                </div>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Current Password
+                    <label className="flex items-center space-x-2 text-sm font-medium text-orange-900 mb-2">
+                      <Icon name="Lock" size={16} className="text-orange-600" />
+                      <span>Current Password</span>
                     </label>
                     <input
                       type="password"
                       value={passwordForm.currentPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
                       placeholder="Enter your current password"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      New Password
+                    <label className="flex items-center space-x-2 text-sm font-medium text-orange-900 mb-2">
+                      <Icon name="Key" size={16} className="text-orange-600" />
+                      <span>New Password</span>
                     </label>
                     <input
                       type="password"
                       value={passwordForm.newPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
                       placeholder="Enter new password"
                     />
                     {passwordForm.newPassword && (
@@ -522,18 +707,22 @@ const StudentSettings = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Confirm New Password
+                    <label className="flex items-center space-x-2 text-sm font-medium text-orange-900 mb-2">
+                      <Icon name="CheckCircle" size={16} className="text-orange-600" />
+                      <span>Confirm New Password</span>
                     </label>
                     <input
                       type="password"
                       value={passwordForm.confirmPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                      className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                      className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
                       placeholder="Confirm new password"
                     />
                     {passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword && (
-                      <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
+                      <p className="text-red-600 text-xs mt-2 flex items-center gap-1">
+                        <Icon name="AlertCircle" size={12} />
+                        Passwords do not match
+                      </p>
                     )}
                   </div>
                   
@@ -585,8 +774,16 @@ const StudentSettings = () => {
 
               {/* Review Submission */}
               {userProfile?.membership_status === 'active' && (
-                <div className="bg-card border border-border rounded-2xl p-6">
-                  <h2 className="text-xl font-bold text-foreground mb-6">Share Your Experience</h2>
+                <div className="bg-gradient-to-br from-emerald-50 to-cyan-100 border-2 border-emerald-200 rounded-2xl p-6 shadow-lg">
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-md">
+                      <Icon name="MessageSquare" size={24} className="text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-900 to-cyan-900 bg-clip-text text-transparent">Share Your Experience</h2>
+                      <p className="text-emerald-700 text-sm">Help others discover the value of our platform</p>
+                    </div>
+                  </div>
                   
                   {reviewSubmitted ? (
                     <div className="text-center py-8">
@@ -718,12 +915,12 @@ const StudentSettings = () => {
                         </Button>
                       </div>
 
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="bg-emerald-100 border border-emerald-200 rounded-xl p-4">
                         <div className="flex items-start space-x-3">
-                          <Icon name="Info" size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                          <Icon name="Info" size={16} className="text-emerald-600 mt-0.5 flex-shrink-0" />
                           <div>
-                            <h4 className="text-sm font-medium text-blue-900 mb-1">Review Guidelines</h4>
-                            <ul className="text-xs text-blue-700 space-y-1">
+                            <h4 className="text-sm font-medium text-emerald-900 mb-1">Review Guidelines</h4>
+                            <ul className="text-xs text-emerald-700 space-y-1">
                               <li>• Be honest and constructive in your feedback</li>
                               <li>• Reviews are moderated before being published</li>
                               <li>• Your review helps other students make informed decisions</li>
@@ -741,12 +938,17 @@ const StudentSettings = () => {
             {/* Actions Sidebar */}
             <div className="space-y-6">
               {/* Account Actions */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Account Actions</h3>
+              <div className="bg-gradient-to-br from-indigo-50 to-blue-100 border-2 border-indigo-200 rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
+                    <Icon name="Zap" size={20} className="text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-900 to-blue-900 bg-clip-text text-transparent">Quick Actions</h3>
+                </div>
                 <div className="space-y-3">
                   <Button 
                     variant="outline" 
-                    className="w-full"
+                    className="w-full border-2 border-indigo-200 hover:border-indigo-300 hover:bg-white/80 transition-all"
                     onClick={handleResetPassword}
                   >
                     <Icon name="Key" size={16} className="mr-2" />
@@ -754,7 +956,7 @@ const StudentSettings = () => {
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="w-full"
+                    className="w-full border-2 border-indigo-200 hover:border-indigo-300 hover:bg-white/80 transition-all"
                     onClick={handleContactSupport}
                   >
                     <Icon name="MessageCircle" size={16} className="mr-2" />
@@ -764,20 +966,28 @@ const StudentSettings = () => {
               </div>
 
               {/* Account Information */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Account Information</h3>
+              <div className="bg-gradient-to-br from-teal-50 to-green-100 border-2 border-teal-200 rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-teal-500 to-green-500 rounded-lg flex items-center justify-center">
+                    <Icon name="Info" size={20} className="text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold bg-gradient-to-r from-teal-900 to-green-900 bg-clip-text text-transparent">Account Info</h3>
+                </div>
                 <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Member ID:</span>
-                    <span className="font-medium text-foreground">{userProfile?.member_id || 'Pending'}</span>
+                  <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
+                    <span className="text-teal-700 font-medium">Member ID:</span>
+                    <span className="font-bold text-teal-900">{userProfile?.member_id || 'Pending'}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Membership Status:</span>
-                    <span className="font-medium text-success">Active</span>
+                  <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
+                    <span className="text-teal-700 font-medium">Status:</span>
+                    <span className="font-bold text-green-600 flex items-center gap-1">
+                      <Icon name="CheckCircle" size={14} />
+                      Active
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Member Since:</span>
-                    <span className="font-medium text-foreground">
+                  <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
+                    <span className="text-teal-700 font-medium">Member Since:</span>
+                    <span className="font-bold text-teal-900">
                       {userProfile?.created_at ? new Date(userProfile.created_at).toLocaleDateString() : 'N/A'}
                     </span>
                   </div>

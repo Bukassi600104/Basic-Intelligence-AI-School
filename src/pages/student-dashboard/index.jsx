@@ -140,11 +140,17 @@ const StudentDashboard = () => {
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl animate-pulse">
-                  <Icon name="Loader" size={28} className="animate-spin text-white" />
+                {/* Modern Loading Animation */}
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl blur-2xl opacity-50 animate-pulse"></div>
+                  <div className="relative w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl animate-gradient" style={{ backgroundSize: '200% 200%' }}>
+                    <Icon name="Loader" size={32} className="animate-spin text-white" />
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-gray-900 mb-2">Loading Dashboard</div>
-                <div className="text-sm text-gray-600">Preparing your learning environment...</div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
+                  Loading Dashboard
+                </h2>
+                <p className="text-gray-600 text-base">Preparing your learning environment...</p>
               </div>
             </div>
           </div>
@@ -161,47 +167,96 @@ const StudentDashboard = () => {
       />
       <div className="flex-1 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
-          {/* Welcome Section - Enhanced */}
-          <div className="relative overflow-hidden rounded-3xl mb-8 animate-fadeIn">
-            {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"></div>
+          {/* Welcome Section - Ultra Modern Redesign */}
+          <div className="relative overflow-hidden rounded-3xl mb-8 animate-fadeIn shadow-2xl">
+            {/* Animated Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient"></div>
             
-            {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+            {/* Enhanced Decorative Elements */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-pink-400/30 to-rose-400/30 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tr from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl"></div>
             
-            <div className="relative p-8 lg:p-10">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex-1">
-                  <div className="inline-block px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+            {/* Floating Icons */}
+            <div className="absolute top-8 right-20 opacity-20 animate-float">
+              <Icon name="Sparkles" size={32} className="text-white" />
+            </div>
+            <div className="absolute bottom-12 left-16 opacity-20 animate-float" style={{ animationDelay: '0.5s' }}>
+              <Icon name="Zap" size={28} className="text-white" />
+            </div>
+            
+            <div className="relative p-8 lg:p-12">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+                <div className="flex-1 space-y-6">
+                  {/* Badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 shadow-lg hover:bg-white/30 transition-all">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
                     <span className="text-xs font-bold text-white uppercase tracking-wider">
                       ✨ Your Learning Hub
                     </span>
                   </div>
-                  <h1 className="text-3xl lg:text-4xl font-extrabold text-white mb-4">
-                    Welcome back, {userProfile?.full_name || 'Student'}!
-                  </h1>
-                  <p className="text-lg text-white/90 mb-6 max-w-2xl leading-relaxed">
-                    Continue your AI learning journey. Access your resources, track your progress, and explore new content.
-                  </p>
+                  
+                  {/* Main Heading */}
+                  <div>
+                    <h1 className="text-4xl lg:text-5xl font-black text-white mb-3 leading-tight">
+                      Welcome back,
+                      <br />
+                      <span className="bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent">
+                        {userProfile?.full_name || 'Student'}!
+                      </span>
+                    </h1>
+                    <p className="text-lg lg:text-xl text-white/95 leading-relaxed font-medium">
+                      Continue your AI learning journey. Access your resources, track your progress, and explore new content.
+                    </p>
+                  </div>
+                  
+                  {/* Stats Cards */}
                   <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-white/30">
-                      <Icon name="User" size={18} className="text-white" />
-                      <span className="text-sm font-semibold text-white">
-                        Member ID: {userProfile?.member_id || 'Pending'}
-                      </span>
+                    <div className="group flex items-center space-x-3 bg-white/20 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-white/30 hover:bg-white/30 hover:border-white/50 transition-all shadow-lg">
+                      <div className="w-10 h-10 bg-white/30 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon name="User" size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <div className="text-xs text-white/80 font-medium">Member ID</div>
+                        <div className="text-sm font-bold text-white">
+                          {userProfile?.member_id || 'Pending'}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-2 bg-emerald-500/30 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-emerald-400/30">
-                      <Icon name="CheckCircle" size={18} className="text-emerald-100" />
-                      <span className="text-sm font-semibold text-white">
-                        Active Membership
-                      </span>
+                    
+                    <div className="group flex items-center space-x-3 bg-emerald-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-emerald-300/40 hover:bg-emerald-500/50 hover:border-emerald-300/60 transition-all shadow-lg">
+                      <div className="w-10 h-10 bg-emerald-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon name="CheckCircle" size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <div className="text-xs text-emerald-100 font-medium">Status</div>
+                        <div className="text-sm font-bold text-white">
+                          Active Membership
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="group flex items-center space-x-3 bg-orange-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-orange-300/40 hover:bg-orange-500/50 hover:border-orange-300/60 transition-all shadow-lg">
+                      <div className="w-10 h-10 bg-orange-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Icon name="TrendingUp" size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <div className="text-xs text-orange-100 font-medium">Progress</div>
+                        <div className="text-sm font-bold text-white">
+                          Keep Learning!
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="mt-6 lg:mt-0">
-                  <div className="w-28 h-28 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl border-2 border-white/30 group-hover:scale-110 transition-transform">
-                    <Icon name="BookOpen" size={56} className="text-white" />
+                
+                {/* Enhanced Icon Display */}
+                <div className="flex lg:flex-col gap-4">
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl group-hover:bg-white/30 transition-all"></div>
+                    <div className="relative w-32 h-32 lg:w-36 lg:h-36 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border-2 border-white/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                      <Icon name="BookOpen" size={64} className="text-white group-hover:scale-110 transition-transform" />
+                    </div>
                   </div>
                 </div>
               </div>

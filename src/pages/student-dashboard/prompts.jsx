@@ -149,53 +149,64 @@ const StudentPrompts = () => {
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
         <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">Prompt Library</h1>
-              <p className="text-muted-foreground">
-                Access and use pre-built AI prompts for various business and creative use cases
-              </p>
-            </div>
+          {/* Enhanced Gradient Header */}
+          <div className="relative mb-8 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-emerald-500/10 to-teal-500/10 rounded-3xl"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/20 to-cyan-400/20 rounded-full blur-2xl"></div>
             
-            <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-              <Button 
-                variant="outline"
-                onClick={() => navigate('/student-dashboard')}
-              >
-                <Icon name="ArrowLeft" size={16} className="mr-2" />
-                Back to Dashboard
-              </Button>
+            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-8">
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
+                  Prompt Library
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Access and use pre-built AI prompts for various business and creative use cases
+                </p>
+              </div>
+              
+              <div className="flex items-center space-x-3 mt-4 lg:mt-0">
+                <Button 
+                  variant="outline"
+                  onClick={() => navigate('/student-dashboard')}
+                  className="border-2 hover:bg-white/80"
+                >
+                  <Icon name="ArrowLeft" size={16} className="mr-2" />
+                  Back to Dashboard
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Search and Filter */}
-          <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+          <div className="bg-gradient-to-br from-emerald-50 to-teal-100 border-2 border-emerald-200 rounded-2xl p-6 mb-8 shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Search */}
               <div className="relative">
-                <Icon name="Search" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Icon name="Search" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-emerald-600" />
                 <input
                   type="text"
                   placeholder="Search prompts..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/80"
                 />
               </div>
 
               {/* Category Filter */}
-              <div>
+              <div className="relative">
+                <Icon name="Filter" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-600 pointer-events-none" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/80 appearance-none"
                 >
                   <option value="all">All Categories</option>
                   {categories.filter(cat => cat !== 'all').map(category => (
                     <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
+                <Icon name="ChevronDown" size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-600 pointer-events-none" />
               </div>
             </div>
           </div>

@@ -149,53 +149,64 @@ const StudentPDFs = () => {
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
         <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">PDF Library</h1>
-              <p className="text-muted-foreground">
-                Access comprehensive guides, tutorials, and resources for your AI learning journey
-              </p>
-            </div>
+          {/* Enhanced Gradient Header */}
+          <div className="relative mb-8 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 via-pink-500/10 to-rose-500/10 rounded-3xl"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-pink-400/20 to-rose-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-red-400/20 to-orange-400/20 rounded-full blur-2xl"></div>
             
-            <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-              <Button 
-                variant="outline"
-                onClick={() => navigate('/student-dashboard')}
-              >
-                <Icon name="ArrowLeft" size={16} className="mr-2" />
-                Back to Dashboard
-              </Button>
+            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-8">
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-red-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-2">
+                  PDF Library
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Access comprehensive guides, tutorials, and resources for your AI learning journey
+                </p>
+              </div>
+              
+              <div className="flex items-center space-x-3 mt-4 lg:mt-0">
+                <Button 
+                  variant="outline"
+                  onClick={() => navigate('/student-dashboard')}
+                  className="border-2 hover:bg-white/80"
+                >
+                  <Icon name="ArrowLeft" size={16} className="mr-2" />
+                  Back to Dashboard
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Search and Filter */}
-          <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+          <div className="bg-gradient-to-br from-indigo-50 to-purple-100 border-2 border-indigo-200 rounded-2xl p-6 mb-8 shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Search */}
               <div className="relative">
-                <Icon name="Search" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                <Icon name="Search" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-600" />
                 <input
                   type="text"
                   placeholder="Search PDFs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white/80"
                 />
               </div>
 
               {/* Category Filter */}
-              <div>
+              <div className="relative">
+                <Icon name="Filter" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-600 pointer-events-none" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white/80 appearance-none"
                 >
                   <option value="all">All Categories</option>
                   {categories.filter(cat => cat !== 'all').map(category => (
                     <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
+                <Icon name="ChevronDown" size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-600 pointer-events-none" />
               </div>
             </div>
           </div>
@@ -226,40 +237,48 @@ const StudentPDFs = () => {
               </div>
             ) : (
               filteredPDFs.map((pdf) => (
-                <div key={pdf.id} className="bg-card border border-border rounded-2xl p-6 hover:shadow-lg transition-all duration-300">
+                <div key={pdf.id} className="group bg-white border-2 border-red-200 rounded-2xl p-6 hover:shadow-2xl hover:border-red-300 transition-all duration-300 transform hover:scale-105">
                   {/* PDF Header */}
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Icon name="FileText" size={24} className="text-red-600" />
+                    <div className="w-14 h-14 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-xl transition-shadow">
+                      <Icon name="FileText" size={28} className="text-white" />
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(pdf.category)}`}>
+                    <span className={`px-3 py-1.5 rounded-xl text-xs font-bold border-2 shadow-sm ${
+                      pdf.category === 'Prompts' ? 'bg-green-100 text-green-800 border-green-300' :
+                      pdf.category === 'Business' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                      pdf.category === 'Content' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                      pdf.category === 'Analytics' ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                      'bg-gray-100 text-gray-800 border-gray-300'
+                    }`}>
                       {pdf.category}
                     </span>
                   </div>
 
                   {/* PDF Info */}
-                  <h3 className="text-lg font-semibold text-foreground mb-2 line-clamp-2">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-red-600 transition-colors">
                     {pdf.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                     {pdf.description}
                   </p>
 
                   {/* PDF Metadata */}
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-1">
-                        <Icon name="File" size={14} />
-                        <span>{pdf.fileSize}</span>
+                  <div className="flex items-center justify-between text-xs mb-4">
+                    <div className="flex items-center space-x-4 text-gray-600">
+                      <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-lg">
+                        <Icon name="File" size={14} className="text-gray-700" />
+                        <span className="font-medium">{pdf.fileSize}</span>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Icon name="FileText" size={14} />
-                        <span>{pdf.pages} pages</span>
+                      <div className="flex items-center space-x-1 bg-gray-100 px-2 py-1 rounded-lg">
+                        <Icon name="FileText" size={14} className="text-gray-700" />
+                        <span className="font-medium">{pdf.pages} pages</span>
                       </div>
                     </div>
-                    <div className="text-right">
-                      {formatDate(pdf.uploadedAt)}
-                    </div>
+                  </div>
+                  
+                  <div className="text-xs text-gray-500 mb-4 flex items-center gap-1">
+                    <Icon name="Clock" size={12} />
+                    <span>{formatDate(pdf.uploadedAt)}</span>
                   </div>
 
                   {/* Action Buttons */}
@@ -267,7 +286,7 @@ const StudentPDFs = () => {
                     <Button 
                       variant="default" 
                       size="sm" 
-                      className="flex-1"
+                      className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 shadow-md hover:shadow-lg"
                       onClick={() => handleViewPDF(pdf)}
                     >
                       <Icon name="Eye" size={16} className="mr-2" />
@@ -280,18 +299,20 @@ const StudentPDFs = () => {
           </div>
 
           {/* Support Section */}
-          <div className="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6">
+          <div className="mt-8 bg-gradient-to-br from-cyan-50 to-blue-100 border-2 border-cyan-200 rounded-2xl p-6 shadow-lg">
             <div className="flex items-center space-x-4">
-              <Icon name="HelpCircle" size={24} className="text-blue-600 flex-shrink-0" />
-              <div>
-                <h3 className="text-lg font-semibold text-blue-900 mb-1">Need Help Accessing PDFs?</h3>
-                <p className="text-blue-700">
+              <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-md">
+                <Icon name="HelpCircle" size={24} className="text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-900 to-blue-900 bg-clip-text text-transparent mb-1">Need Help Accessing PDFs?</h3>
+                <p className="text-cyan-800">
                   If you're having trouble viewing any PDFs or need assistance, contact our support team.
                 </p>
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="mt-3"
+                  className="mt-3 border-2 border-cyan-200 hover:border-cyan-300 hover:bg-white/80"
                   onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
                 >
                   <Icon name="MessageCircle" size={16} className="mr-2" />
