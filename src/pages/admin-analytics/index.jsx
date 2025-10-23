@@ -158,115 +158,149 @@ const AdminAnalytics = () => {
   const { summary, revenue, userGrowth, coursePerformance, contentEngagement } = analyticsData;
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-cyan-50 to-blue-50 flex">
       <AdminSidebar 
         isCollapsed={sidebarCollapsed} 
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
         <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">
-                Analytics & Reports
-              </h1>
-              <p className="text-muted-foreground">
-                Comprehensive insights into your platform performance and user engagement
-              </p>
-              {lastUpdated && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Last updated: {lastUpdated.toLocaleTimeString()}
-                </p>
-              )}
-            </div>
-            <div className="flex items-center space-x-4">
-              <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="bg-card border border-border rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="week">Last 7 Days</option>
-                <option value="month">Last 30 Days</option>
-                <option value="quarter">Last 90 Days</option>
-                <option value="year">Last 12 Months</option>
-              </select>
-              <Button
-                variant="outline"
-                onClick={() => exportReport('comprehensive')}
-                iconName="Download"
-              >
-                Export Report
-              </Button>
-              <Button
-                variant="outline"
-                onClick={loadAnalyticsData}
-                iconName="RefreshCw"
-              >
-                Refresh
-              </Button>
+          {/* Header - Enhanced */}
+          <div className="relative overflow-hidden rounded-3xl mb-8 animate-fadeIn">
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-600 via-blue-600 to-indigo-600"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            
+            <div className="relative p-6 lg:p-8">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div className="mb-4 lg:mb-0">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
+                      <Icon name="BarChart3" size={24} className="text-white" />
+                    </div>
+                    <h1 className="text-2xl lg:text-3xl font-extrabold text-white">
+                      Analytics & Reports
+                    </h1>
+                  </div>
+                  <p className="text-white/90 ml-15">
+                    Comprehensive insights into your platform performance and user engagement
+                  </p>
+                  {lastUpdated && (
+                    <p className="text-xs text-white/70 ml-15 mt-1">
+                      Last updated: {lastUpdated.toLocaleTimeString()}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                  <select
+                    value={dateRange}
+                    onChange={(e) => setDateRange(e.target.value)}
+                    className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50 font-medium"
+                  >
+                    <option value="week" className="text-gray-900">Last 7 Days</option>
+                    <option value="month" className="text-gray-900">Last 30 Days</option>
+                    <option value="quarter" className="text-gray-900">Last 90 Days</option>
+                    <option value="year" className="text-gray-900">Last 12 Months</option>
+                  </select>
+                  <Button
+                    variant="outline"
+                    onClick={() => exportReport('comprehensive')}
+                    iconName="Download"
+                    className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                  >
+                    Export
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={loadAnalyticsData}
+                    iconName="RefreshCw"
+                    className="bg-white text-cyan-600 hover:bg-white/90 font-bold shadow-lg"
+                  >
+                    Refresh
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Summary Metrics */}
+          {/* Summary Metrics - Enhanced */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">Total Revenue</h3>
-                <Icon name="DollarSign" size={20} className="text-green-600" />
-              </div>
-              <div className="text-2xl font-bold text-foreground mb-2">
-                {formatCurrency(summary.totalRevenue)}
-              </div>
-              <p className="text-sm text-muted-foreground">All-time platform revenue</p>
-              <div className="mt-4 flex items-center text-sm text-green-600">
-                <Icon name="TrendingUp" size={16} className="mr-1" />
-                <span>+{summary.growthRate}% from last period</span>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">Total Users</h3>
-                <Icon name="Users" size={20} className="text-blue-600" />
-              </div>
-              <div className="text-2xl font-bold text-foreground mb-2">
-                {formatNumber(summary.totalUsers)}
-              </div>
-              <p className="text-sm text-muted-foreground">Registered users</p>
-              <div className="mt-4 flex items-center text-sm text-blue-600">
-                <Icon name="TrendingUp" size={16} className="mr-1" />
-                <span>{formatNumber(summary.activeUsers)} active users</span>
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-emerald-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold text-gray-900">Total Revenue</h3>
+                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <Icon name="DollarSign" size={20} className="text-white" />
+                  </div>
+                </div>
+                <div className="text-3xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent mb-2">
+                  {formatCurrency(summary.totalRevenue)}
+                </div>
+                <p className="text-sm text-gray-600 mb-3">All-time platform revenue</p>
+                <div className="flex items-center text-sm font-medium text-emerald-600">
+                  <Icon name="TrendingUp" size={16} className="mr-1" />
+                  <span>+{summary.growthRate}% from last period</span>
+                </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">Active Users</h3>
-                <Icon name="UserCheck" size={20} className="text-purple-600" />
-              </div>
-              <div className="text-2xl font-bold text-foreground mb-2">
-                {formatNumber(summary.activeUsers)}
-              </div>
-              <p className="text-sm text-muted-foreground">Currently active</p>
-              <div className="mt-4 flex items-center text-sm text-purple-600">
-                <Icon name="Activity" size={16} className="mr-1" />
-                <span>Last 15 minutes</span>
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-blue-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp" style={{ animationDelay: '0.1s' }}>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold text-gray-900">Total Users</h3>
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center">
+                    <Icon name="Users" size={20} className="text-white" />
+                  </div>
+                </div>
+                <div className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-2">
+                  {formatNumber(summary.totalUsers)}
+                </div>
+                <p className="text-sm text-gray-600 mb-3">Registered users</p>
+                <div className="flex items-center text-sm font-medium text-blue-600">
+                  <Icon name="TrendingUp" size={16} className="mr-1" />
+                  <span>{formatNumber(summary.activeUsers)} active users</span>
+                </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">Course Completion</h3>
-                <Icon name="Award" size={20} className="text-orange-600" />
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-purple-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp" style={{ animationDelay: '0.2s' }}>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold text-gray-900">Active Users</h3>
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                    <Icon name="UserCheck" size={20} className="text-white" />
+                  </div>
+                </div>
+                <div className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                  {formatNumber(summary.activeUsers)}
+                </div>
+                <p className="text-sm text-gray-600 mb-3">Currently active</p>
+                <div className="flex items-center text-sm font-medium text-purple-600">
+                  <Icon name="Activity" size={16} className="mr-1" />
+                  <span>Last 15 minutes</span>
+                </div>
               </div>
-              <div className="text-2xl font-bold text-foreground mb-2">
-                {summary.avgCompletionRate}%
-              </div>
-              <p className="text-sm text-muted-foreground">Average completion rate</p>
-              <div className="mt-4 flex items-center text-sm text-orange-600">
-                <Icon name="TrendingUp" size={16} className="mr-1" />
-                <span>{formatNumber(summary.totalCourses)} courses</span>
+            </div>
+
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-amber-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp" style={{ animationDelay: '0.3s' }}>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-bold text-gray-900">Course Completion</h3>
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                    <Icon name="Award" size={20} className="text-white" />
+                  </div>
+                </div>
+                <div className="text-3xl font-extrabold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-2">
+                  {summary.avgCompletionRate}%
+                </div>
+                <p className="text-sm text-gray-600 mb-3">Average completion rate</p>
+                <div className="flex items-center text-sm font-medium text-amber-600">
+                  <Icon name="TrendingUp" size={16} className="mr-1" />
+                  <span>{formatNumber(summary.totalCourses)} courses</span>
+                </div>
               </div>
             </div>
           </div>

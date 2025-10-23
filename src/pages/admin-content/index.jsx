@@ -220,34 +220,50 @@ const AdminContentPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50 to-cyan-50 flex">
       <AdminSidebar 
         isCollapsed={sidebarCollapsed} 
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
         <div className="p-6 lg:p-8 pt-20 lg:pt-8">
-          {/* Page Header */}
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-foreground mb-2">Content Management</h1>
-              <p className="text-muted-foreground">
-                Manage videos, PDF prompts, and educational materials
-              </p>
-            </div>
+          {/* Page Header - Enhanced */}
+          <div className="relative overflow-hidden rounded-3xl mb-8 animate-fadeIn">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-green-600 to-cyan-600"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
             
-            <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-              <Button 
-                variant="outline"
-                onClick={loadContent}
-              >
-                <Icon name="RefreshCw" size={16} className="mr-2" />
-                Refresh
-              </Button>
-              <Button onClick={() => setShowUploadForm(true)}>
-                <Icon name="Plus" size={16} className="mr-2" />
-                Add Content
-              </Button>
+            <div className="relative p-6 lg:p-8">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                <div className="mb-4 lg:mb-0">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/30">
+                      <Icon name="FolderOpen" size={24} className="text-white" />
+                    </div>
+                    <h1 className="text-2xl lg:text-3xl font-extrabold text-white">Content Library</h1>
+                  </div>
+                  <p className="text-white/90 ml-15">
+                    Manage videos, PDF prompts, and educational materials
+                  </p>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <Button 
+                    variant="outline"
+                    onClick={loadContent}
+                    className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                  >
+                    <Icon name="RefreshCw" size={16} className="mr-2" />
+                    Refresh
+                  </Button>
+                  <Button 
+                    onClick={() => setShowUploadForm(true)}
+                    className="bg-white text-emerald-600 hover:bg-white/90 font-bold shadow-lg"
+                  >
+                    <Icon name="Plus" size={16} className="mr-2" />
+                    Add Content
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -260,51 +276,63 @@ const AdminContentPage = () => {
             </div>
           )}
 
-          {/* Stats Cards */}
+          {/* Stats Cards - Enhanced */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="bg-card border border-border rounded-lg p-4">
-              <div className="flex items-center justify-between">
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-emerald-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Content</p>
-                  <p className="text-2xl font-bold text-foreground">{content?.length}</p>
+                  <p className="text-sm font-medium text-gray-600 mb-1">Total Content</p>
+                  <p className="text-3xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{content?.length}</p>
                 </div>
-                <Icon name="FolderOpen" size={24} className="text-primary" />
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Icon name="FolderOpen" size={28} className="text-white" />
+                </div>
               </div>
             </div>
             
-            <div className="bg-card border border-border rounded-lg p-4">
-              <div className="flex items-center justify-between">
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-blue-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp" style={{ animationDelay: '0.1s' }}>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Videos</p>
-                  <p className="text-2xl font-bold text-success">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Videos</p>
+                  <p className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                     {content?.filter(c => c?.content_type === 'video')?.length}
                   </p>
                 </div>
-                <Icon name="Play" size={24} className="text-success" />
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Icon name="Play" size={28} className="text-white" />
+                </div>
               </div>
             </div>
             
-            <div className="bg-card border border-border rounded-lg p-4">
-              <div className="flex items-center justify-between">
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-amber-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp" style={{ animationDelay: '0.2s' }}>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">PDF Prompts</p>
-                  <p className="text-2xl font-bold text-warning">
+                  <p className="text-sm font-medium text-gray-600 mb-1">PDF Prompts</p>
+                  <p className="text-3xl font-extrabold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
                     {content?.filter(c => c?.content_type === 'pdf')?.length}
                   </p>
                 </div>
-                <Icon name="FileText" size={24} className="text-warning" />
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Icon name="FileText" size={28} className="text-white" />
+                </div>
               </div>
             </div>
             
-            <div className="bg-card border border-border rounded-lg p-4">
-              <div className="flex items-center justify-between">
+            <div className="relative overflow-hidden bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-purple-400 hover:shadow-xl transition-all hover:-translate-y-1 animate-slideUp" style={{ animationDelay: '0.3s' }}>
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-2xl opacity-50"></div>
+              <div className="relative flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Elite Content</p>
-                  <p className="text-2xl font-bold text-secondary">
+                  <p className="text-sm font-medium text-gray-600 mb-1">Elite Content</p>
+                  <p className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                     {content?.filter(c => c?.access_level === 'elite')?.length}
                   </p>
                 </div>
-                <Icon name="Crown" size={24} className="text-secondary" />
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Icon name="Crown" size={28} className="text-white" />
+                </div>
               </div>
             </div>
           </div>
