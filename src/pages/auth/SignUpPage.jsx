@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import PublicHeader from '../../components/ui/PublicHeader';
+import GeometricBackground from '../../components/ui/GeometricBackground';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Icon from '../../components/AppIcon';
@@ -170,219 +170,223 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-purple-50 to-pink-100"></div>
-      <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-20 left-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20 blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-emerald-300 to-green-300 rounded-full opacity-10 blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-      
-      <PublicHeader />
-      
-      <div className="relative max-w-2xl w-full space-y-8 animate-fadeIn mt-20 z-10">
-        {/* Enhanced Card Container */}
-        <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border-2 border-white/50 transform transition-all duration-300 hover:shadow-3xl">
-          {/* Compact Header */}
-          <div className="text-center mb-6">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-110">
-                <Icon name="UserPlus" size={28} className="text-white" />
-              </div>
+    <div className="flex min-h-screen">
+      {/* Left Panel - Geometric Pattern Background */}
+      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white">
+        {/* Logo at top */}
+        <div className="absolute top-8 left-8">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={24} className="text-white" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-              Join Basic Intelligence
-            </h1>
-            <p className="text-sm text-gray-600">
-              Start your AI learning journey with us
+            <span className="text-xl font-bold">Basic Intelligence</span>
+          </div>
+        </div>
+        
+        {/* Central content */}
+        <div className="max-w-md text-center">
+          <div className="inline-block mb-6">
+            <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium">
+              Start Your AI Learning Journey
+            </span>
+          </div>
+          
+          <h1 className="text-5xl font-bold mb-6 leading-tight">
+            Join Thousands of Students
+          </h1>
+          
+          <p className="text-xl text-gray-300 leading-relaxed">
+            Get instant access to our comprehensive AI courses, prompt engineering tutorials, 
+            and expert-led workshops. Start building your future today.
+          </p>
+        </div>
+        
+        {/* Pagination dots at bottom */}
+        <div className="absolute bottom-8 flex gap-2">
+          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+          <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+        </div>
+      </GeometricBackground>
+      
+      {/* Right Panel - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white overflow-y-auto">
+        <div className="w-full max-w-md py-8">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={24} className="text-white" />
+            </div>
+            <span className="text-xl font-bold text-gray-900">Basic Intelligence</span>
+          </div>
+          
+          {/* Form Header */}
+          <div className="text-center mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Create your account
+            </h2>
+            <p className="text-gray-600">
+              Sign up to get started with your AI learning journey.
             </p>
           </div>
 
-          {/* Selected Tier Display - Compact */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+          {/* Selected Tier Display */}
+          <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-gray-600 mb-1">Selected Membership:</p>
-                <p className="text-sm text-blue-600 font-semibold">
+                <p className="text-sm font-medium text-gray-600 mb-1">Selected Plan:</p>
+                <p className="text-lg text-orange-600 font-bold">
                   {getTierDisplayName(formData?.tier)}
                 </p>
               </div>
               <Link 
                 to="/pricing-plans-page" 
-                className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1 transition-colors"
+                className="text-sm text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1 transition-colors"
               >
                 <span>Change</span>
-                <Icon name="ArrowRight" size={14} />
+                <Icon name="ArrowRight" size={16} />
               </Link>
             </div>
           </div>
 
-          {/* Error Message - Compact */}
+          {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
               <div className="flex items-center space-x-2">
-                <Icon name="AlertCircle" size={18} className="text-red-600 flex-shrink-0" />
+                <Icon name="AlertCircle" size={20} className="text-red-600 flex-shrink-0" />
                 <span className="text-red-700 text-sm">{error}</span>
               </div>
             </div>
           )}
 
-          {/* Compact Registration Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Registration Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Full Name"
+              name="fullName"
+              type="text"
+              required
+              value={formData?.fullName}
+              onChange={handleInputChange}
+              placeholder="John Doe"
+              disabled={loading}
+            />
+
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              required
+              value={formData?.email}
+              onChange={handleInputChange}
+              placeholder="john@example.com"
+              disabled={loading}
+            />
+
+            <div className="relative">
               <Input
-                label="Full Name"
-                name="fullName"
-                type="text"
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"}
                 required
-                value={formData?.fullName}
+                value={formData?.password}
                 onChange={handleInputChange}
-                placeholder="Enter your full name"
+                placeholder="Minimum 6 characters"
                 disabled={loading}
-                className="h-11 text-sm"
+                className="pr-12"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-10 text-gray-400 hover:text-gray-600 transition-colors"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                <Icon name={showPassword ? "EyeOff" : "Eye"} size={20} />
+              </button>
+            </div>
 
+            <div className="relative">
               <Input
-                label="Email Address"
-                name="email"
-                type="email"
+                label="Confirm Password"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
                 required
-                value={formData?.email}
+                value={formData?.confirmPassword}
                 onChange={handleInputChange}
-                placeholder="youremail@gmail.com"
+                placeholder="Re-enter your password"
                 disabled={loading}
-                className="h-11 text-sm"
+                className="pr-12"
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-10 text-gray-400 hover:text-gray-600 transition-colors"
+                title={showConfirmPassword ? "Hide password" : "Show password"}
+              >
+                <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={20} />
+              </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="relative">
-                <Input
-                  label="Password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={formData?.password}
-                  onChange={handleInputChange}
-                  placeholder="Minimum 6 characters"
-                  disabled={loading}
-                  className="h-11 text-sm pr-12"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
-                </button>
-              </div>
+            <Input
+              label="Phone Number"
+              name="phone"
+              type="tel"
+              required
+              value={formData?.phone}
+              onChange={handleInputChange}
+              placeholder="+234 XXX XXX XXXX"
+              disabled={loading}
+            />
 
-              <div className="relative">
-                <Input
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  required
-                  value={formData?.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="Re-enter your password"
-                  disabled={loading}
-                  className="h-11 text-sm pr-12"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
-                  title={showConfirmPassword ? "Hide password" : "Show password"}
-                >
-                  <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
-                </button>
-              </div>
-            </div>
+            <Input
+              label="Location (Optional)"
+              name="location"
+              type="text"
+              value={formData?.location}
+              onChange={handleInputChange}
+              placeholder="City, State"
+              disabled={loading}
+            />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="Phone Number"
-                name="phone"
-                type="tel"
-                required
-                value={formData?.phone}
-                onChange={handleInputChange}
-                placeholder="+234 123 456 7890"
-                disabled={loading}
-                className="h-11 text-sm"
-              />
-
-              <Input
-                label="Location (Optional)"
-                name="location"
-                type="text"
-                value={formData?.location}
-                onChange={handleInputChange}
-                placeholder="City, State"
-                disabled={loading}
-                className="h-11 text-sm"
-              />
-            </div>
-
-            {/* Terms and Conditions - Compact */}
-            <div className="flex items-start space-x-2 p-3 bg-gray-50 rounded-lg">
-              <Icon name="Shield" size={16} className="text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-xs text-gray-600">
-                  By creating an account, you agree to our{' '}
-                  <a href="#" className="text-blue-600 hover:underline font-medium">Terms of Service</a>{' '}
-                  and{' '}
-                  <a href="#" className="text-blue-600 hover:underline font-medium">Privacy Policy</a>
-                </p>
-              </div>
-            </div>
-
-            {/* Compact Submit Button */}
             <Button
               type="submit"
+              variant="orange"
               fullWidth
               loading={loading}
               disabled={loading}
-              className="h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+              size="lg"
             >
-              {loading ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <Icon name="Loader" size={18} className="animate-spin" />
-                  <span>Creating Account...</span>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center space-x-2">
-                  <Icon name="UserPlus" size={18} />
-                  <span>Create Account</span>
-                </div>
-              )}
+              {loading ? 'Creating Account...' : 'Sign Up'}
             </Button>
           </form>
 
-          {/* WhatsApp Contact - Compact */}
-          <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <div className="flex items-center justify-center space-x-2 text-sm">
-              <Icon name="MessageCircle" size={16} className="text-green-600" />
-              <button
-                onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
-                className="text-green-700 font-medium hover:underline cursor-pointer"
-              >
-                Need help? WhatsApp Us
-              </button>
-            </div>
-          </div>
+          {/* Sign In Link */}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Already have an account?{' '}
+            <Link 
+              to="/signin" 
+              className="text-orange-500 hover:text-orange-600 font-semibold transition-colors"
+            >
+              Sign In
+            </Link>
+          </p>
 
-          {/* Sign In Link - Compact */}
+          {/* WhatsApp Contact */}
+          <button
+            onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
+            className="w-full mt-4 p-3 border-2 border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-sm text-gray-700 hover:text-orange-600 font-medium"
+          >
+            <Icon name="MessageCircle" size={16} className="inline mr-2" />
+            Need Help? WhatsApp Us
+          </button>
+
+          {/* Terms and Privacy */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link 
-                to="/signin" 
-                className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors"
-              >
-                Sign In Here
-              </Link>
+            <p className="text-xs text-gray-500">
+              By signing up, you agree to our{' '}
+              <a href="#" className="text-orange-500 hover:underline">Terms of Service</a>
+              {' '}and{' '}
+              <a href="#" className="text-orange-500 hover:underline">Privacy Policy</a>
             </p>
           </div>
         </div>

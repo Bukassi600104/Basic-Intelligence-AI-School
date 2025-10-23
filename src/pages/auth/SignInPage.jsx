@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { redirectAfterLogin } from '../../services/authHelpers';
-import PublicHeader from '../../components/ui/PublicHeader';
+import GeometricBackground from '../../components/ui/GeometricBackground';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Icon from '../../components/AppIcon';
@@ -137,38 +137,71 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-blue-50 to-purple-100"></div>
-      <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20 blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-emerald-300 to-cyan-300 rounded-full opacity-10 blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-      
-      <PublicHeader />
-      
-      <div className="relative max-w-md w-full space-y-8 animate-fadeIn mt-20 z-10">
-        {/* Enhanced Card Container */}
-        <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border-2 border-white/50 transform transition-all duration-300 hover:shadow-3xl">
-          {/* Compact Header */}
-          <div className="text-center mb-6">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-110">
-                <Icon name="LogIn" size={28} className="text-white" />
-              </div>
+    <div className="flex min-h-screen">
+      {/* Left Panel - Geometric Pattern Background */}
+      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white">
+        {/* Logo at top */}
+        <div className="absolute top-8 left-8">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={24} className="text-white" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-              Welcome Back
-            </h1>
-            <p className="text-sm text-gray-600">
-              Sign in to continue your learning journey
+            <span className="text-xl font-bold">Basic Intelligence</span>
+          </div>
+        </div>
+        
+        {/* Central content */}
+        <div className="max-w-md text-center">
+          <div className="inline-block mb-6">
+            <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium">
+              Welcome to Basic Intelligence AI School
+            </span>
+          </div>
+          
+          <h1 className="text-5xl font-bold mb-6 leading-tight">
+            Master AI & Unlock Your Potential
+          </h1>
+          
+          <p className="text-xl text-gray-300 leading-relaxed">
+            Join thousands of students learning cutting-edge AI skills, prompt engineering, 
+            and machine learning techniques with our comprehensive courses.
+          </p>
+        </div>
+        
+        {/* Pagination dots at bottom */}
+        <div className="absolute bottom-8 flex gap-2">
+          <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+        </div>
+      </GeometricBackground>
+      
+      {/* Right Panel - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+              <Icon name="GraduationCap" size={24} className="text-white" />
+            </div>
+            <span className="text-xl font-bold text-gray-900">Basic Intelligence</span>
+          </div>
+          
+          {/* Form Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome back!
+            </h2>
+            <p className="text-gray-600">
+              Enter your email and password to continue your learning.
             </p>
           </div>
 
           {/* Success Message */}
           {successMessage && (
-            <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg animate-slideDown">
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg animate-slideDown">
               <div className="flex items-center space-x-2">
-                <Icon name="CheckCircle" size={18} className="text-green-600 flex-shrink-0" />
+                <Icon name="CheckCircle" size={20} className="text-green-600 flex-shrink-0" />
                 <span className="text-green-700 text-sm">{successMessage}</span>
               </div>
             </div>
@@ -176,126 +209,120 @@ const SignInPage = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
               <div className="flex items-center space-x-2">
-                <Icon name="AlertCircle" size={18} className="text-red-600 flex-shrink-0" />
+                <Icon name="AlertCircle" size={20} className="text-red-600 flex-shrink-0" />
                 <span className="text-red-700 text-sm">{error}</span>
               </div>
             </div>
           )}
 
-          {/* Compact Sign In Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-4">
-              <Input
-                label="Email Address"
-                name="email"
-                type="email"
-                required
-                value={formData?.email}
-                onChange={handleInputChange}
-                placeholder="youremail@gmail.com"
-                disabled={loading}
-                className="h-11 text-sm"
-              />
+          {/* Sign In Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Email"
+              name="email"
+              type="email"
+              required
+              value={formData?.email}
+              onChange={handleInputChange}
+              placeholder="jane@example.com"
+              disabled={loading}
+            />
 
-              <div className="relative">
-                <Input
-                  label="Password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={formData?.password}
-                  onChange={handleInputChange}
-                  placeholder="Enter your password"
-                  disabled={loading}
-                  className="h-11 text-sm pr-12"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
-                </button>
-              </div>
+            <div className="relative">
+              <Input
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                required
+                value={formData?.password}
+                onChange={handleInputChange}
+                placeholder="••••••••"
+                disabled={loading}
+                className="pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-10 text-gray-400 hover:text-gray-600 transition-colors"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                <Icon name={showPassword ? "EyeOff" : "Eye"} size={20} />
+              </button>
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
                 />
-                <label htmlFor="remember-me" className="ml-2 text-gray-600">
-                  Remember me
-                </label>
-              </div>
+                <span className="text-gray-700">Remember me</span>
+              </label>
 
               <button
                 type="button"
                 onClick={handleForgotPassword}
-                className="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors"
+                className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
               >
                 Forgot password?
               </button>
             </div>
 
-            {/* Compact Submit Button */}
             <Button
               type="submit"
+              variant="orange"
               fullWidth
               loading={loading}
               disabled={loading}
-              className="h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+              size="lg"
             >
-              {loading ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <Icon name="Loader" size={18} className="animate-spin" />
-                  <span>Signing In...</span>
-                </div>
-              ) : (
-                <div className="flex items-center justify-center space-x-2">
-                  <Icon name="LogIn" size={18} />
-                  <span>Sign In</span>
-                </div>
-              )}
+              {loading ? 'Signing In...' : 'Log in'}
             </Button>
           </form>
 
-          {/* WhatsApp Contact - Compact */}
-          <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <div className="flex items-center justify-center space-x-2 text-sm">
-              <Icon name="MessageCircle" size={16} className="text-green-600" />
-              <span className="text-green-700">
-                Need help?{' '}
-                <a 
-                  href="https://wa.me/2349062284074" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="font-medium hover:underline"
-                >
-                  WhatsApp Us
-                </a>
-              </span>
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or contact us</span>
             </div>
           </div>
 
-          {/* Sign Up Link - Compact */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link 
-                to="/signup" 
-                className="text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors"
-              >
-                Sign Up Here
-              </Link>
-            </p>
-          </div>
+          {/* WhatsApp Contact */}
+          <a
+            href="https://wa.me/2349062284074"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700"
+          >
+            <Icon name="MessageCircle" size={20} className="text-green-600" />
+            <span>WhatsApp Support</span>
+          </a>
+
+          {/* Sign Up Link */}
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Don't have an account?{' '}
+            <Link 
+              to="/signup" 
+              className="text-orange-500 hover:text-orange-600 font-semibold transition-colors"
+            >
+              Register
+            </Link>
+          </p>
+
+          {/* Terms and Privacy */}
+          <p className="text-center text-xs text-gray-500 mt-8">
+            By logging in, you agree to our{' '}
+            <a href="#" className="text-orange-500 hover:underline">Terms of Service</a>
+            {' '}and{' '}
+            <a href="#" className="text-orange-500 hover:underline">Privacy Policy</a>.
+          </p>
         </div>
       </div>
     </div>
