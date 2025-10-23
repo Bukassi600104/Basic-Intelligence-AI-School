@@ -29,71 +29,88 @@ const CallToActionSection = () => {
   ];
 
   return (
-    <section className="py-16 lg:py-24 bg-background">
+    <section className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
-        {/* Main CTA */}
-        <div className="bg-gradient-to-br from-primary via-primary to-secondary rounded-3xl p-8 lg:p-16 text-center text-white mb-16">
-          <div className="max-w-4xl mx-auto">
-            <Icon name="Rocket" size={64} className="mx-auto mb-8 opacity-80" />
-            
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6">
-              Ready to Transform Your Career with AI?
-            </h2>
-            
-            <p className="text-xl lg:text-2xl opacity-90 mb-8 leading-relaxed">
-              Join 500+ Nigerian professionals who are already using AI to advance their careers and grow their businesses.
-            </p>
+        {/* Main CTA - Enhanced */}
+        <div className="relative overflow-hidden rounded-3xl mb-16 animate-slideUp">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+          
+          <div className="relative p-8 lg:p-16 text-center text-white">
+            <div className="max-w-4xl mx-auto">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-8 border border-white/30 animate-float">
+                <Icon name="Rocket" size={40} className="text-white" />
+              </div>
+              
+              <h2 className="text-3xl lg:text-5xl font-extrabold mb-6 leading-tight">
+                Ready to Transform Your Career with AI?
+              </h2>
+              
+              <p className="text-xl lg:text-2xl text-white/90 mb-8 leading-relaxed max-w-3xl mx-auto">
+                Join <span className="font-bold text-white">500+ Nigerian professionals</span> who are already using AI to advance their careers and grow their businesses.
+              </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Link to="/join-membership-page">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Link to="/join-membership-page">
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="bg-white text-purple-600 hover:bg-white/90 border-white font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+                    iconName="UserPlus" 
+                    iconPosition="left"
+                  >
+                    Join our Community
+                  </Button>
+                </Link>
+                
                 <Button 
-                  variant="outline" 
+                  variant="ghost" 
                   size="lg" 
-                  className="bg-white text-primary hover:bg-white/90 border-white"
-                  iconName="UserPlus" 
+                  className="text-white border-2 border-white/50 hover:bg-white/20 backdrop-blur-sm font-bold hover:border-white transition-all hover:scale-105"
+                  iconName="MessageCircle" 
                   iconPosition="left"
                 >
-                  Join our Community
+                  Ask Questions on WhatsApp
                 </Button>
-              </Link>
-              
-              <Button 
-                variant="ghost" 
-                size="lg" 
-                className="text-white border-white/30 hover:bg-white/10"
-                iconName="MessageCircle" 
-                iconPosition="left"
-              >
-                Ask Questions on WhatsApp
-              </Button>
-            </div>
+              </div>
 
-            {/* Benefits Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
-              {benefits?.map((benefit, index) => (
-                <div key={index} className="flex items-center space-x-3 bg-white/10 rounded-lg p-4">
-                  <Icon name="Check" size={20} className="text-white flex-shrink-0" />
-                  <span className="text-sm">{benefit}</span>
-                </div>
-              ))}
+              {/* Benefits Grid - Enhanced */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
+                {benefits?.map((benefit, index) => (
+                  <div key={index} className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:bg-white/20 transition-all hover:scale-105 animate-slideUp" style={{ animationDelay: `${0.1 * index}s` }}>
+                    <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Icon name="Check" size={18} className="text-white" />
+                    </div>
+                    <span className="text-sm font-medium">{benefit}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* FAQ Section */}
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          <div>
-            <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-6">
-              Frequently Asked Questions
-            </h3>
+        {/* FAQ Section - Enhanced */}
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
+          <div className="animate-slideUp" style={{ animationDelay: '0.1s' }}>
+            <div className="mb-8">
+              <span className="inline-block px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-sm font-bold text-purple-600 mb-4">
+                FAQ
+              </span>
+              <h3 className="text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent mb-4">
+                Frequently Asked Questions
+              </h3>
+            </div>
             <div className="space-y-6">
               {faqs?.map((faq, index) => (
-                <div key={index} className="bg-card border border-border rounded-lg p-6">
-                  <h4 className="font-semibold text-foreground mb-3 flex items-center">
-                    <Icon name="HelpCircle" size={20} className="text-primary mr-3" />
+                <div key={index} className="bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-purple-400 hover:shadow-xl transition-all hover:-translate-y-1 group">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center group-hover:text-purple-600 transition-colors">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                      <Icon name="HelpCircle" size={20} className="text-white" />
+                    </div>
                     {faq?.question}
                   </h4>
-                  <p className="text-muted-foreground leading-relaxed pl-8">
+                  <p className="text-gray-600 leading-relaxed pl-13">
                     {faq?.answer}
                   </p>
                 </div>
@@ -101,65 +118,84 @@ const CallToActionSection = () => {
             </div>
           </div>
 
-          <div className="space-y-8">
-            {/* Contact Card */}
-            <div className="bg-muted/30 rounded-2xl p-8">
-              <h4 className="text-xl font-bold text-foreground mb-4">
-                Still Have Questions?
-              </h4>
-              <p className="text-muted-foreground mb-6">
-                Our team is here to help you discover how AI can help you create, earn, and innovate in your field.
-              </p>
+          <div className="space-y-6">
+            {/* Contact Card - Enhanced */}
+            <div className="relative overflow-hidden rounded-2xl bg-white border-2 border-gray-200 p-8 hover:border-blue-400 hover:shadow-xl transition-all animate-slideUp" style={{ animationDelay: '0.2s' }}>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full blur-3xl opacity-50"></div>
               
-              <div className="space-y-4">
-                <Button 
-                  variant="outline" 
-                  fullWidth 
-                  className="justify-start"
-                  iconName="MessageCircle" 
-                  iconPosition="left"
-                >
-                  WhatsApp: +2349062284074
-                </Button>
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-4">
+                  <Icon name="MessageCircle" size={28} className="text-white" />
+                </div>
+                <h4 className="text-xl font-bold text-gray-900 mb-3">
+                  Still Have Questions?
+                </h4>
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Our team is here to help you discover how AI can help you create, earn, and innovate in your field.
+                </p>
                 
-                <Button 
-                  variant="outline" 
-                  fullWidth 
-                  className="justify-start"
-                  iconName="Mail" 
-                  iconPosition="left"
-                >
-                  hello@basicintelligence.com
-                </Button>
+                <div className="space-y-3">
+                  <Button 
+                    variant="outline" 
+                    fullWidth 
+                    className="justify-start border-2 hover:border-blue-500 hover:bg-blue-50 font-medium"
+                    iconName="MessageCircle" 
+                    iconPosition="left"
+                  >
+                    WhatsApp: +2349062284074
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    fullWidth 
+                    className="justify-start border-2 hover:border-purple-500 hover:bg-purple-50 font-medium"
+                    iconName="Mail" 
+                    iconPosition="left"
+                  >
+                    hello@basicintelligence.com
+                  </Button>
+                </div>
               </div>
             </div>
 
-            {/* Guarantee Card */}
-            <div className="bg-success/5 border border-success/20 rounded-2xl p-8">
-              <div className="flex items-center space-x-3 mb-4">
-                <Icon name="Shield" size={24} className="text-success" />
-                <h4 className="text-xl font-bold text-foreground">
-                  Our Commitment
-                </h4>
+            {/* Guarantee Card - Enhanced */}
+            <div className="relative overflow-hidden rounded-2xl bg-white border-2 border-emerald-200 p-8 hover:border-emerald-400 hover:shadow-xl transition-all animate-slideUp" style={{ animationDelay: '0.3s' }}>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full blur-3xl opacity-50"></div>
+              
+              <div className="relative">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center">
+                    <Icon name="Shield" size={28} className="text-white" />
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900">
+                    Our Commitment
+                  </h4>
+                </div>
+                <p className="text-gray-600 leading-relaxed">
+                  We're so confident in our program that we offer <span className="font-bold text-emerald-600">ongoing support</span> until you achieve your AI learning goals. 
+                  Your success is our success.
+                </p>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
-                We're so confident in our program that we offer ongoing support until you achieve your AI learning goals. 
-                Your success is our success.
-              </p>
             </div>
 
-            {/* Urgency Card */}
-            <div className="bg-warning/5 border border-warning/20 rounded-2xl p-8">
-              <div className="flex items-center space-x-3 mb-4">
-                <Icon name="Clock" size={24} className="text-warning" />
-                <h4 className="text-xl font-bold text-foreground">
-                  Don't Wait
-                </h4>
+            {/* Urgency Card - Enhanced */}
+            <div className="relative overflow-hidden rounded-2xl bg-white border-2 border-amber-200 p-8 hover:border-amber-400 hover:shadow-xl transition-all animate-slideUp" style={{ animationDelay: '0.4s' }}>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full blur-3xl opacity-50"></div>
+              
+              <div className="relative">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center animate-pulse-slow">
+                    <Icon name="Clock" size={28} className="text-white" />
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900">
+                    Don't Wait
+                  </h4>
+                </div>
+                <p className="text-gray-600 leading-relaxed">
+                  AI is transforming industries rapidly. The professionals who <span className="font-bold text-amber-600">start learning today</span> will have a significant advantage tomorrow. 
+                  Join us now and stay ahead of the curve.
+                </p>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
-                AI is transforming industries rapidly. The professionals who start learning today will have a significant advantage tomorrow. 
-                Join us now and stay ahead of the curve.
-              </p>
             </div>
           </div>
         </div>
