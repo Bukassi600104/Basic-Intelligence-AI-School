@@ -116,7 +116,19 @@ export const emailService = {
   // Real Resend API integration
   async sendEmailViaResend(emailData) {
     try {
-      const resend = new Resend(import.meta.env.VITE_RESEND_API_KEY);
+      // Check if API key is configured
+      const apiKey = import.meta.env.VITE_RESEND_API_KEY;
+      
+      if (!apiKey || apiKey === 'your_resend_api_key_here' || apiKey.trim() === '') {
+        const errorMsg = 'Resend API key is not configured. Please add VITE_RESEND_API_KEY to your .env file.';
+        logger.error(errorMsg);
+        return { 
+          success: false, 
+          error: errorMsg
+        };
+      }
+
+      const resend = new Resend(apiKey);
       
       const { data, error } = await resend.emails.send({
         from: emailData.from,
@@ -127,14 +139,14 @@ export const emailService = {
 
       if (error) {
         logger.error('Resend API error:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: error.message || 'Failed to send email via Resend' };
       }
 
       logger.info('Email sent successfully via Resend:', data);
       return { success: true, data };
     } catch (error) {
       logger.error('Error sending email via Resend:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message || 'Failed to send email' };
     }
   },
 

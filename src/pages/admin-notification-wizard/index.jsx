@@ -332,7 +332,7 @@ const AdminNotificationWizard = () => {
                       placeholder="Enter your notification message here..."
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      You can use variables like {{full_name}}, {{email}}, {{member_id}} in your message
+                      You can use variables like {'{{'} full_name {'}}'},  {'{{'} email {'}}'},  {'{{'} member_id {'}}'} in your message
                     </p>
                   </div>
 
