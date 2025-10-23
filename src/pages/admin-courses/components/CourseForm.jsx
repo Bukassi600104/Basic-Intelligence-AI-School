@@ -161,40 +161,46 @@ const CourseForm = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto animate-fadeIn">
       <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={onClose} />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
         
-        <div className="relative bg-card border border-border rounded-2xl p-10 lg:p-12 w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-xl backdrop-blur-sm bg-white/95">
-          {/* Enhanced Header */}
-          <div className="text-center mb-12">
-            <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center">
-                <Icon name="BookOpen" size={36} className="text-primary" />
+        <div className="relative bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-gray-200 animate-slideUp">
+          {/* Gradient Header */}
+          <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 via-pink-600 to-rose-600 p-8">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+            
+            <div className="relative text-center">
+              <div className="inline-flex w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl items-center justify-center mb-4 animate-float">
+                <Icon name="BookOpen" size={40} className="text-white" />
               </div>
+              <h1 className="text-3xl font-extrabold text-white mb-2">
+                {title}
+              </h1>
+              <p className="text-white/90">Fill in the details to create an engaging course</p>
+              <button
+                onClick={onClose}
+                className="absolute top-0 right-0 p-2 text-white hover:bg-white/20 rounded-xl transition-colors"
+              >
+                <Icon name="X" size={24} />
+              </button>
             </div>
-            <h1 className="text-4xl font-bold text-foreground mb-4">
-              {title}
-            </h1>
-            <button
-              onClick={onClose}
-              className="absolute top-6 right-6 p-3 hover:bg-muted rounded-xl transition-colors"
-            >
-              <Icon name="X" size={24} className="text-muted-foreground" />
-            </button>
           </div>
 
           {/* Enhanced Error Display */}
           {error && (
-            <div className="mb-10 p-5 bg-red-50 border border-red-200 rounded-xl">
+            <div className="mx-8 mt-6 mb-4 p-5 bg-gradient-to-r from-red-50 to-rose-50 border-2 border-red-200 rounded-2xl shadow-lg animate-slideDown">
               <div className="flex items-center space-x-4">
-                <Icon name="AlertCircle" size={24} className="text-red-600 flex-shrink-0" />
-                <span className="text-red-600 text-base font-medium">{error}</span>
+                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center">
+                  <Icon name="AlertCircle" size={20} className="text-white" />
+                </div>
+                <span className="text-red-700 font-medium">{error}</span>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-10">
+          <form onSubmit={handleSubmit} className="p-8 space-y-8 bg-gradient-to-br from-gray-50 to-purple-50">
             {/* Basic Information */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <Input
@@ -357,36 +363,33 @@ const CourseForm = ({
               <option value="archived">Archived</option>
             </Select>
 
-            {/* Enhanced Form Actions */}
-            <div className="flex justify-end space-x-4 pt-8 border-t border-border">
-              <Button
+            {/* Enhanced Form Actions with Gradient */}
+            <div className="flex justify-end space-x-4 pt-8 border-t-2 border-gray-200">
+              <button
                 type="button"
-                variant="outline"
                 onClick={onClose}
                 disabled={loading}
-                size="lg"
-                className="h-14 text-lg"
+                className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
-              </Button>
-              <Button
+              </button>
+              <button
                 type="submit"
-                loading={loading}
-                size="lg"
-                className="h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                disabled={loading}
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:from-purple-700 hover:to-pink-700 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3"
               >
                 {loading ? (
-                  <div className="flex items-center space-x-3">
+                  <>
                     <Icon name="Loader" size={24} className="animate-spin" />
                     <span>Saving Course...</span>
-                  </div>
+                  </>
                 ) : (
-                  <div className="flex items-center space-x-3">
+                  <>
                     <Icon name="Save" size={24} />
                     <span>{course ? 'Update Course' : 'Create Course'}</span>
-                  </div>
+                  </>
                 )}
-              </Button>
+              </button>
             </div>
           </form>
         </div>
