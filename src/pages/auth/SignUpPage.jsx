@@ -149,12 +149,18 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen relative overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 via-purple-50 to-pink-100"></div>
+      <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full opacity-20 blur-3xl animate-pulse-slow"></div>
+      <div className="absolute bottom-20 left-10 w-96 h-96 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-full opacity-20 blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-br from-emerald-300 to-green-300 rounded-full opacity-10 blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+      
       <PublicHeader />
       
-      <div className="max-w-2xl w-full space-y-8 animate-fadeIn mt-20">
-        {/* Compact Card Container */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transform transition-all duration-300 hover:shadow-3xl">
+      <div className="relative max-w-2xl w-full space-y-8 animate-fadeIn mt-20 z-10">
+        {/* Enhanced Card Container */}
+        <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border-2 border-white/50 transform transition-all duration-300 hover:shadow-3xl">
           {/* Compact Header */}
           <div className="text-center mb-6">
             <div className="flex justify-center mb-4">

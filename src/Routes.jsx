@@ -43,6 +43,7 @@ const Routes = () => {
         <Route path="/admin-settings" element={<AdminSettings />} />
         <Route path="/admin-dashboard/settings" element={<AdminSettingsNew />} />
         <Route path="/admin-analytics" element={<AdminAnalytics />} />
+        <Route path="/admin/reports" element={<AdminAnalytics />} />
         <Route path="/admin-notifications" element={<AdminNotifications />} />
         <Route path="/admin-notification-wizard" element={<AdminNotificationWizard />} />
         <Route path="/admin-reviews" element={<AdminReviews />} />

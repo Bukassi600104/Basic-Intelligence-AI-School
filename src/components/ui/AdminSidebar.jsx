@@ -76,7 +76,7 @@ const AdminSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
           break;
         case 'add-course': navigate('/admin-courses?action=create');
           break;
-        case 'reports': navigate('/admin-dashboard?tab=analytics');
+        case 'reports': navigate('/admin/reports');
           break;
         default:
           console.log(`Unknown quick action: ${action}`);
