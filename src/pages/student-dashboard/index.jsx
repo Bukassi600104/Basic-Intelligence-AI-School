@@ -157,19 +157,7 @@ const StudentDashboard = () => {
       <div className="flex-1 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
             <div className="flex items-center justify-center min-h-[400px]">
-              <div className="text-center">
-                {/* Modern Loading Animation */}
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl blur-2xl opacity-50 animate-pulse"></div>
-                  <div className="relative w-24 h-24 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-3xl flex items-center justify-center mx-auto shadow-2xl animate-gradient" style={{ backgroundSize: '200% 200%' }}>
-                    <Icon name="Loader" size={32} className="animate-spin text-white" />
-                  </div>
-                </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
-                  Loading Dashboard
-                </h2>
-                <p className="text-gray-600 text-base">Preparing your learning environment...</p>
-              </div>
+              <LoadingSpinner size="lg" message="Preparing your learning environment..." />
             </div>
           </div>
         </div>

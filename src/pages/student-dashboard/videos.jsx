@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
+import LockedOverlay from '../../components/ui/LockedOverlay';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { contentService } from '../../services/contentService';
 import { logger } from '../../utils/logger';
 

@@ -4,9 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { reviewService } from '../../services/reviewService';
 import { passwordService } from '../../services/passwordService';
 import { avatarService } from '../../services/avatarService';
+import { logger } from '../../utils/logger';
 
 const StudentSettings = () => {
   const { user, userProfile, isMember, updateProfile } = useAuth();
