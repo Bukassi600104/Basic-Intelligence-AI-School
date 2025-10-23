@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import FeatureCard from '../../components/ui/FeatureCard';
+import LockedOverlay from '../../components/ui/LockedOverlay';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { contentService } from '../../services/contentService';
@@ -19,20 +20,36 @@ const StudentDashboard = () => {
   const [showReferralModal, setShowReferralModal] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [daysRemaining, setDaysRemaining] = useState(null);
+  const [showLockedOverlay, setShowLockedOverlay] = useState(false);
 
-  // Check if user is a paid student - only redirect when profile is loaded and user is not a member
+  // Calculate days remaining until subscription expires
+  useEffect(() => {
+    if (userProfile?.subscription_expiry) {
+      const expiry = new Date(userProfile.subscription_expiry);
+      const now = new Date();
+      const diffTime = expiry - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setDaysRemaining(diffDays > 0 ? diffDays : 0);
+    }
+  }, [userProfile]);
+
+  // Determine if overlay should be shown
+  useEffect(() => {
+    if (userProfile) {
+      const status = userProfile.membership_status;
+      setShowLockedOverlay(status === 'pending' || status === 'expired' || status === 'inactive');
+    }
+  }, [userProfile]);
+
+  // Check authentication - redirect to signin if not logged in
   useEffect(() => {
     if (!user) {
       navigate('/signin');
       return;
     }
-
-    // Only redirect if user profile is loaded and user is not a member
-    if (userProfile && !isMember) {
-      navigate('/join-membership-page');
-      return;
-    }
-  }, [user, userProfile, isMember, navigate]);
+    // Keep users on dashboard even if pending/inactive - they'll see locked overlay
+  }, [user, navigate]);
 
   // Load recent content
   useEffect(() => {
@@ -160,7 +177,15 @@ const StudentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex relative">
+      {/* Show locked overlay for pending/expired/inactive accounts */}
+      {showLockedOverlay && userProfile && (
+        <LockedOverlay 
+          type={userProfile.membership_status}
+          onRenew={() => navigate('/student-dashboard/subscription?action=renew')}
+        />
+      )}
+      
       <StudentDashboardNav 
         isCollapsed={sidebarCollapsed} 
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
@@ -230,23 +255,25 @@ const StudentDashboard = () => {
                       </div>
                       <div>
                         <div className="text-xs text-emerald-100 font-medium">Status</div>
-                        <div className="text-sm font-bold text-white">
-                          Active Membership
+                        <div className="text-sm font-bold text-white capitalize">
+                          {userProfile?.membership_status || 'Pending'}
                         </div>
                       </div>
                     </div>
                     
-                    <div className="group flex items-center space-x-3 bg-orange-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-orange-300/40 hover:bg-orange-500/50 hover:border-orange-300/60 transition-all shadow-lg">
-                      <div className="w-10 h-10 bg-orange-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon name="TrendingUp" size={20} className="text-white" />
-                      </div>
-                      <div>
-                        <div className="text-xs text-orange-100 font-medium">Progress</div>
-                        <div className="text-sm font-bold text-white">
-                          Keep Learning!
+                    {userProfile?.membership_status === 'active' && daysRemaining !== null && (
+                      <div className="group flex items-center space-x-3 bg-orange-500/40 backdrop-blur-md rounded-xl px-5 py-3 border-2 border-orange-300/40 hover:bg-orange-500/50 hover:border-orange-300/60 transition-all shadow-lg">
+                        <div className="w-10 h-10 bg-orange-400/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <Icon name="Clock" size={20} className="text-white" />
+                        </div>
+                        <div>
+                          <div className="text-xs text-orange-100 font-medium">Days Remaining</div>
+                          <div className="text-sm font-bold text-white">
+                            {daysRemaining} {daysRemaining === 1 ? 'Day' : 'Days'}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
                 

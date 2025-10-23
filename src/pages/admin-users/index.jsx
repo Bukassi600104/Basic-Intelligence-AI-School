@@ -255,6 +255,23 @@ const AdminUsersPage = () => {
     
     try {
       switch (action) {
+        case 'activate':
+          // Activate pending account
+          if (user?.membership_status === 'pending') {
+            if (window?.confirm(`Activate ${user?.full_name}'s account? This will grant them 30 days of access.`)) {
+              const { data, error: activateError } = await adminService?.activateUserAccount(user?.id, 30, userProfile?.id);
+              if (activateError) {
+                alert('Failed to activate account: ' + activateError);
+              } else {
+                alert(`Account activated successfully! ${user?.full_name} will receive a confirmation email.`);
+                await loadUsers(); // Reload users
+              }
+            }
+          } else {
+            alert('User account is not pending activation');
+          }
+          break;
+          
         case 'edit':
           // Open edit user modal
           setSelectedUser(user);

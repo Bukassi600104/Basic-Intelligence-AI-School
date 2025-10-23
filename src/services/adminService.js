@@ -776,5 +776,159 @@ export const adminService = {
     } catch (error) {
       return { data: null, error: error?.message };
     }
+  },
+
+  // Activate user account (for pending users after payment confirmation)
+  activateUserAccount: async (userId, daysToAdd = 30, adminId) => {
+    try {
+      if (!userId) {
+        return { data: null, error: 'User ID is required' };
+      }
+
+      // Get user details first
+      const { data: user, error: fetchError } = await supabase
+        ?.from('user_profiles')
+        ?.select('*')
+        ?.eq('id', userId)
+        ?.single();
+
+      if (fetchError || !user) {
+        return { data: null, error: 'User not found' };
+      }
+
+      // Calculate subscription expiry date
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + daysToAdd);
+
+      // Update user profile
+      const { data: updatedUser, error: updateError } = await supabase
+        ?.from('user_profiles')
+        ?.update({
+          membership_status: 'active',
+          subscription_expiry: expiryDate.toISOString(),
+          is_active: true,
+          updated_at: new Date().toISOString()
+        })
+        ?.eq('id', userId)
+        ?.select()
+        ?.single();
+
+      if (updateError) {
+        return { data: null, error: updateError?.message };
+      }
+
+      // Send activation confirmation email
+      try {
+        await notificationService.sendNotification({
+          userId: userId,
+          templateName: 'account_activated_confirmation',
+          variables: {
+            full_name: user.full_name,
+            email: user.email,
+            member_id: user.member_id || 'Pending',
+            membership_tier: user.membership_tier,
+            subscription_expiry: expiryDate.toLocaleDateString('en-GB'),
+            dashboard_url: `${window.location.origin}/student-dashboard`
+          },
+          recipientType: 'email'
+        });
+      } catch (emailError) {
+        logger.warn('Failed to send activation email:', emailError);
+        // Don't fail the activation if email fails
+      }
+
+      logger.info(`Admin ${adminId} activated user ${userId} for ${daysToAdd} days`);
+      return { data: updatedUser, error: null };
+    } catch (error) {
+      logger.error('activateUserAccount error:', error);
+      return { data: null, error: error?.message || 'Failed to activate user account' };
+    }
+  },
+
+  // Add subscription days (for renewals/upgrades)
+  addSubscriptionDays: async (userId, daysToAdd, adminId) => {
+    try {
+      if (!userId || !daysToAdd) {
+        return { data: null, error: 'User ID and days are required' };
+      }
+
+      // Get current user data
+      const { data: user, error: fetchError } = await supabase
+        ?.from('user_profiles')
+        ?.select('subscription_expiry, full_name, email, member_id')
+        ?.eq('id', userId)
+        ?.single();
+
+      if (fetchError || !user) {
+        return { data: null, error: 'User not found' };
+      }
+
+      // Calculate new expiry date (add to existing if active, otherwise from now)
+      let newExpiryDate;
+      if (user.subscription_expiry && new Date(user.subscription_expiry) > new Date()) {
+        newExpiryDate = new Date(user.subscription_expiry);
+      } else {
+        newExpiryDate = new Date();
+      }
+      newExpiryDate.setDate(newExpiryDate.getDate() + daysToAdd);
+
+      // Update subscription expiry
+      const { data: updatedUser, error: updateError } = await supabase
+        ?.from('user_profiles')
+        ?.update({
+          subscription_expiry: newExpiryDate.toISOString(),
+          membership_status: 'active', // Ensure active when adding days
+          updated_at: new Date().toISOString()
+        })
+        ?.eq('id', userId)
+        ?.select()
+        ?.single();
+
+      if (updateError) {
+        return { data: null, error: updateError?.message };
+      }
+
+      logger.info(`Admin ${adminId} added ${daysToAdd} days to user ${userId}`);
+      return { data: updatedUser, error: null };
+    } catch (error) {
+      logger.error('addSubscriptionDays error:', error);
+      return { data: null, error: error?.message || 'Failed to add subscription days' };
+    }
+  },
+
+  // Upgrade user membership tier
+  upgradeUserTier: async (userId, newTier, adminId) => {
+    try {
+      if (!userId || !newTier) {
+        return { data: null, error: 'User ID and tier are required' };
+      }
+
+      // Validate tier
+      const validTiers = ['starter', 'pro', 'elite'];
+      if (!validTiers.includes(newTier)) {
+        return { data: null, error: 'Invalid membership tier' };
+      }
+
+      // Update membership tier
+      const { data: updatedUser, error: updateError } = await supabase
+        ?.from('user_profiles')
+        ?.update({
+          membership_tier: newTier,
+          updated_at: new Date().toISOString()
+        })
+        ?.eq('id', userId)
+        ?.select()
+        ?.single();
+
+      if (updateError) {
+        return { data: null, error: updateError?.message };
+      }
+
+      logger.info(`Admin ${adminId} upgraded user ${userId} to ${newTier}`);
+      return { data: updatedUser, error: null };
+    } catch (error) {
+      logger.error('upgradeUserTier error:', error);
+      return { data: null, error: error?.message || 'Failed to upgrade user tier' };
+    }
   }
 };

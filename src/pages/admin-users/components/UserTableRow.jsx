@@ -12,7 +12,8 @@ const UserTableRow = ({
   onAssignMemberId, 
   onViewPayments,
   onDelete,
-  onToggleActiveStatus
+  onToggleActiveStatus,
+  onActivateAccount
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -91,6 +92,20 @@ const UserTableRow = ({
       
       <td className="px-4 py-3">
         <div className="flex items-center space-x-1">
+          {/* Show Activate button for pending users */}
+          {user?.membership_status === 'pending' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onActivateAccount(user)}
+              title="Activate Account"
+              className="text-green-600 hover:text-green-700"
+            >
+              <Icon name="CheckCircle" size={16} className="mr-1" />
+              Activate
+            </Button>
+          )}
+          
           <Button
             variant="ghost"
             size="sm"
@@ -206,6 +221,17 @@ const UserTableRow = ({
           </div>
           
           <div className="flex flex-wrap gap-2 pt-2">
+            {user?.membership_status === 'pending' && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => onActivateAccount(user)}
+                className="text-green-600 hover:text-green-700"
+              >
+                <Icon name="CheckCircle" size={14} className="mr-1" />
+                Activate
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={() => onEdit(user)}>
               <Icon name="Edit" size={14} className="mr-1" />
               Edit

@@ -157,6 +157,7 @@ const UserTable = ({
                 onViewPayments={(user) => onUserAction('viewPayments', user)}
                 onDelete={(user) => onUserAction('delete', user)}
                 onToggleActiveStatus={(user) => onUserAction('toggleActive', user)}
+                onActivateAccount={(user) => onUserAction('activate', user)}
               />
             ))}
           </tbody>
@@ -176,6 +177,7 @@ const UserTable = ({
             onViewPayments={(user) => onUserAction('viewPayments', user)}
             onDelete={(user) => onUserAction('delete', user)}
             onToggleActiveStatus={(user) => onUserAction('toggleActive', user)}
+            onActivateAccount={(user) => onUserAction('activate', user)}
           />
         ))}
       </div>

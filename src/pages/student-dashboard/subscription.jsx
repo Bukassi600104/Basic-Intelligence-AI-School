@@ -4,152 +4,175 @@ import { useNavigate } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
-import { userService } from '../../services/userService';
+import PaymentInstructions from '../../components/ui/PaymentInstructions';
 import { subscriptionService } from '../../services/subscriptionService';
+import { logger } from '../../utils/logger';
 
 const StudentSubscription = () => {
   const { user, userProfile, isMember } = useAuth();
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [subscriptionData, setSubscriptionData] = useState(null);
-  const [plans, setPlans] = useState({});
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState('');
-  const [requestInProgress, setRequestInProgress] = useState(false);
-  const [hasPendingRequest, setHasPendingRequest] = useState(false);
-  const [requestHistory, setRequestHistory] = useState([]);
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [daysRemaining, setDaysRemaining] = useState(null);
 
-  // Check if user is a paid student - only redirect when profile is loaded and user is not a member
+  // Redirect if not authenticated
   useEffect(() => {
     if (!user) {
       navigate('/signin');
-      return;
     }
+  }, [user, navigate]);
 
-    // Only redirect if user profile is loaded and user is not a member
-    if (userProfile && !isMember) {
-      navigate('/join-membership-page');
-      return;
-    }
-  }, [user, userProfile, isMember, navigate]);
-
-  // Load subscription data
+  // Calculate days remaining
   useEffect(() => {
-    const loadSubscriptionData = async () => {
-      setLoading(true);
-      try {
-        // Use real user profile data from Supabase
-        const subscriptionData = {
-          plan: userProfile?.membership_tier || 'Starter',
-          status: userProfile?.membership_status || 'inactive',
-          memberId: userProfile?.member_id || 'Pending',
-          startDate: userProfile?.joined_at || new Date().toISOString(),
-          renewalDate: userProfile?.last_active_at || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          paymentMethod: 'Bank Transfer', // This would come from payment records
-          amount: getPlanAmount(userProfile?.membership_tier),
-          billingCycle: 'Monthly',
-          features: getPlanFeatures(userProfile?.membership_tier)
-        };
-        
-        setSubscriptionData(subscriptionData);
-      } catch (error) {
-        console.error('Failed to load subscription data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (userProfile?.membership_status === 'active') {
-      loadSubscriptionData();
+    if (userProfile?.subscription_expiry && userProfile?.membership_status === 'active') {
+      const expiryDate = new Date(userProfile.subscription_expiry);
+      const today = new Date();
+      const diffTime = expiryDate - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      setDaysRemaining(diffDays > 0 ? diffDays : 0);
     }
   }, [userProfile]);
 
-  const getPlanAmount = (tier) => {
-    const amounts = {
-      'starter': '₦10,000',
-      'pro': '₦15,000', 
-      'elite': '₦25,000'
-    };
-    return amounts[tier] || '₦15,000';
-  };
-
-  const getPlanFeatures = (tier) => {
-    const baseFeatures = [
-      'Access to PDF resources',
-      'Video streaming access',
-      'Prompt library access',
-      'WhatsApp support',
-      'Regular content updates'
-    ];
-
-    const proFeatures = [
-      ...baseFeatures,
-      'Advanced content',
-      'Priority support'
-    ];
-
-    const eliteFeatures = [
-      ...proFeatures,
-      'Exclusive resources',
-      '1-on-1 coaching',
-      'Custom content requests'
-    ];
-
-    const features = {
-      'starter': baseFeatures,
-      'pro': proFeatures,
-      'elite': eliteFeatures
+  // Fetch pending requests
+  useEffect(() => {
+    const fetchPendingRequests = async () => {
+      if (!userProfile?.id) return;
+      
+      try {
+        const { success, data } = await subscriptionService.getPendingRequests(userProfile.id);
+        if (success && data) {
+          setPendingRequests(data);
+        }
+      } catch (error) {
+        logger.error('Failed to fetch pending requests:', error);
+      }
     };
 
-    return features[tier] || baseFeatures;
+    fetchPendingRequests();
+  }, [userProfile]);
+
+  const plans = {
+    starter: {
+      name: 'Starter Plan',
+      amount: '₦10,000',
+      duration: '30 days',
+      features: [
+        'Access to PDF resources',
+        'Video streaming access',
+        'Prompt library access',
+        'WhatsApp support',
+        'Regular content updates'
+      ]
+    },
+    pro: {
+      name: 'Pro Plan', 
+      amount: '₦15,000',
+      duration: '30 days',
+      features: [
+        'All Starter features',
+        'Advanced content',
+        'Priority support',
+        'Exclusive webinars',
+        'Certificate of completion'
+      ]
+    },
+    elite: {
+      name: 'Elite Plan',
+      amount: '₦25,000',
+      duration: '30 days',
+      features: [
+        'All Pro features',
+        'Exclusive resources',
+        '1-on-1 coaching sessions',
+        'Custom content requests',
+        'Direct mentor access'
+      ]
+    }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
+  const currentPlan = plans[userProfile?.membership_tier] || plans.pro;
 
-  const getStatusColor = (status) => {
-    const colors = {
-      'active': 'bg-green-100 text-green-800',
-      'pending': 'bg-yellow-100 text-yellow-800',
-      'expired': 'bg-red-100 text-red-800',
-      'cancelled': 'bg-gray-100 text-gray-800'
+  const getStatusBadge = (status) => {
+    const statusConfig = {
+      active: { color: 'bg-green-100 text-green-800 border-green-300', icon: 'CheckCircle', label: 'Active' },
+      pending: { color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: 'Clock', label: 'Pending Activation' },
+      expired: { color: 'bg-red-100 text-red-800 border-red-300', icon: 'XCircle', label: 'Expired' },
+      inactive: { color: 'bg-gray-100 text-gray-800 border-gray-300', icon: 'Slash', label: 'Inactive' }
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+
+    const config = statusConfig[status] || statusConfig.inactive;
+    
+    return (
+      <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full border-2 ${config.color}`}>
+        <Icon name={config.icon} size={16} />
+        <span className="font-bold text-sm">{config.label}</span>
+      </div>
+    );
   };
 
-  const handleRenewSubscription = () => {
-    // In a real app, this would initiate a payment process
-    alert('This would initiate the subscription renewal process in a real application.');
+  const handleRenewClick = () => {
+    setSelectedPlan(userProfile?.membership_tier);
+    setShowPaymentForm(true);
   };
 
-  const handleContactSupport = () => {
-    window.open('https://wa.me/2349062284074', '_blank');
+  const handleUpgradeClick = (planTier) => {
+    setSelectedPlan(planTier);
+    setShowPaymentForm(true);
+  };
+
+  const handlePaymentSubmitted = () => {
+    setShowPaymentForm(false);
+    setSelectedPlan(null);
+    // Refresh pending requests
+    subscriptionService.getPendingRequests(userProfile.id)
+      .then(({ success, data }) => {
+        if (success && data) {
+          setPendingRequests(data);
+        }
+      });
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <Icon name="Loader" size={48} className="animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading subscription data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show payment form if selected
+  if (showPaymentForm) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
         <StudentDashboardNav 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
+          collapsed={sidebarCollapsed} 
+          onCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
         />
-        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
-        <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
-            <div className="flex items-center justify-center min-h-[400px]">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4 animate-pulse">
-                  <Icon name="Loader" size={24} className="animate-spin text-white" />
-                </div>
-                <div className="text-lg font-medium text-foreground mb-2">Loading Subscription Details</div>
-                <div className="text-sm text-muted-foreground">Please wait while we fetch your subscription information...</div>
-              </div>
-            </div>
+        
+        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'} p-8`}>
+          <div className="max-w-3xl mx-auto">
+            {/* Back button */}
+            <button
+              onClick={() => {
+                setShowPaymentForm(false);
+                setSelectedPlan(null);
+              }}
+              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+            >
+              <Icon name="ArrowLeft" size={20} />
+              <span>Back to Subscription</span>
+            </button>
+
+            <PaymentInstructions 
+              userProfile={userProfile}
+              onPaymentSubmitted={handlePaymentSubmitted}
+            />
           </div>
         </div>
       </div>
@@ -157,243 +180,214 @@ const StudentSubscription = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <StudentDashboardNav 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
+        collapsed={sidebarCollapsed} 
+        onCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
-        <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
-          {/* Enhanced Gradient Header */}
-          <div className="relative mb-8 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 rounded-3xl"></div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-teal-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-emerald-400/20 to-green-400/20 rounded-full blur-2xl"></div>
-            
-            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-8">
-              <div>
-                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-transparent mb-2">
-                  Subscription Management
-                </h1>
-                <p className="text-gray-600 text-lg">
-                  Manage your membership subscription and billing details
-                </p>
+      
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'} p-8`}>
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Subscription Management</h1>
+            <p className="text-gray-600">Manage your subscription plan and billing</p>
+          </div>
+
+          {/* Current Plan Card */}
+          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-200 p-8 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
+                  <Icon name="Award" size={32} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{currentPlan.name}</h2>
+                  <p className="text-gray-600">Current Plan</p>
+                </div>
               </div>
-              
-              <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-                <Button 
-                  variant="outline"
-                  onClick={() => navigate('/student-dashboard')}
-                  className="border-2 hover:bg-white/80"
-                >
-                  <Icon name="ArrowLeft" size={16} className="mr-2" />
-                  Back to Dashboard
-                </Button>
+              {getStatusBadge(userProfile?.membership_status)}
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-6">
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <Icon name="CreditCard" size={20} className="text-blue-600" />
+                  <span className="text-sm font-medium text-gray-600">Amount</span>
+                </div>
+                <div className="text-2xl font-bold text-gray-900">{currentPlan.amount}</div>
+                <div className="text-sm text-gray-500">per {currentPlan.duration}</div>
               </div>
+
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <Icon name="Calendar" size={20} className="text-blue-600" />
+                  <span className="text-sm font-medium text-gray-600">Days Remaining</span>
+                </div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {userProfile?.membership_status === 'active' && daysRemaining !== null ? daysRemaining : 'N/A'}
+                </div>
+                <div className="text-sm text-gray-500">
+                  {userProfile?.membership_status === 'pending' && 'Awaiting activation'}
+                  {userProfile?.membership_status === 'expired' && 'Subscription expired'}
+                  {userProfile?.membership_status === 'active' && daysRemaining !== null && 'days left'}
+                </div>
+              </div>
+
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <Icon name="User" size={20} className="text-blue-600" />
+                  <span className="text-sm font-medium text-gray-600">Member ID</span>
+                </div>
+                <div className="text-2xl font-bold text-gray-900">{userProfile?.member_id || 'Pending'}</div>
+                <div className="text-sm text-gray-500">Your unique ID</div>
+              </div>
+            </div>
+
+            {/* Features */}
+            <div className="border-t border-gray-200 pt-6 mb-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Your Benefits</h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                {currentPlan.features.map((feature, index) => (
+                  <div key={index} className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Icon name="Check" size={14} className="text-green-600" />
+                    </div>
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4">
+              <Button
+                onClick={handleRenewClick}
+                className="flex-1 min-w-[200px] bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3"
+                disabled={userProfile?.membership_status === 'pending' || pendingRequests.length > 0}
+              >
+                <div className="flex items-center justify-center space-x-2">
+                  <Icon name="RefreshCw" size={20} />
+                  <span>Renew Subscription</span>
+                </div>
+              </Button>
             </div>
           </div>
 
-          {subscriptionData && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Subscription Overview */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Current Plan Card */}
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 rounded-2xl p-8 shadow-lg">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-md">
-                        <Icon name="Award" size={24} className="text-white" />
-                      </div>
-                      <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-900 to-indigo-900 bg-clip-text text-transparent">Current Plan</h2>
-                    </div>
-                    <span className={`px-4 py-2 rounded-xl text-sm font-bold border-2 shadow-md ${
-                      subscriptionData.status === 'active' 
-                        ? 'bg-green-100 text-green-800 border-green-300' 
-                        : getStatusColor(subscriptionData.status)
-                    }`}>
-                      {subscriptionData.status.charAt(0).toUpperCase() + subscriptionData.status.slice(1)}
-                    </span>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Pending Requests */}
+          {pendingRequests.length > 0 && (
+            <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-6 mb-8">
+              <div className="flex items-center space-x-3 mb-4">
+                <Icon name="Clock" size={24} className="text-yellow-600" />
+                <h3 className="text-xl font-bold text-yellow-900">Pending Payment Verification</h3>
+              </div>
+              <p className="text-yellow-800 mb-4">
+                Your payment is currently being verified by our admin team. You will receive a confirmation email within 48 hours.
+              </p>
+              {pendingRequests.map((request, index) => (
+                <div key={index} className="bg-white rounded-lg p-4 border border-yellow-200">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-4xl font-bold bg-gradient-to-r from-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
-                        {subscriptionData.plan}
-                      </div>
-                      <div className="text-2xl text-blue-700 font-semibold mb-6">
-                        {subscriptionData.amount} <span className="text-base text-blue-600">/ {subscriptionData.billingCycle}</span>
-                      </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center space-x-2 p-3 bg-white/60 rounded-xl border border-blue-200">
-                          <Icon name="CheckCircle" size={18} className="text-green-600" />
-                          <span className="text-sm font-medium text-blue-900">Active Member</span>
-                        </div>
-                        <div className="flex items-center space-x-2 p-3 bg-white/60 rounded-xl border border-blue-200">
-                          <Icon name="User" size={18} className="text-blue-600" />
-                          <span className="text-sm font-medium text-blue-900">Member ID: {subscriptionData.memberId}</span>
-                        </div>
-                      </div>
+                      <div className="font-medium text-gray-900">Request Type: {request.request_type}</div>
+                      <div className="text-sm text-gray-600">Submitted: {new Date(request.created_at).toLocaleDateString()}</div>
                     </div>
-                    
-                    <div className="space-y-4">
-                      <div className="p-4 bg-white/60 rounded-xl border border-blue-200">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <Icon name="Calendar" size={16} className="text-blue-600" />
-                          <div className="text-sm text-blue-700 font-medium">Started On</div>
-                        </div>
-                        <div className="text-base font-bold text-blue-900 ml-6">
-                          {formatDate(subscriptionData.startDate)}
-                        </div>
-                      </div>
-                      <div className="p-4 bg-white/60 rounded-xl border border-blue-200">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <Icon name="RefreshCw" size={16} className="text-blue-600" />
-                          <div className="text-sm text-blue-700 font-medium">Renews On</div>
-                        </div>
-                        <div className="text-base font-bold text-blue-900 ml-6">
-                          {formatDate(subscriptionData.renewalDate)}
-                        </div>
-                      </div>
-                      <div className="p-4 bg-white/60 rounded-xl border border-blue-200">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <Icon name="CreditCard" size={16} className="text-blue-600" />
-                          <div className="text-sm text-blue-700 font-medium">Payment Method</div>
-                        </div>
-                        <div className="text-base font-bold text-blue-900 ml-6">
-                          {subscriptionData.paymentMethod}
-                        </div>
-                      </div>
+                    <div className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">
+                      {request.status}
                     </div>
                   </div>
                 </div>
-
-                {/* Features Card */}
-                <div className="bg-gradient-to-br from-purple-50 to-pink-100 border-2 border-purple-200 rounded-2xl p-8 shadow-lg">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-md">
-                      <Icon name="Star" size={24} className="text-white" />
-                    </div>
-                    <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-900 to-pink-900 bg-clip-text text-transparent">Plan Features</h2>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {subscriptionData.features.map((feature, index) => (
-                      <div key={index} className="flex items-center space-x-3 p-3 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
-                        <Icon name="CheckCircle" size={20} className="text-green-600 flex-shrink-0" />
-                        <span className="text-purple-900 font-medium">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions Sidebar */}
-              <div className="space-y-6">
-                {/* Renew Subscription */}
-                <div className="bg-gradient-to-br from-emerald-50 to-green-100 border-2 border-emerald-200 rounded-2xl p-6 shadow-lg">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-green-500 rounded-lg flex items-center justify-center">
-                      <Icon name="Zap" size={20} className="text-white" />
-                    </div>
-                    <h3 className="text-lg font-bold bg-gradient-to-r from-emerald-900 to-green-900 bg-clip-text text-transparent">Subscription Actions</h3>
-                  </div>
-                  <div className="space-y-3">
-                    <Button 
-                      className="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 shadow-md hover:shadow-lg transition-all"
-                      onClick={handleRenewSubscription}
-                    >
-                      <Icon name="RefreshCw" size={16} className="mr-2" />
-                      Renew Subscription
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-2 border-emerald-200 hover:border-emerald-300 hover:bg-white/80 transition-all"
-                      onClick={handleContactSupport}
-                    >
-                      <Icon name="MessageCircle" size={16} className="mr-2" />
-                      Contact Support
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Payment Information */}
-                <div className="bg-gradient-to-br from-orange-50 to-amber-100 border-2 border-orange-200 rounded-2xl p-6 shadow-lg">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
-                      <Icon name="CreditCard" size={20} className="text-white" />
-                    </div>
-                    <h3 className="text-lg font-bold bg-gradient-to-r from-orange-900 to-amber-900 bg-clip-text text-transparent">Payment Info</h3>
-                  </div>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
-                      <span className="text-orange-700 font-medium">Plan:</span>
-                      <span className="font-bold text-orange-900">{subscriptionData.plan}</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
-                      <span className="text-orange-700 font-medium">Amount:</span>
-                      <span className="font-bold text-orange-900">{subscriptionData.amount}</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
-                      <span className="text-orange-700 font-medium">Billing Cycle:</span>
-                      <span className="font-bold text-orange-900">{subscriptionData.billingCycle}</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-white/60 rounded-lg">
-                      <span className="text-orange-700 font-medium">Payment Method:</span>
-                      <span className="font-bold text-orange-900">{subscriptionData.paymentMethod}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Support Card */}
-                <div className="bg-gradient-to-br from-cyan-50 to-blue-100 border-2 border-cyan-200 rounded-2xl p-6 shadow-lg">
-                  <div className="flex items-center space-x-3 mb-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
-                      <Icon name="HelpCircle" size={20} className="text-white" />
-                    </div>
-                    <h3 className="text-lg font-bold bg-gradient-to-r from-cyan-900 to-blue-900 bg-clip-text text-transparent">Need Help?</h3>
-                  </div>
-                  <p className="text-cyan-800 text-sm mb-4">
-                    Have questions about your subscription or need assistance with payment?
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full border-2 border-cyan-200 hover:border-cyan-300 hover:bg-white/80"
-                    onClick={handleContactSupport}
-                  >
-                    <Icon name="MessageCircle" size={16} className="mr-2" />
-                    WhatsApp Support
-                  </Button>
-                </div>
-              </div>
+              ))}
             </div>
           )}
 
-          {/* Important Notes */}
-          <div className="mt-8 bg-gradient-to-br from-yellow-50 to-orange-100 border-2 border-yellow-300 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-start space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Icon name="AlertTriangle" size={20} className="text-white" />
+          {/* Upgrade Options */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Upgrade Your Plan</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {Object.entries(plans).map(([tier, plan]) => {
+                const isCurrent = userProfile?.membership_tier === tier;
+                const isUpgrade = !isCurrent && (
+                  (tier === 'pro' && userProfile?.membership_tier === 'starter') ||
+                  (tier === 'elite' && (userProfile?.membership_tier === 'starter' || userProfile?.membership_tier === 'pro'))
+                );
+
+                return (
+                  <div
+                    key={tier}
+                    className={`rounded-2xl border-2 p-6 transition-all ${
+                      isCurrent
+                        ? 'bg-gradient-to-br from-blue-50 to-purple-50 border-blue-300 shadow-lg'
+                        : 'bg-white border-gray-200 hover:border-blue-300 hover:shadow-lg'
+                    }`}
+                  >
+                    <div className="text-center mb-4">
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                      <div className="text-3xl font-bold text-blue-600 mb-1">{plan.amount}</div>
+                      <div className="text-sm text-gray-600">{plan.duration}</div>
+                    </div>
+
+                    <ul className="space-y-3 mb-6">
+                      {plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-start space-x-2">
+                          <Icon name="Check" size={16} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {isCurrent ? (
+                      <div className="w-full py-3 bg-blue-100 text-blue-800 rounded-lg text-center font-bold">
+                        Current Plan
+                      </div>
+                    ) : isUpgrade ? (
+                      <Button
+                        onClick={() => handleUpgradeClick(tier)}
+                        fullWidth
+                        className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-bold"
+                        disabled={pendingRequests.length > 0}
+                      >
+                        Upgrade Now
+                      </Button>
+                    ) : (
+                      <div className="w-full py-3 bg-gray-100 text-gray-500 rounded-lg text-center font-medium">
+                        Not Available
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Help Section */}
+          <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Icon name="HelpCircle" size={24} className="text-white" />
               </div>
-              <div>
-                <h3 className="text-lg font-bold bg-gradient-to-r from-yellow-900 to-orange-900 bg-clip-text text-transparent mb-2">Important Information</h3>
-                <ul className="text-yellow-800 text-sm space-y-2 font-medium">
-                  <li className="flex items-start gap-2">
-                    <Icon name="CheckCircle" size={16} className="mt-0.5 text-yellow-700 flex-shrink-0" />
-                    <span>Your subscription will automatically renew on the renewal date</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="CheckCircle" size={16} className="mt-0.5 text-yellow-700 flex-shrink-0" />
-                    <span>You will receive a reminder 7 days before renewal</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="CheckCircle" size={16} className="mt-0.5 text-yellow-700 flex-shrink-0" />
-                    <span>All payments are processed securely via bank transfer</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="CheckCircle" size={16} className="mt-0.5 text-yellow-700 flex-shrink-0" />
-                    <span>Contact support for any billing inquiries or subscription changes</span>
-                  </li>
-                </ul>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-blue-900 mb-2">Need Help?</h3>
+                <p className="text-blue-800 mb-4">
+                  Contact our support team for assistance with your subscription or billing questions.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <a
+                    href="https://wa.me/2348012345678"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors"
+                  >
+                    <Icon name="MessageCircle" size={18} />
+                    <span>WhatsApp Support</span>
+                  </a>
+                  <a
+                    href="mailto:support@basicintelligence.com"
+                    className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                  >
+                    <Icon name="Mail" size={18} />
+                    <span>Email Support</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

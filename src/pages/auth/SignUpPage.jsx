@@ -101,7 +101,8 @@ const SignUpPage = () => {
         full_name: formData?.fullName?.trim(),
         phone: formData?.phone?.trim(),
         location: formData?.location?.trim(),
-        membership_tier: formData?.tier
+        membership_tier: formData?.tier,
+        membership_status: 'pending' // Set as pending until payment is confirmed
       };
 
       // Sign up with Supabase Auth
@@ -116,10 +117,10 @@ const SignUpPage = () => {
         return;
       }
 
-      // Registration successful
+      // Registration successful - redirect to dashboard immediately
       if (data?.user) {
-        // Show success message and redirect
-        navigate('/signin?message=registration_success');
+        // User will see locked dashboard with payment instructions
+        navigate('/student-dashboard');
       }
       
     } catch (error) {
