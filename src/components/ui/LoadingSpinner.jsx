@@ -1,26 +1,25 @@
 import React from 'react';
+import Icon from '../AppIcon';
 
 /**
- * Centered loading spinner using the app logo
- * @param {string} size - Size of the logo: 'sm' (40px), 'md' (64px), 'lg' (96px)
+ * Centered loading spinner with icon
+ * @param {string} size - Size of spinner: 'sm' (24px), 'md' (32px), 'lg' (48px)
  * @param {string} message - Optional loading message to display
  */
 const LoadingSpinner = ({ size = 'md', message = 'Loading...' }) => {
-  const sizeClasses = {
-    sm: 'w-10 h-10',
-    md: 'w-16 h-16',
-    lg: 'w-24 h-24'
+  const iconSizes = {
+    sm: 24,
+    md: 32,
+    lg: 48
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[200px]">
-      <div className={`${sizeClasses[size]} animate-pulse mb-4`}>
-        <img 
-          src="/assets/images/logo-bg.png" 
-          alt="Loading..." 
-          className="w-full h-full object-contain"
-        />
-      </div>
+      <Icon 
+        name="Loader" 
+        size={iconSizes[size]} 
+        className="animate-spin text-blue-600 mb-4" 
+      />
       {message && (
         <p className="text-gray-600 text-sm font-medium">{message}</p>
       )}
