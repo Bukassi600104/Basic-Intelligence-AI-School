@@ -18,6 +18,10 @@ const buttonVariants = cva(
                 success: "bg-success text-success-foreground hover:bg-success/90",
                 warning: "bg-warning text-warning-foreground hover:bg-warning/90",
                 danger: "bg-error text-error-foreground hover:bg-error/90",
+                // New orange theme variants
+                orange: "bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold hover:from-orange-600 hover:to-orange-700 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300",
+                "orange-outline": "border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white font-semibold transition-all duration-300",
+                "dark-orange": "bg-dark-800 text-white border border-dark-600 hover:border-brand-primary transition-all duration-300",
             },
             size: {
                 default: "h-10 px-4 py-2",

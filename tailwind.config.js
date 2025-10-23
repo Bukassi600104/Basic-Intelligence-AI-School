@@ -18,6 +18,30 @@ module.exports = {
     },
     extend: {
       colors: {
+        brand: {
+          primary: '#FF5722',
+          'primary-dark': '#E64A19',
+          'primary-light': '#FF7043',
+        },
+        orange: {
+          50: '#FFF3E0',
+          100: '#FFE0B2',
+          200: '#FFCC80',
+          300: '#FFB74D',
+          400: '#FFA726',
+          500: '#FF9800',
+          600: '#FB8C00',
+          700: '#F57C00',
+          800: '#EF6C00',
+          900: '#E65100',
+        },
+        dark: {
+          900: '#121212',
+          800: '#1E1E1E',
+          700: '#2A2A2A',
+          600: '#363636',
+          500: '#424242',
+        },
         border: "var(--color-border)", /* gray-200 */
         input: "var(--color-input)", /* white */
         ring: "var(--color-ring)", /* blue-800 */
@@ -171,6 +195,7 @@ module.exports = {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "glow": "glow 2s ease-in-out infinite",
         "float": "float 3s ease-in-out infinite",
+        "float-delayed": "float 6s ease-in-out infinite 3s",
         "shimmer": "shimmer 2s linear infinite",
         "gradient": "gradient 8s ease infinite",
       },
