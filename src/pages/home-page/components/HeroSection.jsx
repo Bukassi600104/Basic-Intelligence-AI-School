@@ -5,34 +5,34 @@ import Button from '../../../components/ui/Button';
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-24 lg:py-32 overflow-hidden">
-      {/* Animated Background Gradients */}
+    <section className="relative bg-gradient-to-br from-orange-50 via-gray-50 to-orange-50 py-24 lg:py-32 overflow-hidden">
+      {/* Animated Background Gradients - Orange Theme */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-400/30 to-cyan-400/30 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-400/30 to-pink-400/30 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-cyan-300/20 to-blue-300/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-orange-400/30 to-orange-500/30 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-orange-500/30 to-orange-600/30 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-orange-300/20 to-orange-400/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      {/* Floating Decorative Elements */}
+      {/* Floating Decorative Elements - Orange Theme */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-20 h-20 border-4 border-blue-400/20 rounded-2xl rotate-12 animate-float"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 border-4 border-purple-400/20 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
-        <div className="absolute bottom-32 left-1/4 w-12 h-12 border-4 border-pink-400/20 rounded-lg -rotate-6 animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-20 right-1/3 w-14 h-14 border-4 border-cyan-400/20 rounded-full animate-float" style={{ animationDelay: '1.5s' }}></div>
+        <div className="absolute top-20 left-10 w-20 h-20 border-4 border-orange-400/20 rounded-2xl rotate-12 animate-float"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 border-4 border-orange-500/20 rounded-full animate-float" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute bottom-32 left-1/4 w-12 h-12 border-4 border-orange-400/20 rounded-lg -rotate-6 animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-20 right-1/3 w-14 h-14 border-4 border-orange-500/20 rounded-full animate-float" style={{ animationDelay: '1.5s' }}></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 lg:px-6">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Animated Badge */}
-          <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-sm font-semibold mb-8 shadow-lg animate-scaleIn hover:shadow-xl hover:scale-105 transition-all duration-300">
+          {/* Animated Badge - Orange Theme */}
+          <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm font-semibold mb-8 shadow-lg animate-scaleIn hover:shadow-xl hover:scale-105 transition-all duration-300">
             <Icon name="Sparkles" size={18} className="animate-pulse" />
             <span>AI Education Platform</span>
             <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
           </div>
 
-          {/* Main Heading with Gradient Text */}
+          {/* Main Heading with Gradient Text - Orange Theme */}
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight animate-fadeIn">
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 bg-clip-text text-transparent">
               Learn AI.
             </span>
             <br />
@@ -50,12 +50,12 @@ const HeroSection = () => {
             No jargon, just practical skills for the real world.
           </p>
 
-          {/* Key Benefits with Icons */}
+          {/* Key Benefits with Icons - Orange Theme */}
           <div className="flex flex-wrap justify-center items-center gap-6 mb-12 animate-slideUp" style={{ animationDelay: '0.4s' }}>
             {[
               { icon: 'CheckCircle', text: 'Practical AI Projects', color: 'text-emerald-600' },
-              { icon: 'Users', text: 'Expert Instructors', color: 'text-blue-600' },
-              { icon: 'MessageCircle', text: 'Community Support', color: 'text-purple-600' },
+              { icon: 'Users', text: 'Expert Instructors', color: 'text-orange-600' },
+              { icon: 'MessageCircle', text: 'Community Support', color: 'text-orange-600' },
               { icon: 'Zap', text: 'Prompt Library', color: 'text-amber-600' },
             ].map((benefit, index) => (
               <div
@@ -68,20 +68,20 @@ const HeroSection = () => {
             ))}
           </div>
 
-          {/* CTA Buttons with Glow Effect */}
+          {/* CTA Buttons with Orange Theme */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-14 animate-slideUp" style={{ animationDelay: '0.5s' }}>
             <Link to="/join-membership-page" className="w-full sm:w-auto">
-              <button className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-blue-500/50 hover:scale-105 transition-all duration-300 overflow-hidden">
+              <button className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300 overflow-hidden">
                 <span className="relative z-10 flex items-center justify-center space-x-2">
                   <span>Join Now</span>
                   <Icon name="ArrowRight" size={18} className="group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </Link>
             
             <Link to="/about-page" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-sm text-gray-900 font-semibold rounded-xl border-2 border-gray-300 hover:border-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-300">
+              <button className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-sm text-gray-900 font-semibold rounded-xl border-2 border-gray-300 hover:border-orange-500 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <span className="flex items-center justify-center space-x-2">
                   <Icon name="Info" size={18} />
                   <span>Learn More</span>
@@ -90,12 +90,12 @@ const HeroSection = () => {
             </Link>
           </div>
 
-          {/* Trust Indicators with Enhanced Design */}
+          {/* Trust Indicators with Orange Theme */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 animate-slideUp" style={{ animationDelay: '0.6s' }}>
             {[
-              { icon: 'Users', text: '500+ Active Members', color: 'from-blue-500 to-cyan-500' },
+              { icon: 'Users', text: '500+ Active Members', color: 'from-orange-500 to-orange-600' },
               { icon: 'Star', text: '4.9/5 Rating', color: 'from-amber-500 to-orange-500' },
-              { icon: 'Video', text: 'Live Lessons', color: 'from-purple-500 to-pink-500' },
+              { icon: 'Video', text: 'Live Lessons', color: 'from-orange-500 to-orange-600' },
             ].map((indicator, index) => (
               <div
                 key={index}

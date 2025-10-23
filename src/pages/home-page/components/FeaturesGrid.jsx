@@ -16,7 +16,7 @@ const FeaturesGrid = () => {
       icon: "Eye",
       title: "Clarity Above All",
       description: "We cut through the jargon. Our lessons are designed to be clear, accessible, and immediately useful, regardless of your technical background.",
-      color: "blue",
+      color: "orange",
       tags: ["Beginner Friendly", "No Jargon", "Practical"],
     },
     {
@@ -32,7 +32,7 @@ const FeaturesGrid = () => {
       icon: "Globe",
       title: "A Global Community",
       description: "Connect with a network of ambitious peers from around the world, sharing insights and opportunities.",
-      color: "purple",
+      color: "orange",
       tags: ["Global Network", "Peer Support", "Collaboration"],
     }
   ];
@@ -40,15 +40,15 @@ const FeaturesGrid = () => {
   return (
     <section className="py-24 lg:py-32 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
-        {/* Section Header with Animation */}
+        {/* Section Header with Animation - Orange Theme */}
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <div className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mb-6">
-            <span className="text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-orange-200 rounded-full mb-6">
+            <span className="text-sm font-semibold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
               Why Choose Us
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-            <span className="bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-gray-900 via-orange-900 to-orange-800 bg-clip-text text-transparent">
               Why Choose Basic Intelligence?
             </span>
           </h2>
