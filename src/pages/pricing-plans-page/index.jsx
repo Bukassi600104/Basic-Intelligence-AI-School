@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import PublicHeader from '../../components/ui/PublicHeader';
+import Footer from '../../components/ui/Footer';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/AppIcon';
 
@@ -425,6 +426,8 @@ const PricingPlansPage = () => {
           </div>
         </section>
       </main>
+      
+      <Footer />
     </div>
   );
 };
