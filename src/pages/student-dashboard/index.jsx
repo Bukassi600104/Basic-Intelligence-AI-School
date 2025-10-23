@@ -6,6 +6,7 @@ import FeatureCard from '../../components/ui/FeatureCard';
 import LockedOverlay from '../../components/ui/LockedOverlay';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { contentService } from '../../services/contentService';
 import { referralService } from '../../services/referralService';
 

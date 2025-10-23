@@ -15,19 +15,15 @@ const StudentPDFs = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Check if user is a paid student - only redirect when profile is loaded and user is not a member
+  // Check authentication - redirect to signin if not logged in
   useEffect(() => {
     if (!user) {
       navigate('/signin');
       return;
     }
-
-    // Only redirect if user profile is loaded and user is not a member
-    if (userProfile && !isMember) {
-      navigate('/join-membership-page');
-      return;
-    }
-  }, [user, userProfile, isMember, navigate]);
+    // Allow all logged-in users to access this page
+    // Content will be filtered based on membership status
+  }, [user, navigate]);
 
   // Load PDFs
   useEffect(() => {
@@ -126,15 +122,7 @@ const StudentPDFs = () => {
         />
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
         <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8 max-w-7xl mx-auto w-full">
-            <div className="flex items-center justify-center min-h-[400px]">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4 animate-pulse">
-                  <Icon name="Loader" size={24} className="animate-spin text-white" />
-                </div>
-                <div className="text-lg font-medium text-foreground mb-2">Loading PDF Library</div>
-                <div className="text-sm text-muted-foreground">Please wait while we fetch your resources...</div>
-              </div>
-            </div>
+            <LoadingSpinner size="lg" message="Please wait while we fetch your resources..." />
           </div>
         </div>
       </div>

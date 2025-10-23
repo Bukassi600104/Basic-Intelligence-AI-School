@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import PaymentInstructions from '../../components/ui/PaymentInstructions';
 import { subscriptionService } from '../../services/subscriptionService';
 import { logger } from '../../utils/logger';
@@ -114,12 +115,12 @@ const StudentSubscription = () => {
   };
 
   const handleRenewClick = () => {
-    setSelectedPlan(userProfile?.membership_tier);
+    setSelectedPlan(userProfile?.membership_tier); // Use current plan for renewal
     setShowPaymentForm(true);
   };
 
   const handleUpgradeClick = (planTier) => {
-    setSelectedPlan(planTier);
+    setSelectedPlan(planTier); // Use selected plan for upgrade
     setShowPaymentForm(true);
   };
 
@@ -138,10 +139,7 @@ const StudentSubscription = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <Icon name="Loader" size={48} className="animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading subscription data...</p>
-        </div>
+        <LoadingSpinner size="lg" message="Loading subscription data..." />
       </div>
     );
   }
@@ -171,6 +169,7 @@ const StudentSubscription = () => {
 
             <PaymentInstructions 
               userProfile={userProfile}
+              selectedTier={selectedPlan}
               onPaymentSubmitted={handlePaymentSubmitted}
             />
           </div>

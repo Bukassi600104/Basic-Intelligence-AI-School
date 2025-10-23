@@ -5,6 +5,7 @@ import PublicHeader from '../../components/ui/PublicHeader';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Icon from '../../components/AppIcon';
+import { notificationService } from '../../services/notificationService';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -119,6 +120,25 @@ const SignUpPage = () => {
 
       // Registration successful - redirect to dashboard immediately
       if (data?.user) {
+        // Send welcome email with pending activation message
+        try {
+          await notificationService.sendNotification({
+            userId: data.user.id,
+            templateName: 'user_welcome_pending_activation',
+            variables: {
+              full_name: formData?.fullName?.trim(),
+              email: formData?.email?.trim(),
+              member_id: 'Pending Assignment',
+              membership_tier: formData?.tier,
+              dashboard_url: `${window.location.origin}/student-dashboard`
+            },
+            recipientType: 'email'
+          });
+        } catch (emailError) {
+          console.error('Failed to send welcome email:', emailError);
+          // Don't block registration if email fails
+        }
+        
         // User will see locked dashboard with payment instructions
         navigate('/student-dashboard');
       }
