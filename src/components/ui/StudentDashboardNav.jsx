@@ -53,11 +53,11 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
 
   return (
     <>
-      {/* Mobile menu button - Enhanced */}
+      {/* Mobile menu button - Orange Theme */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-3 rounded-xl bg-white shadow-xl border-2 border-gray-200 hover:border-blue-500 hover:scale-110 transition-all duration-300"
+          className="p-3 rounded-xl bg-white shadow-xl border-2 border-gray-200 hover:border-orange-500 hover:scale-110 transition-all duration-300"
         >
           <Icon name={isMobileMenuOpen ? 'X' : 'Menu'} size={24} className="text-gray-900" />
         </button>
@@ -78,10 +78,10 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
         ${isCollapsed ? 'w-20 lg:w-20' : 'w-64 lg:w-64'}
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
-        {/* Header - Ultra Modern Gradient */}
-        <div className="relative overflow-hidden border-b-2 border-blue-200">
-          {/* Animated Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient" style={{ backgroundSize: '200% 200%' }}></div>
+        {/* Header - Orange Theme Gradient */}
+        <div className="relative overflow-hidden border-b-2 border-orange-200">
+          {/* Animated Gradient Background - Orange Theme */}
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 animate-gradient" style={{ backgroundSize: '200% 200%' }}></div>
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
           
@@ -126,15 +126,15 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
           </div>
         </div>
 
-        {/* User Profile - Modern Card */}
-        <div className="p-4 border-b-2 border-gray-200 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+        {/* User Profile - Orange Theme */}
+        <div className="p-4 border-b-2 border-gray-200 bg-gradient-to-br from-orange-50 to-orange-100">
           {!isCollapsed ? (
             <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity"></div>
-              <div className="relative flex items-center space-x-3 p-4 bg-white rounded-xl shadow-md border-2 border-gray-200 hover:border-blue-300 transition-all hover:shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl blur-lg opacity-0 group-hover:opacity-20 transition-opacity"></div>
+              <div className="relative flex items-center space-x-3 p-4 bg-white rounded-xl shadow-md border-2 border-gray-200 hover:border-orange-300 transition-all hover:shadow-xl">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-50"></div>
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center shadow-lg animate-gradient" style={{ backgroundSize: '200% 200%' }}>
+                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl blur-md opacity-50"></div>
+                  <div className="relative w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg animate-gradient" style={{ backgroundSize: '200% 200%' }}>
                     <span className="text-white font-black text-lg">
                       {userProfile?.full_name?.charAt?.(0)?.toUpperCase() || 'S'}
                     </span>
@@ -150,15 +150,15 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                   </div>
                 </div>
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Icon name="ChevronRight" size={16} className="text-blue-600" />
+                  <Icon name="ChevronRight" size={16} className="text-orange-600" />
                 </div>
               </div>
             </div>
           ) : (
             <div className="flex justify-center group">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                <div className="relative w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform animate-gradient" style={{ backgroundSize: '200% 200%' }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                <div className="relative w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform animate-gradient" style={{ backgroundSize: '200% 200%' }}>
                   <span className="text-white font-black text-base">
                     {userProfile?.full_name?.charAt?.(0)?.toUpperCase() || 'S'}
                   </span>
@@ -185,17 +185,18 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                   `}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {/* Active background gradient */}
+                  {/* Active background gradient - Orange Theme */}
                   {isActive(item.href) && (
                     <>
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient" style={{ backgroundSize: '200% 200%' }}></div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/50 to-purple-500/50 blur-xl"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-orange-500 animate-gradient" style={{ backgroundSize: '200% 200%' }}></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/50 to-orange-600/50 blur-xl"></div>
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-white rounded-r-full"></div>
                     </>
                   )}
                   
-                  {/* Hover background */}
+                  {/* Hover background - Orange Theme */}
                   {!isActive(item.href) && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-orange-50 to-orange-100 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   )}
                   
                   {/* Icon with gradient background */}
@@ -205,8 +206,8 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                         <Icon name={item.icon} size={20} />
                       </div>
                     ) : (
-                      <div className="w-9 h-9 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform border border-gray-200">
-                        <Icon name={item.icon} size={20} className="text-blue-600" />
+                      <div className="w-9 h-9 bg-gradient-to-br from-orange-100 to-orange-200 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform border border-gray-200">
+                        <Icon name={item.icon} size={20} className="text-orange-600" />
                       </div>
                     )}
                   </div>
@@ -228,8 +229,8 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
           </ul>
         </nav>
 
-        {/* Footer Actions - Modern Gradient Buttons */}
-        <div className="p-4 border-t-2 border-gray-200 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 space-y-2">
+        {/* Footer Actions - Orange Theme */}
+        <div className="p-4 border-t-2 border-gray-200 bg-gradient-to-br from-gray-50 to-orange-50 space-y-2">
           {/* Support Button */}
           <button
             onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
@@ -239,11 +240,11 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
               ${isCollapsed ? 'justify-center' : 'space-x-3'}
             `}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-green-500 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/50 to-green-500/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-green-500/50 to-green-600/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
             
-            <div className="relative w-9 h-9 bg-gradient-to-br from-emerald-100 to-green-100 rounded-lg flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all border border-emerald-200 group-hover:border-white/30">
-              <Icon name="MessageCircle" size={20} className="text-emerald-600 group-hover:text-white transition-colors" />
+            <div className="relative w-9 h-9 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all border border-green-200 group-hover:border-white/30">
+              <Icon name="MessageCircle" size={20} className="text-green-600 group-hover:text-white transition-colors" />
             </div>
             {!isCollapsed && <span className="relative text-sm font-bold">Support</span>}
           </button>
@@ -257,10 +258,10 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
               ${isCollapsed ? 'justify-center' : 'space-x-3'}
             `}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-pink-500 to-rose-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/50 to-pink-500/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-red-500/50 to-red-600/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
             
-            <div className="relative w-9 h-9 bg-gradient-to-br from-red-100 to-pink-100 rounded-lg flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all border border-red-200 group-hover:border-white/30">
+            <div className="relative w-9 h-9 bg-gradient-to-br from-red-100 to-red-200 rounded-lg flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all border border-red-200 group-hover:border-white/30">
               <Icon name="LogOut" size={20} className="text-red-600 group-hover:text-white transition-colors" />
             </div>
             {!isCollapsed && <span className="relative text-sm font-bold">Sign Out</span>}
