@@ -470,24 +470,38 @@ const AdminContentPage = () => {
           </div>
         </div>
       </div>
-      {/* Upload Modal */}
+      {/* Enhanced Upload Modal */}
       {showUploadForm && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="fixed inset-0 z-50 overflow-y-auto animate-fadeIn">
           <div className="flex min-h-screen items-center justify-center p-4">
-            <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={() => setShowUploadForm(false)} />
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setShowUploadForm(false)} />
             
-            <div className="relative bg-card border border-border rounded-xl p-6 w-full max-w-lg">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-foreground">Upload Content</h2>
-                <button
-                  onClick={() => setShowUploadForm(false)}
-                  className="p-2 hover:bg-muted rounded-lg transition-colors"
-                >
-                  <Icon name="X" size={20} className="text-muted-foreground" />
-                </button>
+            <div className="relative bg-white rounded-3xl w-full max-w-2xl shadow-2xl border-2 border-gray-200 animate-slideUp overflow-hidden">
+              {/* Gradient Header */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-green-600 to-cyan-600 p-8">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                
+                <div className="relative flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center animate-float">
+                      <Icon name="Upload" size={28} className="text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-extrabold text-white">Upload Content</h2>
+                      <p className="text-white/90">Add new resources to the library</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowUploadForm(false)}
+                    className="p-2 text-white hover:bg-white/20 rounded-xl transition-colors"
+                  >
+                    <Icon name="X" size={24} />
+                  </button>
+                </div>
               </div>
 
-              <form onSubmit={handleUploadSubmit} className="space-y-4">
+              <form onSubmit={handleUploadSubmit} className="p-8 space-y-6 bg-gradient-to-br from-gray-50 to-emerald-50">
                 <Select
                   label="Content Type"
                   value={uploadType}
@@ -560,21 +574,32 @@ const AdminContentPage = () => {
                   />
                 )}
 
-                <div className="flex justify-end space-x-3 pt-4 border-t border-border">
-                  <Button
+                <div className="flex justify-end space-x-4 pt-6 border-t-2 border-gray-200">
+                  <button
                     type="button"
-                    variant="outline"
                     onClick={() => setShowUploadForm(false)}
                     disabled={uploadLoading}
+                    className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancel
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     type="submit"
-                    loading={uploadLoading}
+                    disabled={uploadLoading}
+                    className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:from-emerald-700 hover:to-green-700 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                   >
-                    {uploadLoading ? 'Uploading...' : 'Upload Content'}
-                  </Button>
+                    {uploadLoading ? (
+                      <>
+                        <Icon name="Loader" size={20} className="animate-spin" />
+                        <span>Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Icon name="Upload" size={20} />
+                        <span>Upload Content</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </form>
             </div>
