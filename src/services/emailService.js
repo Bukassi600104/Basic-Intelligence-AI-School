@@ -120,7 +120,7 @@ export const emailService = {
       const apiKey = import.meta.env.VITE_RESEND_API_KEY;
       
       if (!apiKey || apiKey === 'your_resend_api_key_here' || apiKey.trim() === '') {
-        const errorMsg = 'Resend API key is not configured. Please add VITE_RESEND_API_KEY to your .env file.';
+        const errorMsg = 'Resend API key is not configured. For local development, add VITE_RESEND_API_KEY to your .env file. For production, ensure it is set in Vercel environment variables.';
         logger.error(errorMsg);
         return { 
           success: false, 
