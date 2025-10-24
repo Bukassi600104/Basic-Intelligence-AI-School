@@ -29,7 +29,7 @@ export const referralService = {
         ?.from('referral_analytics')
         ?.select(`
           *,
-          referred_user:user_profiles!referred_user_id(full_name, email, created_at, membership_status)
+          referred_user:user_profiles!referral_analytics_referred_user_id_fkey(full_name, email, created_at, membership_status)
         `)
         ?.eq('referrer_id', userId)
         ?.order('created_at', { ascending: false });
