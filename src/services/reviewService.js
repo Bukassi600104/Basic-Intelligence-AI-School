@@ -9,7 +9,7 @@ export const reviewService = {
         ?.from('member_reviews')
         ?.select(`
           *,
-          user:user_profiles!user_id(full_name, email)
+          user_profiles!user_id(full_name, email)
         `)
         ?.eq('status', 'approved')
         ?.order('created_at', { ascending: false });
@@ -130,7 +130,7 @@ export const reviewService = {
         ?.from('member_reviews')
         ?.select(`
           *,
-          user:user_profiles!user_id(full_name, email, member_id)
+          user_profiles!user_id(full_name, email, member_id)
         `)
         ?.order('created_at', { ascending: false });
 
@@ -178,7 +178,7 @@ export const reviewService = {
         ?.eq('id', reviewId)
         ?.select(`
           *,
-          user:user_profiles!user_id(full_name, email, member_id)
+          user_profiles!user_id(full_name, email, member_id)
         `)
         ?.single();
 
