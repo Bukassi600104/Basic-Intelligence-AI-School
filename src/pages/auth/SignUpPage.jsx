@@ -184,18 +184,18 @@ const SignUpPage = () => {
         </Link>
         
         {/* Central content */}
-        <div className="max-w-md text-center z-10 px-6">
-          <div className="inline-block mb-4">
-            <span className="bg-orange-500/20 text-orange-300 px-3 py-1.5 rounded-full text-xs border border-orange-500/30 font-medium">
+        <div className="max-w-md text-center z-10 px-8">
+          <div className="inline-block mb-6">
+            <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium">
               Start Your Journey
             </span>
           </div>
           
-          <h1 className="text-3xl font-bold mb-4 leading-tight">
+          <h1 className="text-4xl font-bold mb-6 leading-tight">
             Join Thousands of Students
           </h1>
           
-          <p className="text-base text-gray-300 leading-relaxed">
+          <p className="text-lg text-gray-300 leading-relaxed">
             Get instant access to our comprehensive AI courses and tutorials.
           </p>
         </div>
