@@ -190,6 +190,8 @@ const CoursesPage = () => {
               {/* Category Filter */}
               <div>
                 <select
+                  id="course-category-filter"
+                  name="categoryFilter"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"
@@ -204,6 +206,8 @@ const CoursesPage = () => {
               {/* Level Filter */}
               <div>
                 <select
+                  id="course-level-filter"
+                  name="levelFilter"
                   value={selectedLevel}
                   onChange={(e) => setSelectedLevel(e.target.value)}
                   className="w-full px-4 py-3 border border-border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary"

@@ -205,6 +205,8 @@ const UserTable = ({
             <div className="flex items-center space-x-2">
               <span className="text-sm text-muted-foreground">Show:</span>
               <select
+                id="items-per-page"
+                name="itemsPerPage"
                 value={itemsPerPage}
                 onChange={(e) => {
                   setItemsPerPage(Number(e?.target?.value));

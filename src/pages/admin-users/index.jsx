@@ -821,11 +821,13 @@ const AdminUsersPage = () => {
                       </div>
 
                       <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                        <label htmlFor="user-role" className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
                           <Icon name="Shield" size={16} className="mr-2 text-orange-600" />
                           Role
                         </label>
                         <select
+                          id="user-role"
+                          name="role"
                           value={userFormData.role}
                           onChange={(e) => handleUserFormChange('role', e.target.value)}
                           className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
@@ -836,11 +838,13 @@ const AdminUsersPage = () => {
                       </div>
 
                       <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                        <label htmlFor="user-membership-tier" className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
                           <Icon name="Award" size={16} className="mr-2 text-orange-600" />
                           Membership Tier
                         </label>
                         <select
+                          id="user-membership-tier"
+                          name="membershipTier"
                           value={userFormData.membership_tier}
                           onChange={(e) => handleUserFormChange('membership_tier', e.target.value)}
                           className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
@@ -855,11 +859,13 @@ const AdminUsersPage = () => {
                     {/* Enhanced Right Column - Optional Fields */}
                     <div className="space-y-4">
                       <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
+                        <label htmlFor="user-membership-status" className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
                           <Icon name="CheckCircle" size={16} className="mr-2 text-orange-600" />
                           Membership Status
                         </label>
                         <select
+                          id="user-membership-status"
+                          name="membershipStatus"
                           value={userFormData.membership_status}
                           onChange={(e) => handleUserFormChange('membership_status', e.target.value)}
                           className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
@@ -1117,10 +1123,11 @@ const AdminUsersPage = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label htmlFor="edit-user-role" className="block text-sm font-medium text-foreground mb-2">
                           Role
                         </label>
                         <select
+                          id="edit-user-role"
                           name="role"
                           defaultValue={selectedUser.role}
                           className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -1131,10 +1138,11 @@ const AdminUsersPage = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label htmlFor="edit-user-tier" className="block text-sm font-medium text-foreground mb-2">
                           Membership Tier
                         </label>
                         <select
+                          id="edit-user-tier"
                           name="membership_tier"
                           defaultValue={selectedUser.membership_tier}
                           className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -1149,10 +1157,11 @@ const AdminUsersPage = () => {
                     {/* Right Column - Optional Fields */}
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label htmlFor="edit-user-status" className="block text-sm font-medium text-foreground mb-2">
                           Membership Status
                         </label>
                         <select
+                          id="edit-user-status"
                           name="membership_status"
                           defaultValue={selectedUser.membership_status}
                           className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -1204,10 +1213,11 @@ const AdminUsersPage = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
+                        <label htmlFor="edit-user-active" className="block text-sm font-medium text-foreground mb-2">
                           Active Status
                         </label>
                         <select
+                          id="edit-user-active"
                           name="is_active"
                           defaultValue={selectedUser.is_active ? 'true' : 'false'}
                           className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"

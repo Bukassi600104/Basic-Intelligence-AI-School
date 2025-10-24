@@ -322,11 +322,13 @@ const AdminNotificationWizard = () => {
                   
                   <div className="space-y-5">
                     <div>
-                      <label className="flex items-center space-x-2 text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="notification-template" className="flex items-center space-x-2 text-sm font-medium text-gray-700 mb-2">
                         <Icon name="Layout" size={16} className="text-gray-500" />
                         <span>Choose Template</span>
                       </label>
                       <select
+                        id="notification-template"
+                        name="templateName"
                         value={notificationData.templateName}
                         onChange={(e) => handleTemplateChange(e.target.value)}
                         className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"

@@ -203,11 +203,13 @@ const StudentPrompts = () => {
 
               {/* Category Filter */}
               <div className="relative">
-                <Icon name="Filter" size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-teal-600 pointer-events-none" />
+                <Icon name="Filter" size={16} className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-purple-600 pointer-events-none" />
                 <select
+                  id="category-filter-prompts"
+                  name="categoryFilter"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white/80 appearance-none"
+                  className="w-full pl-9 pr-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80 appearance-none"
                 >
                   <option value="all">All Categories</option>
                   {categories.filter(cat => cat !== 'all').map(category => (

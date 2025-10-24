@@ -449,10 +449,12 @@ const Step2Details = ({ formData, setFormData, errors, categories, promptTypes }
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="content-category" className="block text-sm font-medium text-gray-700 mb-2">
             Category <span className="text-red-500">*</span>
           </label>
           <select
+            id="content-category"
+            name="category"
             value={formData.category}
             onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
             className={`
@@ -472,10 +474,12 @@ const Step2Details = ({ formData, setFormData, errors, categories, promptTypes }
 
         {formData.contentType === 'prompt' && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="prompt-type" className="block text-sm font-medium text-gray-700 mb-2">
               Prompt Type <span className="text-red-500">*</span>
             </label>
             <select
+              id="prompt-type"
+              name="promptType"
               value={formData.promptType}
               onChange={(e) => setFormData(prev => ({ ...prev, promptType: e.target.value }))}
               className={`
