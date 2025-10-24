@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
 import Icon from '../../../components/AppIcon';
@@ -14,13 +14,15 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [uploadedContent, setUploadedContent] = useState(null);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [thumbnailLoading, setThumbnailLoading] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState('');
 
-  // Form data state
-  const [formData, setFormData] = useState({
-    // Step 1: Content Type
-    contentType: '', // 'video', 'pdf', 'prompt'
-    
-    // Step 2: Details
+  // Initial form data for reset
+  const initialFormData = {
+    contentType: '',
     title: '',
     description: '',
     category: '',
@@ -28,20 +30,17 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
     googleDriveLink: '',
     googleDriveId: '',
     googleDriveEmbedUrl: '',
-    
-    // For prompts
-    promptType: '', // 'ChatGPT', 'Claude', 'Midjourney', etc.
+    promptType: '',
     useCaseTags: [],
-    
-    // Step 3: Access Level
-    accessLevel: 'starter', // 'starter', 'pro', 'elite'
-    
-    // Step 4: Featured Settings
+    accessLevel: 'starter',
     isFeatured: false,
     featuredDescription: '',
     thumbnailUrl: '',
     featuredOrder: null
-  });
+  };
+
+  // Form data state
+  const [formData, setFormData] = useState(initialFormData);
 
   const totalSteps = 5;
 
@@ -59,6 +58,18 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
     pro: { name: 'Pro', price: '₦15,000/month', color: 'text-orange-600 bg-orange-50 border-orange-200' },
     elite: { name: 'Elite', price: '₦25,000/month', color: 'text-purple-600 bg-purple-50 border-purple-200' }
   };
+
+  // ESC key handler
+  useEffect(() => {
+    const handleEscKey = (e) => {
+      if (e.key === 'Escape' && !loading) {
+        handleClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleEscKey);
+    return () => window.removeEventListener('keydown', handleEscKey);
+  }, [loading, currentStep, formData, showSuccessModal]);
 
   // Validation functions
   const validateStep = (step) => {
@@ -105,8 +116,8 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
         if (formData.isFeatured) {
           if (!formData.featuredDescription.trim()) {
             errors.featuredDescription = 'Featured description is required';
-          } else if (formData.featuredDescription.length > 100) {
-            errors.featuredDescription = 'Description must be 100 characters or less';
+          } else if (formData.featuredDescription.length > 120) {
+            errors.featuredDescription = 'Description must be 120 characters or less';
           }
           if (!formData.thumbnailUrl.trim()) {
             errors.thumbnailUrl = 'Thumbnail URL is required for featured content';
@@ -144,6 +155,32 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
     setError('');
   };
 
+  const resetWizard = () => {
+    setCurrentStep(1);
+    setFormData(initialFormData);
+    setValidationErrors({});
+    setError('');
+    setShowSuccessModal(false);
+    setUploadedContent(null);
+    setThumbnailLoading(false);
+    setThumbnailError('');
+  };
+
+  const handleClose = () => {
+    // Check if form has unsaved changes
+    const hasChanges = Object.keys(formData).some(key => {
+      if (key === 'accessLevel') return false; // accessLevel has default value
+      const value = formData[key];
+      return Array.isArray(value) ? value.length > 0 : value !== '' && value !== null && value !== false;
+    });
+
+    if (hasChanges && currentStep < 5 && !showSuccessModal) {
+      setShowExitConfirm(true);
+    } else {
+      onClose();
+    }
+  };
+
   const handleSubmit = async () => {
     if (!validateStep(4)) return;
     
@@ -169,11 +206,13 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
         status: 'active'
       };
 
-      const { success, error: uploadError } = await contentService.createContentWithWizard(contentData);
+      const { success, data, error: uploadError } = await contentService.createContentWithWizard(contentData);
 
       if (uploadError) {
         setError(uploadError);
       } else {
+        setUploadedContent(data || contentData);
+        setShowSuccessModal(true);
         onSuccess?.();
       }
     } catch (err) {
@@ -181,6 +220,43 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Validate and load thumbnail image
+  const validateThumbnail = async (url) => {
+    if (!url || !url.trim()) {
+      setThumbnailError('');
+      return;
+    }
+
+    setThumbnailLoading(true);
+    setThumbnailError('');
+
+    try {
+      // Validate URL format
+      const urlPattern = /^https?:\/\/.+\.(jpg|jpeg|png|webp|gif)(\?.*)?$/i;
+      if (!urlPattern.test(url)) {
+        throw new Error('Invalid image format. Use JPG, PNG, or WebP');
+      }
+
+      // Test if image loads
+      await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error('Unable to load image. Please check the URL.'));
+        img.src = url;
+      });
+
+      setThumbnailLoading(false);
+    } catch (err) {
+      setThumbnailError(err.message);
+      setThumbnailLoading(false);
+    }
+  };
+
+  const handleThumbnailChange = (url) => {
+    setFormData(prev => ({ ...prev, thumbnailUrl: url }));
+    validateThumbnail(url);
   };
 
   // Render step content
@@ -193,7 +269,14 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
       case 3:
         return <Step3AccessLevel formData={formData} setFormData={setFormData} errors={validationErrors} accessLevelDetails={accessLevelDetails} />;
       case 4:
-        return <Step4FeaturedSettings formData={formData} setFormData={setFormData} errors={validationErrors} />;
+        return <Step4FeaturedSettings 
+          formData={formData} 
+          setFormData={setFormData} 
+          errors={validationErrors}
+          thumbnailLoading={thumbnailLoading}
+          thumbnailError={thumbnailError}
+          onThumbnailChange={handleThumbnailChange}
+        />;
       case 5:
         return <Step5Review formData={formData} accessLevelDetails={accessLevelDetails} />;
       default:
@@ -202,18 +285,19 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-8">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl my-8 max-h-[calc(100vh-4rem)] overflow-y-auto scroll-smooth">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Upload New Content</h2>
             <p className="text-sm text-gray-600 mt-1">Step {currentStep} of {totalSteps}</p>
           </div>
           <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            onClick={handleClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg"
             disabled={loading}
+            title="Close wizard"
           >
             <Icon name="X" size={24} />
           </button>
@@ -295,6 +379,95 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
           )}
         </div>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-fadeIn">
+            <div className="text-center">
+              <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <Icon name="CheckCircle" size={32} className="text-green-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Content Uploaded Successfully!</h3>
+              <p className="text-gray-600 mb-6">
+                Your {formData.contentType} has been added to the content library.
+              </p>
+              
+              {uploadedContent && (
+                <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                  <p className="text-sm font-medium text-gray-700 mb-2">Content Details:</p>
+                  <p className="text-sm text-gray-900 font-semibold">{uploadedContent.title || formData.title}</p>
+                  <p className="text-xs text-gray-600 mt-1">Access: {formData.accessLevel}</p>
+                  {formData.isFeatured && (
+                    <div className="flex items-center mt-2 text-xs text-yellow-700">
+                      <Icon name="Star" size={14} className="mr-1" />
+                      <span>Featured on homepage</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex space-x-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    resetWizard();
+                  }}
+                  className="flex-1"
+                >
+                  Upload Another
+                </Button>
+                <Button
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    onClose();
+                  }}
+                  className="flex-1"
+                >
+                  Done
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Exit Confirmation Modal */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <Icon name="AlertTriangle" size={24} className="text-orange-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Unsaved Changes</h3>
+                <p className="text-gray-600 mb-6">
+                  You have unsaved changes. Are you sure you want to exit? All progress will be lost.
+                </p>
+                <div className="flex space-x-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowExitConfirm(false)}
+                    className="flex-1"
+                  >
+                    Continue Editing
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShowExitConfirm(false);
+                      onClose();
+                    }}
+                    className="flex-1 bg-red-600 hover:bg-red-700"
+                  >
+                    Discard & Exit
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -594,7 +767,7 @@ const Step3AccessLevel = ({ formData, setFormData, errors, accessLevelDetails })
 };
 
 // Step 4: Featured Settings
-const Step4FeaturedSettings = ({ formData, setFormData, errors }) => {
+const Step4FeaturedSettings = ({ formData, setFormData, errors, thumbnailLoading, thumbnailError, onThumbnailChange }) => {
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
@@ -628,8 +801,8 @@ const Step4FeaturedSettings = ({ formData, setFormData, errors }) => {
             <textarea
               value={formData.featuredDescription}
               onChange={(e) => setFormData(prev => ({ ...prev, featuredDescription: e.target.value }))}
-              placeholder="Write a compelling short description (max 100 characters)"
-              maxLength={100}
+              placeholder="Write a compelling short description (max 120 characters)"
+              maxLength={120}
               rows={2}
               className={`
                 w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2
@@ -644,20 +817,59 @@ const Step4FeaturedSettings = ({ formData, setFormData, errors }) => {
                 </p>
               )}
               <p className="text-xs text-gray-500 ml-auto">
-                {formData.featuredDescription.length}/100 characters
+                {formData.featuredDescription.length}/120 characters
               </p>
             </div>
           </div>
 
-          <Input
-            label="Thumbnail URL"
-            required
-            value={formData.thumbnailUrl}
-            onChange={(e) => setFormData(prev => ({ ...prev, thumbnailUrl: e.target.value }))}
-            placeholder="https://drive.google.com/..."
-            error={errors.thumbnailUrl}
-            helperText="Google Drive link to thumbnail image (recommended: 800x600px)"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Thumbnail URL <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="url"
+              value={formData.thumbnailUrl}
+              onChange={(e) => onThumbnailChange?.(e.target.value) || setFormData(prev => ({ ...prev, thumbnailUrl: e.target.value }))}
+              placeholder="https://example.com/image.jpg"
+              className={`
+                w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2
+                ${errors.thumbnailUrl || thumbnailError ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-orange-500'}
+              `}
+            />
+            {thumbnailError && (
+              <p className="text-red-600 text-sm mt-1 flex items-center">
+                <Icon name="AlertCircle" size={16} className="mr-1" />
+                {thumbnailError}
+              </p>
+            )}
+            {errors.thumbnailUrl && !thumbnailError && (
+              <p className="text-red-600 text-sm mt-1">{errors.thumbnailUrl}</p>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              Enter a publicly accessible image URL (JPG, PNG, or WebP) - Recommended: 800x600px
+            </p>
+
+            {/* Thumbnail Preview */}
+            {formData.thumbnailUrl && !thumbnailError && (
+              <div className="mt-4 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <p className="text-sm font-medium text-gray-700 mb-2">Thumbnail Preview:</p>
+                {thumbnailLoading ? (
+                  <div className="flex items-center justify-center h-40 bg-gray-100 rounded-lg">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+                  </div>
+                ) : (
+                  <img
+                    src={formData.thumbnailUrl}
+                    alt="Thumbnail preview"
+                    className="w-full h-auto max-h-60 object-contain rounded-lg"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                )}
+              </div>
+            )}
+          </div>
 
           <Input
             label="Display Order"
