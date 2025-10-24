@@ -11,7 +11,6 @@ import { contentService } from '../../services/contentService';
 const AdminContentPage = () => {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [content, setContent] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

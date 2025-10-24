@@ -16,7 +16,6 @@ import { adminService } from '../../services/adminService';
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, userProfile } = useAuth();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState({
     stats: null,
@@ -248,11 +247,8 @@ const AdminDashboard = () => {
   if (loading && !dashboardData?.stats) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-        <AdminSidebar 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={handleToggleSidebar} 
-        />
-        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <AdminSidebar />
+        <div className="transition-all duration-300 lg:ml-60">
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl animate-pulse">
@@ -270,11 +266,8 @@ const AdminDashboard = () => {
   if (error && !dashboardData?.stats) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-        <AdminSidebar 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={handleToggleSidebar} 
-        />
-        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <AdminSidebar />
+        <div className="transition-all duration-300 lg:ml-60">
           <div className="flex items-center justify-center min-h-screen p-4">
             <div className="text-center max-w-md">
               <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
@@ -300,12 +293,9 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      <AdminSidebar 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={handleToggleSidebar} 
-      />
+      <AdminSidebar />
       {/* Main Content */}
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+      <div className="transition-all duration-300 lg:ml-60">
         {/* Mobile spacing for header */}
         <div className="lg:hidden h-16"></div>
         

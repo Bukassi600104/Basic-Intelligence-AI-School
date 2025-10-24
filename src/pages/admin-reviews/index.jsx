@@ -9,7 +9,6 @@ import { reviewService } from '../../services/reviewService';
 const AdminReviews = () => {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedReview, setSelectedReview] = useState(null);

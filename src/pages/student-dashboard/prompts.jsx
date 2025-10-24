@@ -12,7 +12,6 @@ import { logger } from '../../utils/logger';
 const StudentPrompts = () => {
   const { user, userProfile, isMember } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [prompts, setPrompts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -119,11 +118,8 @@ const StudentPrompts = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex">
-        <StudentDashboardNav 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
-        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <StudentDashboardNav />
+        <div className="flex-1 transition-all duration-300 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
             <LoadingSpinner size="lg" message="Please wait while we fetch your AI prompts..." />
           </div>
@@ -134,11 +130,8 @@ const StudentPrompts = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <StudentDashboardNav 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-      />
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+      <StudentDashboardNav />
+      <div className="flex-1 transition-all duration-300 lg:ml-64">
         <div className="p-3 sm:p-4 lg:p-5 pt-16 sm:pt-20 lg:pt-8">
           {/* Enhanced Gradient Header */}
           <div className="relative mb-4 overflow-hidden">

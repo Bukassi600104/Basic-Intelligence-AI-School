@@ -5,7 +5,6 @@ import AdminSidebar from '../../components/ui/AdminSidebar';
 
 const AdminSettings = () => {
   const { user, userProfile } = useAuth();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -95,10 +94,10 @@ const AdminSettings = () => {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Admin Sidebar */}
-      <AdminSidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+      <AdminSidebar />
       
       {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-60'}`}>
+      <div className="flex-1 transition-all duration-300 lg:ml-60">
         <div className="p-4 lg:p-5">
           <h1 className="text-xl font-bold mb-4">Admin Settings</h1>
           

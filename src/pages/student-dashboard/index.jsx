@@ -13,7 +13,6 @@ import { referralService } from '../../services/referralService';
 const StudentDashboard = () => {
   const { user, userProfile, isMember } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [recentContent, setRecentContent] = useState([]);
   const [loading, setLoading] = useState(true);
   const [referralInfo, setReferralInfo] = useState(null);
@@ -150,10 +149,7 @@ const StudentDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 flex">
-        <StudentDashboardNav 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
+        <StudentDashboardNav />
       <div className="flex-1 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
             <div className="flex items-center justify-center min-h-[400px]">
@@ -176,8 +172,6 @@ const StudentDashboard = () => {
       )}
       
       <StudentDashboardNav 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       <div className="flex-1 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">

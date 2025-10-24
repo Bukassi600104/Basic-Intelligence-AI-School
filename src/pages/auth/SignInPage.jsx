@@ -141,14 +141,14 @@ const SignInPage = () => {
             {/* Left Panel - Geometric Pattern Background */}
       <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-8 text-white relative">
         {/* Logo at top */}
-        <div className="absolute top-6 left-6 z-20">
-          <div className="flex items-center gap-2">
+        <Link to="/" className="absolute top-6 left-6 z-20">
+          <div className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
               <Icon name="GraduationCap" size={20} className="text-white" />
             </div>
             <span className="text-lg font-bold">Basic Intelligence</span>
           </div>
-        </div>
+        </Link>
         
         {/* Central content */}
         <div className="max-w-md text-center z-10 px-6">
@@ -179,12 +179,12 @@ const SignInPage = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 bg-white">
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
+          <Link to="/" className="lg:hidden flex items-center justify-center gap-2 mb-6 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
               <Icon name="GraduationCap" size={20} className="text-white" />
             </div>
             <span className="text-lg font-bold text-gray-900">Basic Intelligence</span>
-          </div>
+          </Link>
           
           {/* Form Header */}
           <div className="text-center mb-6">
@@ -244,10 +244,10 @@ const SignInPage = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-10 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-[30px] text-gray-400 hover:text-gray-600 transition-colors"
                 title={showPassword ? "Hide password" : "Show password"}
               >
-                <Icon name={showPassword ? "EyeOff" : "Eye"} size={20} />
+                <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
               </button>
             </div>
 

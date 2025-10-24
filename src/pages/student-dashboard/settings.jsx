@@ -13,7 +13,6 @@ import { logger } from '../../utils/logger';
 const StudentSettings = () => {
   const { user, userProfile, isMember, updateProfile } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -249,10 +248,7 @@ const StudentSettings = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex">
-        <StudentDashboardNav 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
+        <StudentDashboardNav />
       <div className="flex-1 lg:ml-64">
         <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
             <LoadingSpinner size="lg" message="Please wait while we fetch your settings..." />
@@ -264,10 +260,7 @@ const StudentSettings = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <StudentDashboardNav 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-      />
+      <StudentDashboardNav />
       <div className="flex-1 lg:ml-64">
         <div className="p-3 sm:p-4 lg:p-5 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
           {/* Enhanced Gradient Header */}

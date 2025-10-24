@@ -12,7 +12,6 @@ import { logger } from '../../utils/logger';
 const StudentSubscription = () => {
   const { user, userProfile, isMember } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -148,12 +147,9 @@ const StudentSubscription = () => {
   if (showPaymentForm) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
-        <StudentDashboardNav 
-          collapsed={sidebarCollapsed} 
-          onCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
+        <StudentDashboardNav />
         
-        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'} p-8`}>
+        <div className="transition-all duration-300 lg:ml-64 p-8">
           <div className="max-w-3xl mx-auto">
             {/* Back button */}
             <button
@@ -180,12 +176,9 @@ const StudentSubscription = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
-      <StudentDashboardNav 
-        collapsed={sidebarCollapsed} 
-        onCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-      />
+      <StudentDashboardNav />
       
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'} p-8`}>
+      <div className="transition-all duration-300 lg:ml-64 p-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="mb-8">

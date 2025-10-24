@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../AppIcon';
 
-const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
+const StudentDashboardNav = () => {
   const { userProfile, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -71,11 +71,10 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
         />
       )}
 
-      {/* Sidebar - Enhanced with Gradients */}
+      {/* Sidebar - Enhanced with Gradients - Static */}
       <div className={`
         fixed lg:absolute top-0 left-0 h-screen bg-white border-r-2 border-gray-200 z-40 shadow-xl
-        transition-all duration-300 ease-in-out
-        ${isCollapsed ? 'w-20 lg:w-20' : 'w-64 lg:w-64'}
+        transition-all duration-300 ease-in-out w-64 lg:w-64
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Header - Orange Theme Gradient */}
@@ -115,57 +114,36 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                 </div>
               </Link>
             )}
-
-            {/* Collapse toggle - desktop only */}
-            <button
-              onClick={onToggleCollapse}
-              className="hidden lg:flex p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/20 backdrop-blur-sm transition-all duration-200 border border-white/20 hover:border-white/40"
-            >
-              <Icon name={isCollapsed ? 'ChevronRight' : 'ChevronLeft'} size={18} />
-            </button>
           </div>
         </div>
 
         {/* User Profile - Orange Theme */}
         <div className="p-3 border-b border-gray-200 bg-gradient-to-br from-orange-50 to-orange-100">
-          {!isCollapsed ? (
-            <div className="group relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg blur-md opacity-0 group-hover:opacity-20 transition-opacity"></div>
-              <div className="relative flex items-center space-x-2 p-2.5 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-orange-300 transition-all hover:shadow-md">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg blur-sm opacity-50"></div>
-                  <div className="relative w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md animate-gradient" style={{ backgroundSize: '200% 200%' }}>
-                    <span className="text-white font-black text-base">
-                      {userProfile?.full_name?.charAt?.(0)?.toUpperCase() || 'S'}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-gray-900 truncate">
-                    {userProfile?.full_name || 'Student'}
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-600 truncate">
-                    <Icon name="Hash" size={10} />
-                    {userProfile?.member_id || 'Pending'}
-                  </div>
-                </div>
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Icon name="ChevronRight" size={14} className="text-orange-600" />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex justify-center group">
+          <div className="group relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg blur-md opacity-0 group-hover:opacity-20 transition-opacity"></div>
+            <div className="relative flex items-center space-x-2 p-2.5 bg-white rounded-lg shadow-sm border border-gray-200 hover:border-orange-300 transition-all hover:shadow-md">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                <div className="relative w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform animate-gradient" style={{ backgroundSize: '200% 200%' }}>
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg blur-sm opacity-50"></div>
+                <div className="relative w-9 h-9 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md animate-gradient" style={{ backgroundSize: '200% 200%' }}>
                   <span className="text-white font-black text-base">
                     {userProfile?.full_name?.charAt?.(0)?.toUpperCase() || 'S'}
                   </span>
                 </div>
               </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-xs font-bold text-gray-900 truncate">
+                  {userProfile?.full_name || 'Student'}
+                </div>
+                <div className="flex items-center gap-1 text-xs text-gray-600 truncate">
+                  <Icon name="Hash" size={10} />
+                  {userProfile?.member_id || 'Pending'}
+                </div>
+              </div>
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                <Icon name="ChevronRight" size={14} className="text-orange-600" />
+              </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Navigation - Ultra Modern with Icon Gradients */}
@@ -176,12 +154,11 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                 <Link
                   to={item.href}
                   className={`
-                    group relative flex items-center px-4 py-3.5 rounded-xl transition-all duration-300 font-medium overflow-hidden
+                    group relative flex items-center px-4 py-3.5 rounded-xl transition-all duration-300 font-medium overflow-hidden space-x-3
                     ${isActive(item.href) 
                       ? 'text-white shadow-xl scale-[1.02]' 
                       : 'text-gray-700 hover:text-gray-900 hover:scale-[1.01] hover:shadow-md'
                     }
-                    ${isCollapsed ? 'justify-center' : 'space-x-3'}
                   `}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -212,16 +189,12 @@ const StudentDashboardNav = ({ isCollapsed, onToggleCollapse }) => {
                     )}
                   </div>
                   
-                  {!isCollapsed && (
-                    <>
-                      <span className="relative text-xs font-bold flex-1">{item.name}</span>
-                      {isActive(item.href) && (
-                        <div className="relative flex items-center gap-1">
-                          <div className="w-1 h-5 bg-white rounded-full shadow-md"></div>
-                          <Icon name="ChevronRight" size={14} className="opacity-80" />
-                        </div>
-                      )}
-                    </>
+                  <span className="relative text-xs font-bold flex-1">{item.name}</span>
+                  {isActive(item.href) && (
+                    <div className="relative flex items-center gap-1">
+                      <div className="w-1 h-5 bg-white rounded-full shadow-md"></div>
+                      <Icon name="ChevronRight" size={14} className="opacity-80" />
+                    </div>
                   )}
                 </Link>
               </li>

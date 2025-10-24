@@ -7,7 +7,6 @@ import EnhancedDashboard from './components/EnhancedDashboard';
 const EnhancedAdminDashboard = () => {
   const { user, userProfile, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Check if user is admin
   useEffect(() => {
@@ -24,11 +23,8 @@ const EnhancedAdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <AdminSidebar 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-      />
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-60'}`}>
+      <AdminSidebar />
+      <div className="flex-1 transition-all duration-300 lg:ml-60">
         <EnhancedDashboard />
       </div>
     </div>

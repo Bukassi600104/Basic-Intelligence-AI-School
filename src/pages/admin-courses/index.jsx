@@ -14,7 +14,6 @@ import { courseService } from '../../services/courseService';
 const AdminCoursesPage = () => {
   const { userProfile, user } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
@@ -340,11 +339,8 @@ const AdminCoursesPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex">
-        <AdminSidebar 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
-        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <AdminSidebar />
+        <div className="flex-1 transition-all duration-300 lg:ml-60">
           <div className="p-6 lg:p-8 pt-20 lg:pt-8">
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
@@ -358,14 +354,11 @@ const AdminCoursesPage = () => {
     );
   }
 
-  if (error && courses?.length === 0) {
+  if (error) {
     return (
       <div className="min-h-screen bg-background flex">
-        <AdminSidebar 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
-        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <AdminSidebar />
+        <div className="flex-1 transition-all duration-300 lg:ml-60">
           <div className="p-6 lg:p-8 pt-20 lg:pt-8">
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
@@ -382,11 +375,8 @@ const AdminCoursesPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-purple-50 to-pink-50 flex">
-      <AdminSidebar 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-      />
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+      <AdminSidebar />
+      <div className="flex-1 transition-all duration-300 lg:ml-60">
         <div className="p-6 lg:p-8 pt-20 lg:pt-8">
           {/* Page Header - Enhanced */}
           <div className="relative overflow-hidden rounded-3xl mb-8 animate-fadeIn">
