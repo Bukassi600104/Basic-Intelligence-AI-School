@@ -83,7 +83,7 @@ const AdminSidebar = () => {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 h-14 flex items-center justify-between px-3 shadow-md">
           <Link to="/admin-dashboard" className="flex items-center space-x-2">
             <div className="flex items-center space-x-1.5">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-700 rounded-lg flex items-center justify-center shadow-md">
+              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
                 <span className="text-white font-extrabold text-xs">BI</span>
               </div>
               <div className="flex flex-col">
@@ -99,7 +99,7 @@ const AdminSidebar = () => {
         
         <button
           onClick={toggleMobileMenu}
-          className="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 transition-all duration-200"
+          className="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gradient-to-br hover:from-orange-50 hover:to-orange-100 transition-all duration-200"
           aria-label="Toggle admin menu"
         >
           <Icon name={isMobileMenuOpen ? 'X' : 'Menu'} size={20} />
@@ -119,7 +119,7 @@ const AdminSidebar = () => {
         {/* Sidebar Header - Enhanced with Gradient */}
         <div className="relative overflow-hidden h-14 border-b border-gray-200">
           {/* Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700"></div>
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
           
           <div className="relative flex items-center h-full px-3">
@@ -156,8 +156,8 @@ const AdminSidebar = () => {
               to={item?.path}
               className={`group flex items-center ${isCollapsed ? 'justify-center' : 'px-2.5'} py-2 rounded-lg text-xs font-medium transition-all duration-300 ${
                 isActivePath(item?.path)
-                  ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-md shadow-blue-500/50 scale-[1.02]' 
-                  : 'text-gray-700 hover:text-gray-900 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:scale-[1.01]'
+                  ? 'text-white bg-gradient-to-r from-orange-500 to-orange-600 shadow-md shadow-orange-500/50 scale-[1.02]' 
+                  : 'text-gray-700 hover:text-gray-900 hover:bg-gradient-to-r hover:from-orange-50 hover:to-orange-100 hover:scale-[1.01]'
               }`}
               title={isCollapsed ? item?.name : ''}
             >
@@ -180,10 +180,10 @@ const AdminSidebar = () => {
         </nav>
 
         {/* User Profile & Logout - Enhanced */}
-        <div className="px-2 py-3 border-t border-gray-200 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="px-2 py-3 border-t border-gray-200 bg-gradient-to-br from-gray-50 to-orange-50">
           {!isCollapsed && (
             <div className="flex items-center px-2 py-1.5 mb-2 bg-white rounded-lg shadow-sm border border-gray-200">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
                 <Icon name="User" size={16} color="white" />
               </div>
               <div className="ml-2 flex-1">
@@ -221,13 +221,13 @@ const AdminSidebar = () => {
                     onClick={toggleMobileMenu}
                     className={`group flex flex-col items-center p-3 rounded-xl text-center transition-all duration-300 ${
                       isActivePath(item?.path)
-                        ? 'text-white bg-gradient-to-br from-blue-600 to-purple-600 shadow-md shadow-blue-500/50 scale-[1.02]' 
-                        : 'text-gray-700 bg-gradient-to-br from-gray-50 to-blue-50 hover:from-blue-50 hover:to-purple-50 hover:scale-[1.02] border border-gray-200'
+                        ? 'text-white bg-gradient-to-br from-orange-500 to-orange-600 shadow-md shadow-orange-500/50 scale-[1.02]' 
+                        : 'text-gray-700 bg-gradient-to-br from-gray-50 to-orange-50 hover:from-orange-50 hover:to-orange-100 hover:scale-[1.02] border border-gray-200'
                     }`}
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     <div className={`w-10 h-10 ${isActivePath(item?.path) ? 'bg-white/20' : 'bg-white'} rounded-xl flex items-center justify-center mb-2 shadow-md group-hover:scale-110 transition-transform`}>
-                      <Icon name={item?.icon} size={20} className={isActivePath(item?.path) ? 'text-white' : 'text-blue-600'} />
+                      <Icon name={item?.icon} size={20} className={isActivePath(item?.path) ? 'text-white' : 'text-orange-600'} />
                     </div>
                     <span className="text-xs font-bold mb-0.5">{item?.name}</span>
                     <span className={`text-xs ${isActivePath(item?.path) ? 'text-white/80' : 'text-gray-600'}`}>
@@ -239,8 +239,8 @@ const AdminSidebar = () => {
 
               {/* Mobile User Profile - Enhanced */}
               <div className="border-t border-gray-200 pt-4">
-                <div className="flex items-center mb-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                <div className="flex items-center mb-3 p-3 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl border border-orange-200">
+                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
                     <Icon name="User" size={20} color="white" />
                   </div>
                   <div className="ml-2">

@@ -282,9 +282,9 @@ const StudentPrompts = () => {
           </div>
 
           {/* Support Section */}
-          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div className="mt-4 bg-blue-50 border border-orange-200 rounded-xl p-4">
             <div className="flex items-center space-x-3">
-              <Icon name="HelpCircle" size={20} className="text-blue-600 flex-shrink-0" />
+              <Icon name="HelpCircle" size={20} className="text-orange-600 flex-shrink-0" />
               <div>
                 <h3 className="text-base font-semibold text-blue-900 mb-0.5">Need Help with Prompts?</h3>
                 <p className="text-sm text-blue-700">
@@ -309,3 +309,4 @@ const StudentPrompts = () => {
 };
 
 export default StudentPrompts;
+

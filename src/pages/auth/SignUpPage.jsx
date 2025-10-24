@@ -209,15 +209,30 @@ const SignUpPage = () => {
       </GeometricBackground>
       
       {/* Right Panel - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 bg-white overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-6 bg-white overflow-y-auto relative">
+        {/* Back to Homepage Button - Desktop */}
+        <Link 
+          to="/" 
+          className="hidden lg:flex absolute top-6 left-6 items-center gap-2 text-gray-600 hover:text-orange-600 transition-colors group z-10"
+        >
+          <Icon name="ArrowLeft" size={20} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">Back to Home</span>
+        </Link>
+
         <div className="w-full max-w-md py-6">
-          {/* Mobile Logo */}
-          <Link to="/" className="lg:hidden flex items-center justify-center gap-2 mb-6 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Icon name="GraduationCap" size={20} className="text-white" />
-            </div>
-            <span className="text-lg font-bold text-gray-900">Basic Intelligence</span>
-          </Link>
+          {/* Mobile Logo with Back Button */}
+          <div className="lg:hidden flex items-center justify-between mb-6">
+            <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-orange-600 transition-colors">
+              <Icon name="ArrowLeft" size={20} />
+              <span className="text-sm font-medium">Home</span>
+            </Link>
+            <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Icon name="GraduationCap" size={20} className="text-white" />
+              </div>
+              <span className="text-lg font-bold text-gray-900">Basic Intelligence</span>
+            </Link>
+          </div>
           
           {/* Form Header */}
           <div className="text-center mb-5">
@@ -292,12 +307,12 @@ const SignUpPage = () => {
                 onChange={handleInputChange}
                 placeholder="Minimum 6 characters"
                 disabled={loading}
-                className="pr-10"
+                className="pr-12"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
                 title={showPassword ? "Hide password" : "Show password"}
               >
                 <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
@@ -314,12 +329,12 @@ const SignUpPage = () => {
                 onChange={handleInputChange}
                 placeholder="Re-enter your password"
                 disabled={loading}
-                className="pr-10"
+                className="pr-12"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
                 title={showConfirmPassword ? "Hide password" : "Show password"}
               >
                 <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />

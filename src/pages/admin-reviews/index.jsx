@@ -222,7 +222,7 @@ const AdminReviews = () => {
                   <div className="text-sm text-muted-foreground">Total Reviews</div>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <Icon name="MessageSquare" size={24} className="text-blue-600" />
+                  <Icon name="MessageSquare" size={24} className="text-orange-600" />
                 </div>
               </div>
             </div>
@@ -278,7 +278,7 @@ const AdminReviews = () => {
                   <div className="text-sm text-muted-foreground">Avg Rating</div>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <Icon name="Star" size={24} className="text-purple-600" />
+                  <Icon name="Star" size={24} className="text-orange-600" />
                 </div>
               </div>
             </div>
@@ -552,3 +552,4 @@ const AdminReviews = () => {
 };
 
 export default AdminReviews;
+

@@ -186,7 +186,7 @@ const AdminNotificationWizard = () => {
       <div className="flex-1 transition-all duration-300 lg:ml-60">
         <div className="p-6 lg:p-8 pt-20 lg:pt-8">
           {/* Header with Gradient */}
-          <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl p-8 mb-8 shadow-lg">
+          <div className="relative overflow-hidden bg-gradient-to-r from-orange-600 via-purple-600 to-pink-600 rounded-2xl p-8 mb-8 shadow-lg">
             {/* Decorative Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
@@ -308,7 +308,7 @@ const AdminNotificationWizard = () => {
               {/* Template Selection */}
               <div className="bg-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 {/* Card Header with Gradient */}
-                <div className="relative overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-6">
+                <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 via-purple-500 to-pink-500 p-6">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                   <div className="relative flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -414,7 +414,7 @@ const AdminNotificationWizard = () => {
                             </div>
                           )}
                         </label>
-                        <label className="relative flex items-center justify-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer transition-all duration-200 hover:border-blue-500 hover:bg-blue-50">
+                        <label className="relative flex items-center justify-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer transition-all duration-200 hover:border-orange-500 hover:bg-blue-50">
                           <input
                             type="radio"
                             value="both"
@@ -422,12 +422,12 @@ const AdminNotificationWizard = () => {
                             onChange={(e) => setNotificationData(prev => ({ ...prev, recipientType: e.target.value }))}
                             className="sr-only"
                           />
-                          <div className={`text-center ${notificationData.recipientType === 'both' ? 'text-blue-600' : 'text-gray-700'}`}>
+                          <div className={`text-center ${notificationData.recipientType === 'both' ? 'text-orange-600' : 'text-gray-700'}`}>
                             <Icon name="Zap" size={24} className="mx-auto mb-2" />
                             <span className="text-sm font-medium">Both</span>
                           </div>
                           {notificationData.recipientType === 'both' && (
-                            <div className="absolute top-2 right-2 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+                            <div className="absolute top-2 right-2 w-5 h-5 bg-orange-600 rounded-full flex items-center justify-center">
                               <Icon name="Check" size={12} className="text-white" />
                             </div>
                           )}
@@ -442,7 +442,7 @@ const AdminNotificationWizard = () => {
               <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 shadow-lg">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-purple-500 rounded-xl flex items-center justify-center">
                       <Icon name="Rocket" size={24} className="text-white" />
                     </div>
                     <div>
@@ -455,7 +455,7 @@ const AdminNotificationWizard = () => {
                   <button
                     onClick={handleSendNotifications}
                     disabled={sending || selectedUsers.length === 0 || !notificationData.message.trim()}
-                    className="px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-xl font-bold hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 min-w-[200px]"
+                    className="px-8 py-4 bg-gradient-to-r from-orange-500 via-purple-500 to-pink-500 text-white rounded-xl font-bold hover:from-orange-600 hover:via-purple-600 hover:to-pink-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 min-w-[200px]"
                   >
                     {sending ? (
                       <>
@@ -476,7 +476,7 @@ const AdminNotificationWizard = () => {
               {results && (
                 <div className="bg-white border-2 border-gray-200 rounded-2xl overflow-hidden shadow-lg animate-slideDown">
                   {/* Results Header */}
-                  <div className="relative overflow-hidden bg-gradient-to-r from-indigo-500 to-purple-600 p-6">
+                  <div className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-purple-600 p-6">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative flex items-center space-x-3">
                       <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -488,11 +488,11 @@ const AdminNotificationWizard = () => {
                   
                   <div className="p-6">
                     <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-200">
-                        <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mx-auto mb-2">
+                      <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border-2 border-orange-200">
+                        <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mx-auto mb-2">
                           <Icon name="Send" size={24} className="text-white" />
                         </div>
-                        <div className="text-3xl font-bold text-blue-600">{results.total}</div>
+                        <div className="text-3xl font-bold text-orange-600">{results.total}</div>
                         <div className="text-sm text-gray-600 font-medium">Total Sent</div>
                       </div>
                       <div className="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
@@ -541,3 +541,4 @@ const AdminNotificationWizard = () => {
 };
 
 export default AdminNotificationWizard;
+

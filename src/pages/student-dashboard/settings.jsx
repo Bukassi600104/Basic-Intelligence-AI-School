@@ -265,13 +265,13 @@ const StudentSettings = () => {
         <div className="p-3 sm:p-4 lg:p-5 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
           {/* Enhanced Gradient Header */}
           <div className="relative mb-4 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl"></div>
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-400/20 to-cyan-400/20 rounded-full blur-2xl"></div>
             
             <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-4">
               <div>
-                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
+                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-orange-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
                   Account Settings
                 </h1>
                 <p className="text-gray-600 text-sm">
@@ -293,11 +293,11 @@ const StudentSettings = () => {
           </div>
 
           {/* Profile Picture Section - Moved to Top */}
-          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-xl p-4 mb-4 shadow-sm border border-blue-200">
+          <div className="bg-gradient-to-r from-orange-500/10 via-purple-500/10 to-pink-500/10 rounded-xl p-4 mb-4 shadow-sm border border-orange-200">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center shadow-md">
+                  <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-purple-500 rounded-lg flex items-center justify-center shadow-md">
                     <Icon name="Camera" size={20} className="text-white" />
                   </div>
                   <div>
@@ -309,8 +309,8 @@ const StudentSettings = () => {
                 </div>
                 
                 <div className="flex flex-wrap gap-2 mt-3">
-                  <div className="flex items-center space-x-1.5 bg-white/80 rounded-lg px-3 py-2 border border-blue-200 shadow-sm">
-                    <Icon name="User" size={16} className="text-blue-600" />
+                  <div className="flex items-center space-x-1.5 bg-white/80 rounded-lg px-3 py-2 border border-orange-200 shadow-sm">
+                    <Icon name="User" size={16} className="text-orange-600" />
                     <span className="text-xs font-medium text-blue-900">
                       Member ID: {userProfile?.member_id || 'Pending'}
                     </span>
@@ -437,10 +437,10 @@ const StudentSettings = () => {
             {/* Profile Settings */}
             <div className="lg:col-span-2 space-y-4">
               {/* Profile Information - Updated with colorful tiles */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-xl p-4">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-orange-200 rounded-xl p-4">
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Icon name="User" size={20} className="text-blue-600" />
+                    <Icon name="User" size={20} className="text-orange-600" />
                   </div>
                   <div>
                     <h2 className="text-lg font-bold text-blue-900">Personal Information</h2>
@@ -458,7 +458,7 @@ const StudentSettings = () => {
                       name="full_name"
                       value={formData.full_name}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
+                      className="w-full px-3 py-2 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -472,9 +472,9 @@ const StudentSettings = () => {
                       name="email"
                       value={formData.email}
                       disabled
-                      className="w-full px-3 py-2 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-700"
+                      className="w-full px-3 py-2 border border-orange-200 rounded-lg bg-blue-50/50 text-blue-700"
                     />
-                    <p className="text-xs text-blue-600 mt-1">
+                    <p className="text-xs text-orange-600 mt-1">
                       Email cannot be changed. Contact support for assistance.
                     </p>
                   </div>
@@ -488,7 +488,7 @@ const StudentSettings = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
+                      className="w-full px-4 py-3 border border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
                       placeholder="+234123456789"
                     />
                   </div>
@@ -502,7 +502,7 @@ const StudentSettings = () => {
                       name="location"
                       value={formData.location}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
+                      className="w-full px-4 py-3 border border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
                       placeholder="City, Country"
                     />
                   </div>
@@ -517,7 +517,7 @@ const StudentSettings = () => {
                     value={formData.bio}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80 resize-vertical"
+                    className="w-full px-4 py-3 border border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80 resize-vertical"
                     placeholder="Tell us a bit about yourself..."
                   />
                 </div>
@@ -526,7 +526,7 @@ const StudentSettings = () => {
                   <Button 
                     onClick={handleSaveProfile}
                     loading={saveLoading}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-orange-600 hover:bg-blue-700 text-white"
                   >
                     <Icon name="Save" size={16} className="mr-2" />
                     Save Changes
@@ -922,7 +922,7 @@ const StudentSettings = () => {
               {/* Account Actions */}
               <div className="bg-gradient-to-br from-indigo-50 to-blue-100 border-2 border-indigo-200 rounded-2xl p-6 shadow-lg">
                 <div className="flex items-center space-x-2 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-blue-500 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-orange-500 rounded-lg flex items-center justify-center">
                     <Icon name="Zap" size={20} className="text-white" />
                   </div>
                   <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-900 to-blue-900 bg-clip-text text-transparent">Quick Actions</h3>
@@ -977,9 +977,9 @@ const StudentSettings = () => {
               </div>
 
               {/* Support Card */}
-              <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+              <div className="bg-blue-50 border border-orange-200 rounded-2xl p-6">
                 <div className="flex items-center space-x-3 mb-3">
-                  <Icon name="HelpCircle" size={20} className="text-blue-600" />
+                  <Icon name="HelpCircle" size={20} className="text-orange-600" />
                   <h3 className="text-lg font-semibold text-blue-900">Need Help?</h3>
                 </div>
                 <p className="text-blue-700 text-sm mb-4">
@@ -1004,3 +1004,4 @@ const StudentSettings = () => {
 };
 
 export default StudentSettings;
+

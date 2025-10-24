@@ -222,7 +222,7 @@ const AdminContentPage = () => {
         <div className="p-6 lg:p-8 pt-20 lg:pt-8">
           {/* Page Header - Enhanced */}
           <div className="relative overflow-hidden rounded-3xl mb-8 animate-fadeIn">
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-green-600 to-cyan-600"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-green-600 to-orange-600"></div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
             
             <div className="relative p-6 lg:p-8">
@@ -250,7 +250,7 @@ const AdminContentPage = () => {
                   </Button>
                   <Button 
                     onClick={() => setShowUploadForm(true)}
-                    className="bg-white text-emerald-600 hover:bg-white/90 font-bold shadow-lg"
+                    className="bg-white text-orange-600 hover:bg-white/90 font-bold shadow-lg"
                   >
                     <Icon name="Plus" size={16} className="mr-2" />
                     Add Content
@@ -276,9 +276,9 @@ const AdminContentPage = () => {
               <div className="relative flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1">Total Content</p>
-                  <p className="text-3xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">{content?.length}</p>
+                  <p className="text-3xl font-extrabold bg-gradient-to-r from-orange-600 to-green-600 bg-clip-text text-transparent">{content?.length}</p>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <Icon name="FolderOpen" size={28} className="text-white" />
                 </div>
               </div>
@@ -289,11 +289,11 @@ const AdminContentPage = () => {
               <div className="relative flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 mb-1">Videos</p>
-                  <p className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  <p className="text-3xl font-extrabold bg-gradient-to-r from-orange-600 to-orange-600 bg-clip-text text-transparent">
                     {content?.filter(c => c?.content_type === 'video')?.length}
                   </p>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <Icon name="Play" size={28} className="text-white" />
                 </div>
               </div>
@@ -471,7 +471,7 @@ const AdminContentPage = () => {
             
             <div className="relative bg-white rounded-3xl w-full max-w-2xl shadow-2xl border-2 border-gray-200 animate-slideUp overflow-hidden">
               {/* Gradient Header */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-green-600 to-cyan-600 p-8">
+              <div className="relative overflow-hidden bg-gradient-to-br from-orange-600 via-green-600 to-orange-600 p-8">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
                 
@@ -579,7 +579,7 @@ const AdminContentPage = () => {
                   <button
                     type="submit"
                     disabled={uploadLoading}
-                    className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:from-emerald-700 hover:to-green-700 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                    className="px-6 py-3 bg-gradient-to-r from-orange-600 to-green-600 text-white font-bold rounded-xl shadow-lg hover:shadow-2xl hover:from-emerald-700 hover:to-green-700 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                   >
                     {uploadLoading ? (
                       <>

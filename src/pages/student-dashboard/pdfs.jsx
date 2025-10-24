@@ -174,7 +174,7 @@ const StudentPDFs = () => {
                   placeholder="Search PDFs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white/80"
+                  className="w-full pl-9 pr-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
                 />
               </div>
 
@@ -184,7 +184,7 @@ const StudentPDFs = () => {
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white/80 appearance-none"
+                  className="w-full pl-9 pr-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80 appearance-none"
                 >
                   <option value="all">All Categories</option>
                   {categories.filter(cat => cat !== 'all').map(category => (
@@ -286,7 +286,7 @@ const StudentPDFs = () => {
           {/* Support Section */}
           <div className="mt-8 bg-gradient-to-br from-cyan-50 to-blue-100 border-2 border-cyan-200 rounded-2xl p-6 shadow-lg">
             <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl flex items-center justify-center shadow-md">
+              <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
                 <Icon name="HelpCircle" size={24} className="text-white" />
               </div>
               <div className="flex-1">
@@ -313,3 +313,4 @@ const StudentPDFs = () => {
 };
 
 export default StudentPDFs;
+

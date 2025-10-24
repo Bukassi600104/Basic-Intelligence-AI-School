@@ -122,21 +122,21 @@ const PaymentInstructions = ({ userProfile, selectedTier, onPaymentSubmitted }) 
   return (
     <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
       <div className="flex items-center space-x-3 mb-4">
-        <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+        <div className="w-10 h-10 bg-gradient-to-r from-orange-600 to-purple-600 rounded-lg flex items-center justify-center">
           <Icon name="CreditCard" size={20} className="text-white" />
         </div>
         <h2 className="text-xl font-bold text-gray-900">Payment Instructions</h2>
       </div>
 
       {/* Selected Plan */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-4">
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-orange-200 rounded-lg p-4 mb-4">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-xs text-gray-600 mb-1">Selected Plan</div>
             <div className="text-lg font-bold text-blue-900">{selectedPlan.name}</div>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-blue-600">{selectedPlan.amount}</div>
+            <div className="text-2xl font-bold text-orange-600">{selectedPlan.amount}</div>
             <div className="text-xs text-gray-600">{selectedPlan.duration}</div>
           </div>
         </div>
@@ -145,7 +145,7 @@ const PaymentInstructions = ({ userProfile, selectedTier, onPaymentSubmitted }) 
       {/* Bank Account Details */}
       <div className="bg-gray-50 rounded-lg p-4 mb-4">
         <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center">
-          <Icon name="Building" size={18} className="mr-2 text-blue-600" />
+          <Icon name="Building" size={18} className="mr-2 text-orange-600" />
           Bank Account Details
         </h3>
         <div className="space-y-2">
@@ -167,7 +167,7 @@ const PaymentInstructions = ({ userProfile, selectedTier, onPaymentSubmitted }) 
       {/* Upload Payment Slip */}
       <div className="mb-4">
         <h3 className="text-sm font-bold text-gray-900 mb-2">Upload Payment Slip</h3>
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-orange-500 transition-colors">
           <input
             type="file"
             accept="image/*"
@@ -182,7 +182,7 @@ const PaymentInstructions = ({ userProfile, selectedTier, onPaymentSubmitted }) 
           >
             {uploading ? (
               <div className="flex flex-col items-center">
-                <Icon name="Loader" size={36} className="text-blue-600 animate-spin mb-2" />
+                <Icon name="Loader" size={36} className="text-orange-600 animate-spin mb-2" />
                 <p className="text-sm text-gray-600">Uploading...</p>
               </div>
             ) : uploadedUrl ? (
@@ -208,7 +208,7 @@ const PaymentInstructions = ({ userProfile, selectedTier, onPaymentSubmitted }) 
         disabled={!uploadedUrl || submitting}
         loading={submitting}
         fullWidth
-        className="h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-md"
+        className="h-12 bg-gradient-to-r from-orange-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold shadow-md"
       >
         {submitting ? (
           <div className="flex items-center justify-center space-x-2">
@@ -224,9 +224,9 @@ const PaymentInstructions = ({ userProfile, selectedTier, onPaymentSubmitted }) 
       </Button>
 
       {/* Help Text */}
-      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+      <div className="mt-4 p-3 bg-blue-50 border border-orange-200 rounded-lg">
         <div className="flex items-start space-x-2">
-          <Icon name="Info" size={16} className="text-blue-600 flex-shrink-0 mt-0.5" />
+          <Icon name="Info" size={16} className="text-orange-600 flex-shrink-0 mt-0.5" />
           <div className="text-xs text-blue-900">
             <p className="font-medium mb-1">Important:</p>
             <ul className="list-disc list-inside space-y-0.5 text-blue-800">
@@ -243,3 +243,4 @@ const PaymentInstructions = ({ userProfile, selectedTier, onPaymentSubmitted }) 
 };
 
 export default PaymentInstructions;
+

@@ -122,7 +122,7 @@ const StudentVideos = () => {
         <div className="p-3 sm:p-4 lg:p-5 pt-16 sm:pt-20 lg:pt-8">
           {/* Enhanced Gradient Header */}
           <div className="relative mb-4 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 rounded-2xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-orange-500/10 to-fuchsia-500/10 rounded-2xl"></div>
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-purple-400/20 to-fuchsia-400/20 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-violet-400/20 to-indigo-400/20 rounded-full blur-2xl"></div>
             
@@ -267,9 +267,9 @@ const StudentVideos = () => {
           </div>
 
           {/* Support Section */}
-          <div className="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6">
+          <div className="mt-8 bg-blue-50 border border-orange-200 rounded-2xl p-6">
             <div className="flex items-center space-x-4">
-              <Icon name="HelpCircle" size={24} className="text-blue-600 flex-shrink-0" />
+              <Icon name="HelpCircle" size={24} className="text-orange-600 flex-shrink-0" />
               <div>
                 <h3 className="text-lg font-semibold text-blue-900 mb-1">Need Help with Videos?</h3>
                 <p className="text-blue-700">
@@ -294,3 +294,4 @@ const StudentVideos = () => {
 };
 
 export default StudentVideos;
+
