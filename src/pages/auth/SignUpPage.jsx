@@ -292,12 +292,12 @@ const SignUpPage = () => {
                 onChange={handleInputChange}
                 placeholder="Minimum 6 characters"
                 disabled={loading}
-                className="pr-12"
+                className="pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[30px] text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
                 title={showPassword ? "Hide password" : "Show password"}
               >
                 <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
@@ -314,12 +314,12 @@ const SignUpPage = () => {
                 onChange={handleInputChange}
                 placeholder="Re-enter your password"
                 disabled={loading}
-                className="pr-12"
+                className="pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-[30px] text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-9 text-gray-400 hover:text-gray-600 transition-colors"
                 title={showConfirmPassword ? "Hide password" : "Show password"}
               >
                 <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
