@@ -98,16 +98,16 @@ const AdminSettings = () => {
       <AdminSidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
       
       {/* Main Content */}
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
-        <div className="p-8">
-          <h1 className="text-2xl font-bold mb-6">Admin Settings</h1>
+      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-60'}`}>
+        <div className="p-4 lg:p-5">
+          <h1 className="text-xl font-bold mb-4">Admin Settings</h1>
           
-          <div className="bg-white rounded-lg shadow p-6 max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+          <div className="bg-white rounded-lg shadow p-4 max-w-md">
+            <h2 className="text-lg font-semibold mb-3">Change Password</h2>
             
             {status && (
               <div 
-                className={`mb-4 p-4 rounded ${
+                className={`mb-3 p-3 rounded ${
                   status.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                 }`}
               >
@@ -115,9 +115,9 @@ const AdminSettings = () => {
               </div>
             )}
             
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="password" className="block text-xs font-medium text-gray-700 mb-1">
                   New Password
                 </label>
                 <input
@@ -125,7 +125,7 @@ const AdminSettings = () => {
                   type="password"
                   value={password}
                   onChange={handlePasswordChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                   minLength={8}
                 />

@@ -319,45 +319,45 @@ const AdminDashboard = () => {
           
           <div className="relative flex items-center justify-between">
             <div className="animate-fadeIn">
-              <div className="flex items-center space-x-3 mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <Icon name="LayoutDashboard" size={20} className="text-white" />
+              <div className="flex items-center space-x-2 mb-1">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+                  <Icon name="LayoutDashboard" size={18} className="text-white" />
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-extrabold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+                <h1 className="text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
                   Admin Dashboard
                 </h1>
               </div>
-              <p className="text-gray-600 text-base lg:text-lg ml-13">
+              <p className="text-gray-600 text-sm lg:text-base ml-10">
                 Welcome back! Here's what's happening with your{' '}
                 <span className="font-semibold text-gray-900">platform today</span>
               </p>
             </div>
             
-            <div className="flex items-center space-x-3 animate-slideUp">
+            <div className="flex items-center space-x-2 animate-slideUp">
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="group px-4 py-2.5 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:border-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group px-3 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-blue-500 hover:shadow-md hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1.5">
                   <Icon 
                     name="RefreshCw" 
-                    size={16} 
+                    size={14} 
                     className={`${refreshing ? 'animate-spin' : 'group-hover:rotate-180'} transition-transform duration-500`} 
                   />
-                  <span className="hidden sm:inline">Refresh</span>
+                  <span className="hidden sm:inline text-sm">Refresh</span>
                 </div>
               </button>
               
               {dashboardData?.stats?.pendingPayments > 0 && (
                 <button
                   onClick={() => navigate('/admin-users?tab=payments&filter=pending')}
-                  className="group relative px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-xl shadow-lg hover:shadow-glow-md hover:scale-105 transition-all duration-300 overflow-hidden"
+                  className="group relative px-3 py-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-lg shadow-md hover:shadow-glow-md hover:scale-105 transition-all duration-300 overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-600 to-orange-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="relative flex items-center space-x-2">
-                    <Icon name="AlertCircle" size={16} className="animate-pulse" />
-                    <span>{dashboardData?.stats?.pendingPayments} Pending</span>
+                  <div className="relative flex items-center space-x-1.5">
+                    <Icon name="AlertCircle" size={14} className="animate-pulse" />
+                    <span className="text-sm">{dashboardData?.stats?.pendingPayments} Pending</span>
                   </div>
                 </button>
               )}
@@ -366,11 +366,11 @@ const AdminDashboard = () => {
         </div>
 
         {/* Dashboard Content */}
-        <div className="p-4 lg:p-6 space-y-8">
+        <div className="p-3 lg:p-4 space-y-4">
           {error && (
-            <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-4 animate-slideDown">
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-3 animate-slideDown">
               <div className="flex items-center">
-                <Icon name="AlertCircle" size={18} className="text-red-600 mr-2" />
+                <Icon name="AlertCircle" size={16} className="text-red-600 mr-2" />
                 <span className="text-red-700 font-medium text-sm">{error}</span>
               </div>
             </div>
@@ -378,11 +378,11 @@ const AdminDashboard = () => {
 
           {/* Metrics Grid - Using StatCard */}
           <div>
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
-              <h2 className="text-xl font-bold text-gray-900">Key Metrics</h2>
+            <div className="flex items-center space-x-1.5 mb-4">
+              <div className="w-1 h-5 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
+              <h2 className="text-lg font-bold text-gray-900">Key Metrics</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
               {metricsData?.map((metric, index) => (
                 <div 
                   key={index}
