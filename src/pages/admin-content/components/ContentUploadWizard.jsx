@@ -213,6 +213,12 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
       } else {
         setUploadedContent(data || contentData);
         setShowSuccessModal(true);
+        
+        // Dispatch custom event for dashboard integration
+        window.dispatchEvent(new CustomEvent('content-uploaded', { 
+          detail: { content: data || contentData } 
+        }));
+        
         onSuccess?.();
       }
     } catch (err) {

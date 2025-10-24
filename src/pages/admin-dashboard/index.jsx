@@ -7,6 +7,7 @@ import ActionCard from '../../components/ui/ActionCard';
 import ActivityFeed from './components/ActivityFeed';
 import AlertsPanel from './components/AlertsPanel';
 import SystemStatusPanel from './components/SystemStatusPanel';
+import RecentUploadsWidget from './components/RecentUploadsWidget';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { adminService } from '../../services/adminService';
@@ -424,8 +425,9 @@ const AdminDashboard = () => {
           {/* Main Dashboard Grid */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {/* Activity Feed - Takes 2 columns on xl screens */}
-            <div className="xl:col-span-2">
+            <div className="xl:col-span-2 space-y-6">
               <ActivityFeed activities={dashboardData?.activities} />
+              <RecentUploadsWidget onRefresh={handleRefresh} />
             </div>
 
             {/* Right Sidebar - Alerts and System Status */}
