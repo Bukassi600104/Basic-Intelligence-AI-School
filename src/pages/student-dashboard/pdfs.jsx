@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import LockedOverlay from '../../components/ui/LockedOverlay';
 import Icon from '../../components/AppIcon';
@@ -12,10 +12,16 @@ import { logger } from '../../utils/logger';
 const StudentPDFs = () => {
   const { user, userProfile, isMember } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [pdfs, setPdfs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const contentRef = useRef(null);
+  
+  // Get deep linking parameters
+  const contentId = searchParams.get('contentId');
+  const isFeatured = searchParams.get('featured') === 'true';
 
   // Check authentication - redirect to signin if not logged in
   useEffect(() => {
@@ -49,7 +55,8 @@ const StudentPDFs = () => {
           fileSize: item.file_size_bytes ? `${(item.file_size_bytes / (1024 * 1024)).toFixed(1)} MB` : 'Unknown',
           uploadedAt: item.created_at,
           pages: 0, // This would need to be calculated from actual PDF content
-          downloadUrl: item.file_path || '#'
+          downloadUrl: item.file_path || '#',
+          isFeatured: item.is_featured || false,
         }));
         
         setPdfs(transformedPDFs);
@@ -64,6 +71,23 @@ const StudentPDFs = () => {
       loadPDFs();
     }
   }, [userProfile]);
+  
+  // Scroll to specific content when deep linked
+  useEffect(() => {
+    if (contentId && pdfs.length > 0 && contentRef.current) {
+      const targetElement = document.getElementById(`pdf-${contentId}`);
+      if (targetElement) {
+        setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight the targeted content
+          targetElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+          setTimeout(() => {
+            targetElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+          }, 3000);
+        }, 500);
+      }
+    }
+  }, [contentId, pdfs]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB', {
@@ -197,7 +221,7 @@ const StudentPDFs = () => {
           </div>
 
           {/* PDF Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" ref={contentRef}>
             {filteredPDFs.length === 0 ? (
               <div className="col-span-full text-center py-8">
                 <Icon name="FileText" size={40} className="text-muted-foreground mx-auto mb-3" />
@@ -222,21 +246,34 @@ const StudentPDFs = () => {
               </div>
             ) : (
               filteredPDFs.map((pdf) => (
-                <div key={pdf.id} className="group bg-white border border-red-200 rounded-xl p-4 hover:shadow-lg hover:border-red-300 transition-all duration-300 transform hover:scale-105">
+                <div 
+                  key={pdf.id}
+                  id={`pdf-${pdf.id}`}
+                  className="group bg-white border border-red-200 rounded-xl p-4 hover:shadow-lg hover:border-red-300 transition-all duration-300 transform hover:scale-105"
+                >
                   {/* PDF Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="w-11 h-11 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
                       <Icon name="FileText" size={22} className="text-white" />
                     </div>
-                    <span className={`px-2 py-1 rounded-lg text-xs font-bold border ${
-                      pdf.category === 'Prompts' ? 'bg-green-100 text-green-800 border-green-300' :
-                      pdf.category === 'Business' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-                      pdf.category === 'Content' ? 'bg-purple-100 text-purple-800 border-purple-300' :
-                      pdf.category === 'Analytics' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                      'bg-gray-100 text-gray-800 border-gray-300'
-                    }`}>
-                      {pdf.category}
-                    </span>
+                    <div className="flex flex-col items-end gap-1">
+                      {/* Featured Badge */}
+                      {pdf.isFeatured && isFeatured && (
+                        <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-100 to-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
+                          <Icon name="Star" size={10} className="fill-current" />
+                          Featured
+                        </span>
+                      )}
+                      <span className={`px-2 py-1 rounded-lg text-xs font-bold border ${
+                        pdf.category === 'Prompts' ? 'bg-green-100 text-green-800 border-green-300' :
+                        pdf.category === 'Business' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                        pdf.category === 'Content' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                        pdf.category === 'Analytics' ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                        'bg-gray-100 text-gray-800 border-gray-300'
+                      }`}>
+                        {pdf.category}
+                      </span>
+                    </div>
                   </div>
 
                   {/* PDF Info */}

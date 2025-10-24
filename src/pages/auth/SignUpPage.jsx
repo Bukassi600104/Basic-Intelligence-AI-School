@@ -22,30 +22,58 @@ const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const { signUp, user, userProfile } = useAuth();
+  const { signUp, user, userProfile, getLoginIntent, clearLoginIntent } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Get tier from URL parameters
+  // Get tier from URL parameters or login intent
   useEffect(() => {
     const urlParams = new URLSearchParams(location?.search);
     const tierParam = urlParams?.get('tier');
+    
+    // Check for login intent (from featured content)
+    const intent = getLoginIntent();
+    
+    // Prioritize URL parameter, then check intent for tier recommendation
     if (tierParam && ['starter', 'pro', 'elite']?.includes(tierParam)) {
       setFormData(prev => ({ ...prev, tier: tierParam }));
+    } else if (intent && intent.path) {
+      // Could add logic here to recommend tier based on content access_level
+      // For now, default to pro which is the most common
+      setFormData(prev => ({ ...prev, tier: 'pro' }));
     }
-  }, [location?.search]);
+  }, [location?.search, getLoginIntent]);
 
   // Redirect if already logged in
   useEffect(() => {
     if (user && userProfile) {
-      // Redirect based on role
+      // Check for login intent first
+      const intent = getLoginIntent();
+      if (intent && intent.path) {
+        // Build URL with query parameters if present
+        let redirectUrl = intent.path;
+        const params = new URLSearchParams();
+        if (intent.contentId) params.append('contentId', intent.contentId);
+        if (intent.featured) params.append('featured', 'true');
+        
+        if (params.toString()) {
+          redirectUrl = `${intent.path}?${params.toString()}`;
+        }
+
+        // Clear intent and redirect
+        clearLoginIntent();
+        navigate(redirectUrl, { replace: true });
+        return;
+      }
+
+      // Default redirect based on role
       if (userProfile.role === 'admin') {
         navigate('/admin-dashboard');
       } else {
         navigate('/student-dashboard');
       }
     }
-  }, [user, userProfile, navigate]);
+  }, [user, userProfile, navigate, getLoginIntent, clearLoginIntent]);
 
   const validateForm = () => {
     if (!formData?.fullName?.trim()) {
@@ -243,6 +271,24 @@ const SignUpPage = () => {
               Sign up to get started with your AI learning journey.
             </p>
           </div>
+
+          {/* Login Intent Notification */}
+          {(() => {
+            const intent = getLoginIntent();
+            return intent && intent.path ? (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg animate-slideDown">
+                <div className="flex items-start space-x-2">
+                  <Icon name="Info" size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-blue-900 text-xs font-semibold">Featured Content Waiting</p>
+                    <p className="text-blue-700 text-xs mt-0.5">
+                      Create your account to access the featured content you selected
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : null;
+          })()}
 
           {/* Selected Tier Display */}
           <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">

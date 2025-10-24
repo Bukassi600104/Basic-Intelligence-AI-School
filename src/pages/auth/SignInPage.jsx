@@ -17,7 +17,7 @@ const SignInPage = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const { signIn, user, userProfile, isAdmin, isMember, profileLoading } = useAuth();
+  const { signIn, user, userProfile, isAdmin, isMember, profileLoading, getLoginIntent, clearLoginIntent } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -52,8 +52,29 @@ const SignInPage = () => {
       
       // Stop loading spinner
       setLoading(false);
+
+      // Check for login intent (from featured content)
+      const intent = getLoginIntent();
+      if (intent && intent.path) {
+        console.log('✅ Found login intent, redirecting to:', intent.path);
+        
+        // Build URL with query parameters if present
+        let redirectUrl = intent.path;
+        const params = new URLSearchParams();
+        if (intent.contentId) params.append('contentId', intent.contentId);
+        if (intent.featured) params.append('featured', 'true');
+        
+        if (params.toString()) {
+          redirectUrl = `${intent.path}?${params.toString()}`;
+        }
+
+        // Clear intent and redirect
+        clearLoginIntent();
+        navigate(redirectUrl, { replace: true });
+        return;
+      }
       
-      // Direct redirection based on user role from profile
+      // Default redirection based on user role from profile
       if (userProfile.role === 'admin') {
         console.log('✅ Admin detected - redirecting to /admin-dashboard');
         navigate('/admin-dashboard', { replace: true });
@@ -66,7 +87,7 @@ const SignInPage = () => {
         navigate('/student-dashboard', { replace: true });
       }
     }
-  }, [user, userProfile, profileLoading, isAdmin, isMember, navigate]);
+  }, [user, userProfile, profileLoading, isAdmin, isMember, navigate, getLoginIntent, clearLoginIntent]);
 
   const validateForm = () => {
     if (!formData?.email?.trim()) {
@@ -210,6 +231,24 @@ const SignInPage = () => {
               Enter your email and password to continue your learning.
             </p>
           </div>
+
+          {/* Login Intent Notification */}
+          {(() => {
+            const intent = getLoginIntent();
+            return intent && intent.path ? (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg animate-slideDown">
+                <div className="flex items-start space-x-2">
+                  <Icon name="Star" size={18} className="text-orange-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-orange-900 text-xs font-semibold">Featured Content Waiting</p>
+                    <p className="text-orange-700 text-xs mt-0.5">
+                      Sign in to access the featured content you selected
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : null;
+          })()}
 
           {/* Success Message */}
           {successMessage && (

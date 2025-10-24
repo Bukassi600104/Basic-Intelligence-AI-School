@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import LockedOverlay from '../../components/ui/LockedOverlay';
 import Icon from '../../components/AppIcon';
@@ -12,10 +12,16 @@ import { logger } from '../../utils/logger';
 const StudentVideos = () => {
   const { user, userProfile, isMember } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const contentRef = useRef(null);
+  
+  // Get deep linking parameters
+  const contentId = searchParams.get('contentId');
+  const isFeatured = searchParams.get('featured') === 'true';
 
   // Check authentication - redirect to signin if not logged in
   useEffect(() => {
@@ -49,7 +55,8 @@ const StudentVideos = () => {
           duration: 'Unknown', // This would need to be calculated from actual video content
           uploadedAt: item.created_at,
           thumbnail: item.google_drive_embed_url ? `${item.google_drive_embed_url.replace('/preview', '')}/thumbnail` : '/assets/images/no_image.png',
-          videoUrl: item.google_drive_embed_url || '#'
+          videoUrl: item.google_drive_embed_url || '#',
+          isFeatured: item.is_featured || false,
         }));
         
         setVideos(transformedVideos);
@@ -64,6 +71,23 @@ const StudentVideos = () => {
       loadVideos();
     }
   }, [userProfile]);
+  
+  // Scroll to specific content when deep linked
+  useEffect(() => {
+    if (contentId && videos.length > 0 && contentRef.current) {
+      const targetElement = document.getElementById(`video-${contentId}`);
+      if (targetElement) {
+        setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight the targeted content
+          targetElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+          setTimeout(() => {
+            targetElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+          }, 3000);
+        }, 500);
+      }
+    }
+  }, [contentId, videos]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB', {
@@ -184,7 +208,7 @@ const StudentVideos = () => {
           </div>
 
           {/* Video Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" ref={contentRef}>
             {filteredVideos.length === 0 ? (
               <div className="col-span-full text-center py-12">
                 <Icon name="Video" size={48} className="text-muted-foreground mx-auto mb-4" />
@@ -209,7 +233,11 @@ const StudentVideos = () => {
               </div>
             ) : (
               filteredVideos.map((video) => (
-                <div key={video.id} className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
+                <div 
+                  key={video.id} 
+                  id={`video-${video.id}`}
+                  className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300"
+                >
                   {/* Video Thumbnail */}
                   <div className="relative aspect-video bg-muted">
                     <img 
@@ -228,6 +256,13 @@ const StudentVideos = () => {
                     <div className="absolute bottom-2 right-2 bg-black/80 text-white px-2 py-1 rounded text-xs font-medium">
                       {video.duration}
                     </div>
+                    {/* Featured Badge */}
+                    {video.isFeatured && isFeatured && (
+                      <div className="absolute top-2 left-2 bg-gradient-to-r from-yellow-400 to-amber-400 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 shadow-lg">
+                        <Icon name="Star" size={12} className="fill-current" />
+                        Featured
+                      </div>
+                    )}
                   </div>
 
                   {/* Video Info */}

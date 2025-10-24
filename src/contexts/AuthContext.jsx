@@ -228,6 +228,29 @@ export const AuthProvider = ({ children }) => {
     return tierHierarchy[userTier]?.includes(requiredAccessLevel) || false;
   };
 
+  // Intent tracking for featured content deep linking
+  const saveLoginIntent = (path, contentId = null, isFeatured = false) => {
+    const intent = { path };
+    if (contentId) intent.contentId = contentId;
+    if (isFeatured) intent.featured = isFeatured;
+    sessionStorage.setItem('login_intent', JSON.stringify(intent));
+  };
+
+  const getLoginIntent = () => {
+    try {
+      const intentStr = sessionStorage.getItem('login_intent');
+      if (!intentStr) return null;
+      return JSON.parse(intentStr);
+    } catch (error) {
+      console.error('Failed to parse login intent:', error);
+      return null;
+    }
+  };
+
+  const clearLoginIntent = () => {
+    sessionStorage.removeItem('login_intent');
+  };
+
   const value = {
     user,
     userProfile,
@@ -239,6 +262,9 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     getActiveMembership,
     canAccessContent,
+    saveLoginIntent,
+    getLoginIntent,
+    clearLoginIntent,
     isAdmin: userProfile?.role === 'admin',
     isStudent: userProfile?.role === 'student',
     // Admin users bypass membership requirements, students need active membership

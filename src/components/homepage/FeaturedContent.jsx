@@ -123,6 +123,7 @@ const FeaturedContent = ({ limit = 6 }) => {
  * Individual content card with access control logic
  */
 const FeaturedContentCard = ({ content, user, userProfile, canAccessContent, navigate }) => {
+  const { saveLoginIntent } = useAuth();
   const [showAccessModal, setShowAccessModal] = useState(false);
   const [checking, setChecking] = useState(false);
 
@@ -152,13 +153,16 @@ const FeaturedContentCard = ({ content, user, userProfile, canAccessContent, nav
 
     // Scenario 1: Not logged in - redirect to sign in with intent
     if (!user) {
-      // Store intended content in session storage
-      sessionStorage.setItem('intendedContent', JSON.stringify({
-        contentId: content.id,
-        contentType: content.content_type,
-        contentTitle: content.title,
-        referrer: 'homepage_featured'
-      }));
+      // Determine dashboard route based on content type
+      const routes = {
+        video: '/student-dashboard/videos',
+        pdf: '/student-dashboard/pdfs',
+        prompt: '/student-dashboard/prompts'
+      };
+      const route = routes[content.content_type] || '/student-dashboard';
+
+      // Save login intent using AuthContext
+      saveLoginIntent(route, content.id, true);
 
       // Log click (no user)
       await contentService.logFeaturedClick(content.id, true, null, 'homepage');

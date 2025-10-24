@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import LockedOverlay from '../../components/ui/LockedOverlay';
 import Icon from '../../components/AppIcon';
@@ -12,11 +12,17 @@ import { logger } from '../../utils/logger';
 const StudentPrompts = () => {
   const { user, userProfile, isMember } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [prompts, setPrompts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [copiedPromptId, setCopiedPromptId] = useState(null);
+  const contentRef = useRef(null);
+  
+  // Get deep linking parameters
+  const contentId = searchParams.get('contentId');
+  const isFeatured = searchParams.get('featured') === 'true';
 
   // Check authentication - redirect to signin if not logged in
   useEffect(() => {
@@ -51,6 +57,7 @@ const StudentPrompts = () => {
           useCase: item.tags?.[0] || 'General',
           difficulty: 'Intermediate', // This would be determined from content analysis
           uploadedAt: item.created_at,
+          isFeatured: item.is_featured || false,
         }));
         
         setPrompts(transformedPrompts);
@@ -65,6 +72,23 @@ const StudentPrompts = () => {
       loadPrompts();
     }
   }, [userProfile]);
+  
+  // Scroll to specific content when deep linked
+  useEffect(() => {
+    if (contentId && prompts.length > 0 && contentRef.current) {
+      const targetElement = document.getElementById(`prompt-${contentId}`);
+      if (targetElement) {
+        setTimeout(() => {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight the targeted content
+          targetElement.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+          setTimeout(() => {
+            targetElement.classList.remove('ring-2', 'ring-primary', 'ring-offset-2');
+          }, 3000);
+        }, 500);
+      }
+    }
+  }, [contentId, prompts]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-GB', {
@@ -196,7 +220,7 @@ const StudentPrompts = () => {
           </div>
 
           {/* Prompt Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4" ref={contentRef}>
             {filteredPrompts.length === 0 ? (
               <div className="col-span-full text-center py-8">
                 <Icon name="MessageSquare" size={40} className="text-muted-foreground mx-auto mb-4" />
@@ -221,13 +245,24 @@ const StudentPrompts = () => {
               </div>
             ) : (
               filteredPrompts.map((prompt) => (
-                <div key={prompt.id} className="bg-card border border-border rounded-xl p-4 hover:shadow-md transition-all duration-300">
+                <div 
+                  key={prompt.id} 
+                  id={`prompt-${prompt.id}`}
+                  className="bg-card border border-border rounded-xl p-4 hover:shadow-md transition-all duration-300"
+                >
                   {/* Prompt Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <Icon name="MessageSquare" size={20} className="text-green-600" />
                     </div>
                     <div className="flex flex-wrap gap-1.5">
+                      {/* Featured Badge */}
+                      {prompt.isFeatured && isFeatured && (
+                        <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-100 to-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
+                          <Icon name="Star" size={10} className="fill-current" />
+                          Featured
+                        </span>
+                      )}
                       <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(prompt.category)}`}>
                         {prompt.category}
                       </span>
