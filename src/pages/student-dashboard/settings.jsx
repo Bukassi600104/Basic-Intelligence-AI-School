@@ -9,6 +9,7 @@ import { reviewService } from '../../services/reviewService';
 import { passwordService } from '../../services/passwordService';
 import { avatarService } from '../../services/avatarService';
 import { logger } from '../../utils/logger';
+import { supabase } from '../../lib/supabase';
 
 const StudentSettings = () => {
   const { user, userProfile, isMember, updateProfile } = useAuth();
@@ -140,9 +141,29 @@ const StudentSettings = () => {
     }
   };
 
-  const handleResetPassword = () => {
-    // In a real app, this would initiate password reset
-    alert('This would initiate a password reset process in a real application.');
+  const handleResetPassword = async () => {
+    if (!user?.email) {
+      alert('Email not found. Please contact support.');
+      return;
+    }
+
+    if (!confirm(`Send password reset link to ${user.email}?`)) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+
+      if (error) {
+        alert('Failed to send reset email: ' + error.message);
+      } else {
+        alert(`Password reset link sent to ${user.email}. Please check your inbox and spam folder.`);
+      }
+    } catch (error) {
+      alert('Failed to send reset email: ' + error.message);
+    }
   };
 
   const handleContactSupport = () => {
@@ -728,16 +749,33 @@ const StudentSettings = () => {
                       
                       setPasswordLoading(true);
                       try {
-                        // In a real app, this would call an API to change the password
-                        // For now, we'll simulate the process
-                        await new Promise(resolve => setTimeout(resolve, 1500));
-                        
-                        alert('Password changed successfully!');
-                        setPasswordForm({
-                          currentPassword: '',
-                          newPassword: '',
-                          confirmPassword: ''
+                        // First, verify current password by attempting to sign in
+                        const { error: signInError } = await supabase.auth.signInWithPassword({
+                          email: user.email,
+                          password: passwordForm.currentPassword
                         });
+
+                        if (signInError) {
+                          alert('Current password is incorrect. Please try again.');
+                          setPasswordLoading(false);
+                          return;
+                        }
+
+                        // Update to new password
+                        const { error: updateError } = await supabase.auth.updateUser({
+                          password: passwordForm.newPassword
+                        });
+
+                        if (updateError) {
+                          alert('Failed to change password: ' + updateError.message);
+                        } else {
+                          alert('Password changed successfully!');
+                          setPasswordForm({
+                            currentPassword: '',
+                            newPassword: '',
+                            confirmPassword: ''
+                          });
+                        }
                       } catch (error) {
                         alert('Failed to change password: ' + error.message);
                       } finally {

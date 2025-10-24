@@ -18,6 +18,7 @@ import AboutPage from './pages/about-page';
 import HomePage from './pages/home-page';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import PricingPlansPage from './pages/pricing-plans-page';
 import StudentDashboard from './pages/student-dashboard';
 import StudentPDFs from './pages/student-dashboard/pdfs';
@@ -52,6 +53,7 @@ const Routes = () => {
         <Route path="/home-page" element={<HomePage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/pricing" element={<PricingPlansPage />} />
         <Route path="/pricing-plans-page" element={<PricingPlansPage />} />
         <Route path="/courses" element={<CoursesPage />} />

@@ -168,6 +168,18 @@ const AdminSettings = () => {
     try {
       const { supabase } = await import('../../lib/supabase');
       
+      // First, verify current password by attempting to sign in
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: passwordData.currentPassword
+      });
+
+      if (signInError) {
+        setError('Current password is incorrect. Please try again.');
+        setPasswordLoading(false);
+        return;
+      }
+
       // Update password using Supabase Auth
       const { error: updateError } = await supabase.auth.updateUser({
         password: passwordData.newPassword
