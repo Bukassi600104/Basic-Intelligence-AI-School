@@ -403,7 +403,7 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
                 <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
                   <p className="text-sm font-medium text-gray-700 mb-2">Content Details:</p>
                   <p className="text-sm text-gray-900 font-semibold">{uploadedContent.title || formData.title}</p>
-                  <p className="text-xs text-gray-600 mt-1">Access: {formData.accessLevel}</p>
+                  <p className="text-xs text-gray-600 mt-1">Access: {formData.accessLevels?.join(', ') || 'Not set'}</p>
                   {formData.isFeatured && (
                     <div className="flex items-center mt-2 text-xs text-yellow-700">
                       <Icon name="Star" size={14} className="mr-1" />
@@ -993,7 +993,7 @@ const Step4FeaturedSettings = ({ formData, setFormData, errors, thumbnailLoading
                 <p className="text-sm text-gray-600 mb-3">{formData.featuredDescription || 'Featured description will appear here'}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs px-2 py-1 bg-orange-100 text-orange-700 rounded">
-                    {formData.accessLevel.charAt(0).toUpperCase() + formData.accessLevel.slice(1)}
+                    {formData.accessLevels?.length > 0 ? formData.accessLevels.join(', ') : 'Not set'}
                   </span>
                   <span className="text-sm text-orange-600 font-medium">View Content →</span>
                 </div>
