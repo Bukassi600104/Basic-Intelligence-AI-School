@@ -32,7 +32,7 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
     googleDriveEmbedUrl: '',
     promptType: '',
     useCaseTags: [],
-    accessLevel: 'starter',
+    accessLevels: [], // Changed from accessLevel to accessLevels array
     isFeatured: false,
     featuredDescription: '',
     thumbnailUrl: '',
@@ -107,8 +107,8 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
         break;
         
       case 3:
-        if (!formData.accessLevel) {
-          errors.accessLevel = 'Please select an access level';
+        if (!formData.accessLevels || formData.accessLevels.length === 0) {
+          errors.accessLevels = 'Please select at least one membership tier';
         }
         break;
         
@@ -169,7 +169,7 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
   const handleClose = () => {
     // Check if form has unsaved changes
     const hasChanges = Object.keys(formData).some(key => {
-      if (key === 'accessLevel') return false; // accessLevel has default value
+      if (key === 'accessLevels') return formData.accessLevels.length > 0; // Check array length
       const value = formData[key];
       return Array.isArray(value) ? value.length > 0 : value !== '' && value !== null && value !== false;
     });
@@ -194,7 +194,7 @@ const ContentUploadWizard = ({ onClose, onSuccess }) => {
         content_type: formData.contentType,
         google_drive_id: formData.googleDriveId,
         google_drive_embed_url: formData.googleDriveEmbedUrl,
-        access_level: formData.accessLevel,
+        access_levels: formData.accessLevels, // Send as array for JSONB
         category: formData.category,
         tags: formData.tags,
         is_featured: formData.isFeatured,
@@ -709,57 +709,153 @@ const Step2Details = ({ formData, setFormData, errors, categories, promptTypes }
 
 // Step 3: Access Level Selection
 const Step3AccessLevel = ({ formData, setFormData, errors, accessLevelDetails }) => {
+  const handleToggleTier = (tier) => {
+    setFormData(prev => ({
+      ...prev,
+      accessLevels: prev.accessLevels.includes(tier)
+        ? prev.accessLevels.filter(t => t !== tier)
+        : [...prev.accessLevels, tier]
+    }));
+  };
+
+  const handleSelectAll = () => {
+    setFormData(prev => ({
+      ...prev,
+      accessLevels: ['starter', 'pro', 'elite']
+    }));
+  };
+
+  const handleClearAll = () => {
+    setFormData(prev => ({
+      ...prev,
+      accessLevels: []
+    }));
+  };
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Select Access Level</h3>
-        <p className="text-gray-600">Choose which membership tier can access this content</p>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">Select Access Levels</h3>
+        <p className="text-gray-600">Choose which membership tiers can access this content</p>
       </div>
 
+      {/* Quick Actions */}
+      <div className="flex justify-center space-x-3 mb-4">
+        <button
+          type="button"
+          onClick={handleSelectAll}
+          className="px-4 py-2 text-sm font-medium text-orange-600 border border-orange-600 rounded-lg hover:bg-orange-50 transition-colors"
+        >
+          Select All
+        </button>
+        <button
+          type="button"
+          onClick={handleClearAll}
+          className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          Clear All
+        </button>
+      </div>
+
+      {/* Tier Selection Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {Object.entries(accessLevelDetails).map(([level, details]) => (
-          <button
-            key={level}
-            onClick={() => setFormData(prev => ({ ...prev, accessLevel: level }))}
-            className={`
-              p-6 rounded-xl border-2 transition-all duration-200
-              ${formData.accessLevel === level 
-                ? `border-orange-500 ${details.color} shadow-md` 
-                : 'border-gray-200 hover:border-orange-200 hover:shadow-sm bg-white'}
-            `}
-          >
-            <div className="text-center">
-              <h4 className="font-bold text-lg mb-2">{details.name}</h4>
-              <p className="text-sm font-medium mb-4">{details.price}</p>
-              {formData.accessLevel === level && (
-                <div className="flex items-center justify-center text-orange-600 text-sm font-medium">
-                  <Icon name="CheckCircle" size={16} className="mr-1" />
-                  Selected
+        {Object.entries(accessLevelDetails).map(([level, details]) => {
+          const isSelected = formData.accessLevels.includes(level);
+          return (
+            <label
+              key={level}
+              className={`
+                relative p-6 rounded-xl border-2 cursor-pointer transition-all duration-200
+                ${isSelected
+                  ? `border-orange-500 ${details.color} shadow-md` 
+                  : 'border-gray-200 hover:border-orange-200 hover:shadow-sm bg-white'}
+              `}
+            >
+              {/* Checkbox */}
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={() => handleToggleTier(level)}
+                className="absolute top-4 right-4 w-5 h-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+              />
+
+              <div className="text-center pr-8">
+                {/* Icon */}
+                <div className="mb-3">
+                  <Icon 
+                    name={level === 'starter' ? 'Shield' : level === 'pro' ? 'Award' : 'Crown'} 
+                    size={32} 
+                    className={isSelected ? 'text-orange-600 mx-auto' : 'text-gray-400 mx-auto'}
+                  />
                 </div>
-              )}
-            </div>
-          </button>
-        ))}
+
+                {/* Tier Name */}
+                <h4 className="font-bold text-lg mb-1">{details.name}</h4>
+                
+                {/* Price */}
+                <p className="text-sm font-medium mb-3">{details.price}</p>
+
+                {/* Description */}
+                <p className="text-xs text-gray-600">
+                  {level === 'starter' && 'Basic tier - All members'}
+                  {level === 'pro' && 'Mid tier - Advanced content'}
+                  {level === 'elite' && 'Premium tier - Exclusive access'}
+                </p>
+
+                {/* Selection Indicator */}
+                {isSelected && (
+                  <div className="flex items-center justify-center text-orange-600 text-sm font-medium mt-3">
+                    <Icon name="CheckCircle" size={16} className="mr-1" />
+                    Selected
+                  </div>
+                )}
+              </div>
+            </label>
+          );
+        })}
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
+      {/* Helper Tip */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <div className="flex items-start space-x-3">
-          <Icon name="Info" size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
+          <Icon name="Lightbulb" size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-blue-800">
-            <p className="font-medium mb-1">Access Level Information:</p>
-            <ul className="space-y-1 list-disc list-inside">
-              <li>Starter: Basic content for all members</li>
-              <li>Pro: Advanced content for Pro and Elite members</li>
-              <li>Elite: Premium content for Elite members only</li>
-            </ul>
+            <p className="font-medium mb-1">💡 Tip: Higher tiers typically include lower tier content</p>
+            <p className="text-xs">
+              If you select Elite, consider also selecting Pro and Starter so all members can access this content.
+              This creates a better experience for upgrading members.
+            </p>
           </div>
         </div>
       </div>
 
-      {errors.accessLevel && (
+      {/* Selection Summary */}
+      {formData.accessLevels.length > 0 && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center space-x-2 mb-2">
+            <Icon name="CheckCircle" size={18} className="text-green-600" />
+            <p className="text-sm font-medium text-green-800">
+              Available to {formData.accessLevels.length} membership tier{formData.accessLevels.length > 1 ? 's' : ''}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {formData.accessLevels.map(tier => (
+              <span 
+                key={tier}
+                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${accessLevelDetails[tier].color}`}
+              >
+                {accessLevelDetails[tier].name}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Validation Error */}
+      {errors.accessLevels && (
         <p className="text-red-600 text-sm flex items-center">
           <Icon name="AlertCircle" size={16} className="mr-1" />
-          {errors.accessLevel}
+          {errors.accessLevels}
         </p>
       )}
     </div>
@@ -957,14 +1053,29 @@ const Step5Review = ({ formData, accessLevelDetails }) => {
           <p className="text-gray-900">{formData.description}</p>
         </div>
 
-        {/* Access Level */}
+        {/* Access Levels */}
         <div className="bg-gray-50 rounded-lg p-4">
-          <h4 className="text-sm font-medium text-gray-500 mb-2">Access Level</h4>
-          <div className={`inline-flex items-center px-4 py-2 rounded-lg ${accessLevelDetails[formData.accessLevel].color}`}>
-            <Icon name="Shield" size={18} className="mr-2" />
-            <span className="font-semibold">{accessLevelDetails[formData.accessLevel].name}</span>
-            <span className="ml-2 text-sm">({accessLevelDetails[formData.accessLevel].price})</span>
+          <h4 className="text-sm font-medium text-gray-500 mb-3">Access Levels</h4>
+          <div className="flex flex-wrap gap-2">
+            {formData.accessLevels.length > 0 ? (
+              formData.accessLevels.map(level => (
+                <div key={level} className={`inline-flex items-center px-4 py-2 rounded-lg ${accessLevelDetails[level].color}`}>
+                  <Icon 
+                    name={level === 'starter' ? 'Shield' : level === 'pro' ? 'Award' : 'Crown'} 
+                    size={18} 
+                    className="mr-2" 
+                  />
+                  <span className="font-semibold">{accessLevelDetails[level].name}</span>
+                  <span className="ml-2 text-sm">({accessLevelDetails[level].price})</span>
+                </div>
+              ))
+            ) : (
+              <span className="text-gray-500 text-sm">No access levels selected</span>
+            )}
           </div>
+          <p className="text-xs text-gray-600 mt-2">
+            Available to {formData.accessLevels.length} membership tier{formData.accessLevels.length !== 1 ? 's' : ''}
+          </p>
         </div>
 
         {/* Featured Status */}
