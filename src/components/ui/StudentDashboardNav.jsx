@@ -85,35 +85,22 @@ const StudentDashboardNav = () => {
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
           
           <div className="relative flex items-center justify-between p-3">
-            {!isCollapsed && (
-              <Link to="/student-dashboard" className="flex items-center space-x-2 group">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-white/30 rounded-lg blur-sm group-hover:blur-md transition-all"></div>
-                  <div className="relative w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center shadow-lg border border-white/40 group-hover:scale-110 transition-all duration-300">
-                    <span className="text-white font-black text-sm">BI</span>
-                  </div>
+            <Link to="/student-dashboard" className="flex items-center space-x-2 group">
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/30 rounded-lg blur-sm group-hover:blur-md transition-all"></div>
+                <div className="relative w-8 h-8 bg-white/20 backdrop-blur-md rounded-lg flex items-center justify-center shadow-lg border border-white/40 group-hover:scale-110 transition-all duration-300">
+                  <span className="text-white font-black text-sm">BI</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-black text-white leading-tight tracking-tight">
-                    Basic Intelligence
-                  </span>
-                  <span className="text-xs text-white/90 font-medium leading-tight">
-                    Student Portal
-                  </span>
-                </div>
-              </Link>
-            )}
-            
-            {isCollapsed && (
-              <Link to="/student-dashboard" className="flex items-center justify-center w-full group">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-white/30 rounded-xl blur-md group-hover:blur-lg transition-all"></div>
-                  <div className="relative w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center shadow-xl border-2 border-white/40 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                    <span className="text-white font-black text-base">BI</span>
-                  </div>
-                </div>
-              </Link>
-            )}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-black text-white leading-tight tracking-tight">
+                  Basic Intelligence
+                </span>
+                <span className="text-xs text-white/90 font-medium leading-tight">
+                  Student Portal
+                </span>
+              </div>
+            </Link>
           </div>
         </div>
 
@@ -207,11 +194,7 @@ const StudentDashboardNav = () => {
           {/* Support Button */}
           <button
             onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
-            className={`
-              group relative flex items-center px-3 py-2 rounded-lg transition-all duration-300 font-medium w-full overflow-hidden text-xs
-              text-gray-700 hover:text-white hover:shadow-lg hover:scale-[1.02]
-              ${isCollapsed ? 'justify-center' : 'space-x-2'}
-            `}
+            className="group relative flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 font-medium w-full overflow-hidden text-xs text-gray-700 hover:text-white hover:shadow-lg hover:scale-[1.02]"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/50 to-green-600/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -219,17 +202,13 @@ const StudentDashboardNav = () => {
             <div className="relative w-9 h-9 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all border border-green-200 group-hover:border-white/30">
               <Icon name="MessageCircle" size={20} className="text-green-600 group-hover:text-white transition-colors" />
             </div>
-            {!isCollapsed && <span className="relative text-sm font-bold">Support</span>}
+            <span className="relative text-sm font-bold">Support</span>
           </button>
 
           {/* Sign Out Button */}
           <button
             onClick={handleSignOut}
-            className={`
-              group relative flex items-center px-4 py-3.5 rounded-xl transition-all duration-300 font-medium w-full overflow-hidden
-              text-red-600 hover:text-white hover:shadow-xl hover:scale-[1.02]
-              ${isCollapsed ? 'justify-center' : 'space-x-3'}
-            `}
+            className="group relative flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 font-medium w-full overflow-hidden text-red-600 hover:text-white hover:shadow-xl hover:scale-[1.02]"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/50 to-red-600/50 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -237,7 +216,7 @@ const StudentDashboardNav = () => {
             <div className="relative w-9 h-9 bg-gradient-to-br from-red-100 to-red-200 rounded-lg flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all border border-red-200 group-hover:border-white/30">
               <Icon name="LogOut" size={20} className="text-red-600 group-hover:text-white transition-colors" />
             </div>
-            {!isCollapsed && <span className="relative text-sm font-bold">Sign Out</span>}
+            <span className="relative text-sm font-bold">Sign Out</span>
           </button>
         </div>
       </div>
