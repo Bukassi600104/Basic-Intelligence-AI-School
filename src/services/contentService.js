@@ -187,5 +187,158 @@ export const contentService = {
     } catch (error) {
       return { data: null, error: error?.message };
     }
+  },
+
+  // Create content with wizard (enhanced method for new wizard)
+  createContentWithWizard: async (contentData) => {
+    try {
+      const { data: { user } } = await supabase?.auth?.getUser();
+      
+      if (!user) {
+        return { success: false, error: 'Not authenticated' };
+      }
+
+      const insertData = {
+        title: contentData?.title,
+        description: contentData?.description,
+        content_type: contentData?.content_type,
+        google_drive_id: contentData?.google_drive_id,
+        google_drive_embed_url: contentData?.google_drive_embed_url,
+        access_level: contentData?.access_level,
+        category: contentData?.category,
+        tags: contentData?.tags || [],
+        status: contentData?.status || 'active',
+        is_featured: contentData?.is_featured || false,
+        featured_description: contentData?.featured_description || null,
+        thumbnail_url: contentData?.thumbnail_url || null,
+        featured_order: contentData?.featured_order || null,
+        prompt_type: contentData?.prompt_type || null,
+        use_case_tags: contentData?.use_case_tags || null,
+        uploader_id: user?.id
+      };
+
+      const { data, error } = await supabase
+        ?.from('content_library')
+        ?.insert([insertData])
+        ?.select()
+        ?.single();
+
+      if (error) {
+        return { success: false, error: error?.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      return { success: false, error: error?.message };
+    }
+  },
+
+  // Get featured content for homepage
+  getFeaturedContent: async (limit = 6) => {
+    try {
+      const { data, error } = await supabase
+        ?.rpc('get_featured_content', { p_limit: limit });
+
+      if (error) {
+        return { success: false, error: error?.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      return { success: false, error: error?.message };
+    }
+  },
+
+  // Update featured status
+  updateFeaturedStatus: async (contentId, featuredData) => {
+    try {
+      const updates = {
+        is_featured: featuredData?.is_featured,
+        featured_description: featuredData?.featured_description || null,
+        thumbnail_url: featuredData?.thumbnail_url || null,
+        featured_order: featuredData?.featured_order || null,
+        updated_at: new Date()?.toISOString()
+      };
+
+      const { data, error } = await supabase
+        ?.from('content_library')
+        ?.update(updates)
+        ?.eq('id', contentId)
+        ?.select()
+        ?.single();
+
+      if (error) {
+        return { success: false, error: error?.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      return { success: false, error: error?.message };
+    }
+  },
+
+  // Log featured content click
+  logFeaturedClick: async (contentId, redirectedToLogin = false, sessionId = null, referrer = null) => {
+    try {
+      const { data: { user } } = await supabase?.auth?.getUser();
+
+      const { data, error } = await supabase
+        ?.rpc('log_featured_content_click', {
+          p_content_id: contentId,
+          p_user_id: user?.id || null,
+          p_redirected_to_login: redirectedToLogin,
+          p_session_id: sessionId,
+          p_referrer: referrer
+        });
+
+      if (error) {
+        return { success: false, error: error?.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      return { success: false, error: error?.message };
+    }
+  },
+
+  // Check if user can access featured content
+  canAccessFeaturedContent: async (contentId) => {
+    try {
+      const { data: { user } } = await supabase?.auth?.getUser();
+
+      const { data, error } = await supabase
+        ?.rpc('can_access_featured_content', {
+          p_content_id: contentId,
+          p_user_id: user?.id || null
+        });
+
+      if (error) {
+        return { success: false, hasAccess: false, error: error?.message };
+      }
+
+      return { success: true, hasAccess: data };
+    } catch (error) {
+      return { success: false, hasAccess: false, error: error?.message };
+    }
+  },
+
+  // Get featured content analytics (admin only)
+  getFeaturedAnalytics: async (startDate = null, endDate = null) => {
+    try {
+      const params = {};
+      if (startDate) params.p_start_date = startDate;
+      if (endDate) params.p_end_date = endDate;
+
+      const { data, error } = await supabase
+        ?.rpc('get_featured_content_analytics', params);
+
+      if (error) {
+        return { success: false, error: error?.message };
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      return { success: false, error: error?.message };
+    }
   }
 };
