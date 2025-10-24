@@ -10,7 +10,6 @@ import Input from '../../components/ui/Input';
 const AdminSettings = () => {
   const navigate = useNavigate();
   const { user, userProfile } = useAuth();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
   const [settings, setSettings] = useState({
     siteName: 'Basic Intelligence Community School',
@@ -536,13 +535,10 @@ const AdminSettings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-indigo-50 to-purple-50">
-      <AdminSidebar 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={handleToggleSidebar} 
-      />
+      <AdminSidebar />
       
       {/* Main Content */}
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+      <div className="transition-all duration-300 lg:ml-60">
         {/* Mobile spacing for header */}
         <div className="lg:hidden h-16"></div>
         

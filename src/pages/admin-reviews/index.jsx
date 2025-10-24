@@ -168,11 +168,8 @@ const AdminReviews = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex">
-        <AdminSidebar 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
-        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <AdminSidebar />
+        <div className="flex-1 transition-all duration-300 lg:ml-60">
           <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
@@ -191,11 +188,8 @@ const AdminReviews = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <AdminSidebar 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-      />
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+      <AdminSidebar />
+      <div className="flex-1 transition-all duration-300 lg:ml-60">
         <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">

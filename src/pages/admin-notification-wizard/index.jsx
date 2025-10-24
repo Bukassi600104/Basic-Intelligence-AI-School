@@ -11,7 +11,6 @@ import { notificationService } from '../../services/notificationService';
 const AdminNotificationWizard = () => {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [users, setUsers] = useState([]);
@@ -163,11 +162,8 @@ const AdminNotificationWizard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex">
-        <AdminSidebar 
-          isCollapsed={sidebarCollapsed} 
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-        />
-        <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+        <AdminSidebar />
+        <div className="flex-1 transition-all duration-300 lg:ml-60">
           <div className="p-6 lg:p-8 pt-20 lg:pt-8">
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
@@ -186,11 +182,8 @@ const AdminNotificationWizard = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <AdminSidebar 
-        isCollapsed={sidebarCollapsed} 
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
-      />
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
+      <AdminSidebar />
+      <div className="flex-1 transition-all duration-300 lg:ml-60">
         <div className="p-6 lg:p-8 pt-20 lg:pt-8">
           {/* Header with Gradient */}
           <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl p-8 mb-8 shadow-lg">
