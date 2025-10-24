@@ -7,6 +7,7 @@ import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import Icon from '../../components/AppIcon';
 import { contentService } from '../../services/contentService';
+import ContentUploadWizard from './components/ContentUploadWizard';
 
 const AdminContentPage = () => {
   const { userProfile } = useAuth();
@@ -16,7 +17,10 @@ const AdminContentPage = () => {
   const [error, setError] = useState('');
   const [uploadLoading, setUploadLoading] = useState(false);
   
-  // Form states
+  // Wizard state
+  const [showWizard, setShowWizard] = useState(false);
+  
+  // Form states (legacy - can be removed later)
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [uploadType, setUploadType] = useState('pdf');
   const [formData, setFormData] = useState({
@@ -33,7 +37,8 @@ const AdminContentPage = () => {
   const [filters, setFilters] = useState({
     type: 'all',
     access_level: 'all',
-    category: 'all'
+    category: 'all',
+    featured: 'all'
   });
 
   // Check admin access
@@ -173,6 +178,15 @@ const AdminContentPage = () => {
     setGoogleDriveUrl('');
   };
 
+  const handleWizardSuccess = async () => {
+    setShowWizard(false);
+    await loadContent();
+  };
+
+  const handleWizardCancel = () => {
+    setShowWizard(false);
+  };
+
   const handleDelete = async (contentId) => {
     if (!window?.confirm('Are you sure you want to delete this content?')) {
       return;
@@ -190,11 +204,30 @@ const AdminContentPage = () => {
     }
   };
 
+  const handleToggleFeatured = async (contentId, currentStatus) => {
+    try {
+      const { error } = await contentService.updateFeaturedStatus(contentId, {
+        is_featured: !currentStatus
+      });
+      
+      if (error) {
+        setError(error);
+      } else {
+        await loadContent();
+      }
+    } catch (err) {
+      setError('Failed to update featured status');
+    }
+  };
+
   const filteredContent = content?.filter(item => {
     const matchesType = filters?.type === 'all' || item?.content_type === filters?.type;
     const matchesAccess = filters?.access_level === 'all' || item?.access_level === filters?.access_level;
     const matchesCategory = filters?.category === 'all' || item?.category === filters?.category;
-    return matchesType && matchesAccess && matchesCategory;
+    const matchesFeatured = filters?.featured === 'all' || 
+      (filters?.featured === 'featured' && item?.is_featured) ||
+      (filters?.featured === 'not_featured' && !item?.is_featured);
+    return matchesType && matchesAccess && matchesCategory && matchesFeatured;
   }) || [];
 
   if (loading) {
@@ -249,11 +282,11 @@ const AdminContentPage = () => {
                     Refresh
                   </Button>
                   <Button 
-                    onClick={() => setShowUploadForm(true)}
+                    onClick={() => setShowWizard(true)}
                     className="bg-white text-orange-600 hover:bg-white/90 font-bold shadow-lg"
                   >
                     <Icon name="Plus" size={16} className="mr-2" />
-                    Add Content
+                    Upload Content
                   </Button>
                 </div>
               </div>
@@ -261,12 +294,20 @@ const AdminContentPage = () => {
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 animate-slideDown">
               <div className="flex items-center">
                 <Icon name="AlertCircle" size={16} className="text-red-600 mr-2" />
                 <span className="text-red-600 text-sm">{error}</span>
               </div>
             </div>
+          )}
+
+          {/* Content Upload Wizard Modal */}
+          {showWizard && (
+            <ContentUploadWizard
+              onSuccess={handleWizardSuccess}
+              onCancel={handleWizardCancel}
+            />
           )}
 
           {/* Stats Cards - Enhanced */}
@@ -318,21 +359,25 @@ const AdminContentPage = () => {
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-2xl opacity-50"></div>
               <div className="relative flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">Elite Content</p>
-                  <p className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    {content?.filter(c => c?.access_level === 'elite')?.length}
+                  <p className="text-sm font-medium text-gray-600 mb-1">Featured</p>
+                  <p className="text-3xl font-extrabold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">
+                    {content?.filter(c => c?.is_featured)?.length}
                   </p>
                 </div>
-                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Icon name="Crown" size={28} className="text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Icon name="Star" size={28} className="text-white" />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Filters */}
-          <div className="bg-card border border-border rounded-lg p-4 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Enhanced Filters */}
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6 shadow-sm">
+            <div className="flex items-center space-x-2 mb-4">
+              <Icon name="Filter" size={20} className="text-gray-600" />
+              <h3 className="text-lg font-bold text-gray-900">Filters</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Select
                 label="Content Type"
                 value={filters?.type}
@@ -341,6 +386,7 @@ const AdminContentPage = () => {
                 <option value="all">All Types</option>
                 <option value="video">Videos</option>
                 <option value="pdf">PDF Documents</option>
+                <option value="prompt">Prompts</option>
               </Select>
 
               <Select
@@ -354,6 +400,16 @@ const AdminContentPage = () => {
                 <option value="elite">Elite</option>
               </Select>
 
+              <Select
+                label="Featured Status"
+                value={filters?.featured}
+                onChange={(e) => setFilters(prev => ({ ...prev, featured: e?.target?.value }))}
+              >
+                <option value="all">All Content</option>
+                <option value="featured">Featured Only</option>
+                <option value="not_featured">Not Featured</option>
+              </Select>
+
               <Input
                 label="Category"
                 placeholder="Filter by category"
@@ -364,84 +420,128 @@ const AdminContentPage = () => {
           </div>
 
           {/* Content Table */}
-          <div className="bg-card border border-border rounded-lg overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-muted/50 border-b border-border">
+                <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       Content
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       Access Level
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                      Featured
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       Category
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-gray-200">
                   {filteredContent?.map((item) => (
-                    <tr key={item?.id} className="hover:bg-muted/25">
+                    <tr key={item?.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <Icon 
-                            name={item?.content_type === 'video' ? 'Play' : 'FileText'} 
-                            size={16} 
-                            className="text-primary mr-3" 
-                          />
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
+                            item?.content_type === 'video' ? 'bg-green-100' :
+                            item?.content_type === 'prompt' ? 'bg-purple-100' : 'bg-blue-100'
+                          }`}>
+                            <Icon 
+                              name={
+                                item?.content_type === 'video' ? 'Play' :
+                                item?.content_type === 'prompt' ? 'MessageSquare' : 'FileText'
+                              } 
+                              size={18} 
+                              className={
+                                item?.content_type === 'video' ? 'text-green-600' :
+                                item?.content_type === 'prompt' ? 'text-purple-600' : 'text-blue-600'
+                              } 
+                            />
+                          </div>
                           <div>
-                            <p className="text-sm font-medium text-foreground">{item?.title}</p>
-                            <p className="text-xs text-muted-foreground">{item?.description}</p>
+                            <p className="text-sm font-medium text-gray-900">{item?.title}</p>
+                            <p className="text-xs text-gray-500 line-clamp-1">{item?.description}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          item?.content_type === 'video' ?'bg-green-100 text-green-800' :'bg-blue-100 text-blue-800'
+                          item?.content_type === 'video' ? 'bg-green-100 text-green-800' :
+                          item?.content_type === 'prompt' ? 'bg-purple-100 text-purple-800' :
+                          'bg-blue-100 text-blue-800'
                         }`}>
                           {item?.content_type?.toUpperCase()}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          item?.access_level === 'starter' ? 'bg-gray-100 text-gray-800' :
-                          item?.access_level === 'pro'? 'bg-yellow-100 text-yellow-800' : 'bg-purple-100 text-purple-800'
+                          item?.access_level === 'starter' ? 'bg-blue-100 text-blue-800' :
+                          item?.access_level === 'pro' ? 'bg-orange-100 text-orange-800' : 
+                          'bg-purple-100 text-purple-800'
                         }`}>
+                          <Icon 
+                            name={
+                              item?.access_level === 'starter' ? 'Shield' :
+                              item?.access_level === 'pro' ? 'Star' : 'Crown'
+                            } 
+                            size={10} 
+                            className="mr-1" 
+                          />
                           {item?.access_level}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-foreground">
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => handleToggleFeatured(item?.id, item?.is_featured)}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors ${
+                            item?.is_featured 
+                              ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' 
+                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          }`}
+                        >
+                          <Icon 
+                            name="Star" 
+                            size={10} 
+                            className={`mr-1 ${item?.is_featured ? 'fill-current' : ''}`} 
+                          />
+                          {item?.is_featured ? 'Featured' : 'Not Featured'}
+                        </button>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900">
                         {item?.category || 'Uncategorized'}
                       </td>
-                      <td className="px-6 py-4 text-sm text-muted-foreground">
+                      <td className="px-6 py-4 text-sm text-gray-500">
                         {new Date(item.created_at)?.toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2">
-                          {item?.content_type === 'video' && item?.google_drive_embed_url && (
+                          {item?.google_drive_embed_url && (
                             <Button
                               size="xs"
                               variant="outline"
                               onClick={() => window.open(item?.google_drive_embed_url, '_blank')}
+                              title="Preview content"
                             >
                               <Icon name="ExternalLink" size={12} className="mr-1" />
-                              Preview
+                              View
                             </Button>
                           )}
                           <Button
                             size="xs"
                             variant="destructive"
                             onClick={() => handleDelete(item?.id)}
+                            title="Delete content"
                           >
                             <Icon name="Trash2" size={12} />
                           </Button>
@@ -452,8 +552,23 @@ const AdminContentPage = () => {
                   
                   {filteredContent?.length === 0 && (
                     <tr>
-                      <td colSpan="6" className="px-6 py-8 text-center text-muted-foreground">
-                        No content found. Start by uploading your first video or PDF.
+                      <td colSpan="7" className="px-6 py-12 text-center">
+                        <Icon name="Inbox" size={48} className="text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-600 font-medium mb-2">No content found</p>
+                        <p className="text-gray-500 text-sm mb-4">
+                          {filters.type !== 'all' || filters.access_level !== 'all' || filters.featured !== 'all' || filters.category !== 'all'
+                            ? 'Try adjusting your filters'
+                            : 'Start by uploading your first content'}
+                        </p>
+                        {(filters.type !== 'all' || filters.access_level !== 'all' || filters.featured !== 'all' || filters.category !== 'all') && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setFilters({ type: 'all', access_level: 'all', category: 'all', featured: 'all' })}
+                          >
+                            Clear Filters
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   )}
