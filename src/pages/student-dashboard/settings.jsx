@@ -269,30 +269,30 @@ const StudentSettings = () => {
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       <div className="flex-1 lg:ml-64">
-        <div className="p-4 sm:p-6 lg:p-6 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
+        <div className="p-3 sm:p-4 lg:p-5 pt-16 sm:pt-20 lg:pt-8 max-w-5xl mx-auto w-full">
           {/* Enhanced Gradient Header */}
-          <div className="relative mb-8 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl"></div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-blue-400/20 to-cyan-400/20 rounded-full blur-2xl"></div>
+          <div className="relative mb-4 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl"></div>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-blue-400/20 to-cyan-400/20 rounded-full blur-2xl"></div>
             
-            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-8">
+            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-4">
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
                   Account Settings
                 </h1>
-                <p className="text-gray-600 text-lg">
+                <p className="text-gray-600 text-sm">
                   Manage your account preferences and personal information
                 </p>
               </div>
               
-              <div className="flex items-center space-x-3 mt-4 lg:mt-0">
+              <div className="flex items-center space-x-2 mt-4 lg:mt-0">
                 <Button 
                   variant="outline"
                   onClick={() => navigate('/student-dashboard')}
-                  className="border-2 hover:bg-white/80"
+                  className="border hover:bg-white/80"
                 >
-                  <Icon name="ArrowLeft" size={16} className="mr-2" />
+                  <Icon name="ArrowLeft" size={14} className="mr-2" />
                   Back to Dashboard
                 </Button>
               </div>
@@ -300,42 +300,42 @@ const StudentSettings = () => {
           </div>
 
           {/* Profile Picture Section - Moved to Top */}
-          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-8 mb-8 shadow-lg border-2 border-blue-200">
+          <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-xl p-4 mb-4 shadow-sm border border-blue-200">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
               <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-md">
-                    <Icon name="Camera" size={24} className="text-white" />
+                <div className="flex items-center space-x-2 mb-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center shadow-md">
+                    <Icon name="Camera" size={20} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-blue-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">Your Profile</h2>
-                    <p className="text-gray-600">
+                    <h2 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">Your Profile</h2>
+                    <p className="text-gray-600 text-sm">
                       Personalize your account with a profile picture
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex flex-wrap gap-4 mt-4">
-                  <div className="flex items-center space-x-2 bg-white/80 rounded-xl px-4 py-2.5 border-2 border-blue-200 shadow-sm">
-                    <Icon name="User" size={20} className="text-blue-600" />
-                    <span className="text-sm font-medium text-blue-900">
+                <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="flex items-center space-x-1.5 bg-white/80 rounded-lg px-3 py-2 border border-blue-200 shadow-sm">
+                    <Icon name="User" size={16} className="text-blue-600" />
+                    <span className="text-xs font-medium text-blue-900">
                       Member ID: {userProfile?.member_id || 'Pending'}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2 bg-white/80 rounded-xl px-4 py-2.5 border-2 border-green-200 shadow-sm">
-                    <Icon name="CheckCircle" size={20} className="text-green-600" />
-                    <span className="text-sm font-medium text-green-900">
+                  <div className="flex items-center space-x-1.5 bg-white/80 rounded-lg px-3 py-2 border border-green-200 shadow-sm">
+                    <Icon name="CheckCircle" size={16} className="text-green-600" />
+                    <span className="text-xs font-medium text-green-900">
                       Active Membership
                     </span>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-6 lg:mt-0 lg:ml-8">
-                <div className="flex flex-col items-center space-y-4">
+              <div className="mt-4 lg:mt-0 lg:ml-6">
+                <div className="flex flex-col items-center space-y-3">
                   {/* Avatar Display */}
                   <div className="relative">
-                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center border-4 border-white shadow-lg overflow-hidden">
+                    <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center border-2 border-white shadow-md overflow-hidden">
                       {previewUrl || userProfile?.avatar_url ? (
                         <img 
                           src={previewUrl || userProfile.avatar_url} 
@@ -343,7 +343,7 @@ const StudentSettings = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Icon name="User" size={48} className="text-primary" />
+                        <Icon name="User" size={40} className="text-primary" />
                       )}
                     </div>
                     
@@ -352,10 +352,10 @@ const StudentSettings = () => {
                       <button
                         onClick={handleDeleteAvatar}
                         disabled={uploadingPicture}
-                        className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 disabled:opacity-50"
+                        className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all duration-300 disabled:opacity-50"
                         title="Remove profile picture"
                       >
-                        <Icon name="X" size={16} />
+                        <Icon name="X" size={14} />
                       </button>
                     )}
                   </div>
@@ -374,11 +374,11 @@ const StudentSettings = () => {
                   {!previewUrl ? (
                     <label 
                       htmlFor="profile-picture-upload"
-                      className={`inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl cursor-pointer hover:shadow-lg transition-all duration-300 ${
+                      className={`inline-flex items-center px-4 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-lg cursor-pointer hover:shadow-md transition-all duration-300 ${
                         uploadingPicture ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
                       }`}
                     >
-                      <Icon name="Upload" size={18} className="mr-2" />
+                      <Icon name="Upload" size={16} className="mr-2" />
                       {userProfile?.avatar_url ? 'Change Photo' : 'Upload Photo'}
                     </label>
                   ) : (
@@ -386,16 +386,16 @@ const StudentSettings = () => {
                       <button
                         onClick={handleUploadAvatar}
                         disabled={uploadingPicture}
-                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+                        className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-lg hover:shadow-md transition-all duration-300 disabled:opacity-50"
                       >
                         {uploadingPicture ? (
                           <>
-                            <Icon name="Loader" size={18} className="mr-2 animate-spin" />
+                            <Icon name="Loader" size={16} className="mr-2 animate-spin" />
                             Uploading...
                           </>
                         ) : (
                           <>
-                            <Icon name="Check" size={18} className="mr-2" />
+                            <Icon name="Check" size={16} className="mr-2" />
                             Save Photo
                           </>
                         )}
@@ -410,9 +410,9 @@ const StudentSettings = () => {
                           if (fileInput) fileInput.value = '';
                         }}
                         disabled={uploadingPicture}
-                        className="inline-flex items-center px-4 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all duration-300 disabled:opacity-50"
+                        className="inline-flex items-center px-3 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 disabled:opacity-50"
                       >
-                        <Icon name="X" size={18} />
+                        <Icon name="X" size={16} />
                       </button>
                     </div>
                   )}
@@ -440,24 +440,24 @@ const StudentSettings = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {/* Profile Settings */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-4">
               {/* Profile Information - Updated with colorful tiles */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-2xl p-6">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Icon name="User" size={24} className="text-blue-600" />
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 rounded-xl p-4">
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Icon name="User" size={20} className="text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-blue-900">Personal Information</h2>
-                    <p className="text-blue-700 text-sm">Update your personal details and contact information</p>
+                    <h2 className="text-lg font-bold text-blue-900">Personal Information</h2>
+                    <p className="text-blue-700 text-xs">Update your personal details and contact information</p>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-blue-900 mb-2">
+                    <label className="block text-xs font-medium text-blue-900 mb-1.5">
                       Full Name
                     </label>
                     <input
@@ -465,13 +465,13 @@ const StudentSettings = () => {
                       name="full_name"
                       value={formData.full_name}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
+                      className="w-full px-3 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/80"
                       placeholder="Enter your full name"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-blue-900 mb-2">
+                    <label className="block text-xs font-medium text-blue-900 mb-1.5">
                       Email Address
                     </label>
                     <input
@@ -479,7 +479,7 @@ const StudentSettings = () => {
                       name="email"
                       value={formData.email}
                       disabled
-                      className="w-full px-4 py-3 border border-blue-200 rounded-xl bg-blue-50/50 text-blue-700"
+                      className="w-full px-3 py-2 border border-blue-200 rounded-lg bg-blue-50/50 text-blue-700"
                     />
                     <p className="text-xs text-blue-600 mt-1">
                       Email cannot be changed. Contact support for assistance.
@@ -487,7 +487,7 @@ const StudentSettings = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-blue-900 mb-2">
+                    <label className="block text-xs font-medium text-blue-900 mb-1.5">
                       Phone Number
                     </label>
                     <input
@@ -542,57 +542,57 @@ const StudentSettings = () => {
               </div>
 
               {/* Notification Settings */}
-              <div className="bg-gradient-to-br from-purple-50 to-pink-100 border-2 border-purple-200 rounded-2xl p-6 shadow-lg">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-md">
-                    <Icon name="Bell" size={24} className="text-white" />
+              <div className="bg-gradient-to-br from-purple-50 to-pink-100 border border-purple-200 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-md">
+                    <Icon name="Bell" size={20} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold bg-gradient-to-r from-purple-900 to-pink-900 bg-clip-text text-transparent">Notification Preferences</h2>
-                    <p className="text-purple-700 text-sm">Manage how you receive updates and alerts</p>
+                    <h2 className="text-lg font-bold bg-gradient-to-r from-purple-900 to-pink-900 bg-clip-text text-transparent">Notification Preferences</h2>
+                    <p className="text-purple-700 text-xs">Manage how you receive updates and alerts</p>
                   </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg border border-purple-200 hover:shadow-sm transition-shadow">
                     <div>
-                      <div className="text-sm font-medium text-purple-900">Email Updates</div>
+                      <div className="text-xs font-medium text-purple-900">Email Updates</div>
                       <div className="text-xs text-purple-600">Receive important updates via email</div>
                     </div>
                     <button
                       onClick={() => handleNotificationChange('emailUpdates')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-all duration-300 ${
                         notifications.emailUpdates ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'
                       }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-md ${
-                          notifications.emailUpdates ? 'translate-x-6' : 'translate-x-1'
+                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform shadow-sm ${
+                          notifications.emailUpdates ? 'translate-x-5' : 'translate-x-1'
                         }`}
                       />
                     </button>
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg border border-purple-200 hover:shadow-sm transition-shadow">
                     <div>
-                      <div className="text-sm font-medium text-purple-900">Content Alerts</div>
+                      <div className="text-xs font-medium text-purple-900">Content Alerts</div>
                       <div className="text-xs text-purple-600">Get notified when new content is added</div>
                     </div>
                     <button
                       onClick={() => handleNotificationChange('contentAlerts')}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-300 ${
+                      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-all duration-300 ${
                         notifications.contentAlerts ? 'bg-gradient-to-r from-purple-500 to-pink-500' : 'bg-gray-300'
                       }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-md ${
-                          notifications.contentAlerts ? 'translate-x-6' : 'translate-x-1'
+                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform shadow-sm ${
+                          notifications.contentAlerts ? 'translate-x-5' : 'translate-x-1'
                         }`}
                       />
                     </button>
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 bg-white/60 rounded-xl border border-purple-200 hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between p-3 bg-white/60 rounded-lg border border-purple-200 hover:shadow-sm transition-shadow">
                     <div>
                       <div className="text-sm font-medium text-purple-900">Payment Reminders</div>
                       <div className="text-xs text-purple-600">Receive reminders before subscription renewal</div>
