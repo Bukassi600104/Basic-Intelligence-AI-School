@@ -85,6 +85,17 @@ const StudentDashboard = () => {
     if (userProfile?.membership_status === 'active') {
       loadRecentContent();
     }
+
+    // Listen for content upload events to auto-refresh
+    const handleContentUploaded = () => {
+      loadRecentContent();
+    };
+
+    window.addEventListener('content-uploaded', handleContentUploaded);
+    
+    return () => {
+      window.removeEventListener('content-uploaded', handleContentUploaded);
+    };
   }, [userProfile]);
 
   // Load referral information

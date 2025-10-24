@@ -71,6 +71,22 @@ const StudentPrompts = () => {
     if (userProfile?.membership_status === 'active') {
       loadPrompts();
     }
+
+    // Listen for content upload events to auto-refresh
+    const handleContentUploaded = (event) => {
+      const uploadedContent = event.detail?.content;
+      // Refresh if content type is PDF with Prompts category, or no type specified
+      if (!uploadedContent || 
+          (uploadedContent.content_type === 'pdf' && uploadedContent.category === 'Prompts')) {
+        loadPrompts();
+      }
+    };
+
+    window.addEventListener('content-uploaded', handleContentUploaded);
+    
+    return () => {
+      window.removeEventListener('content-uploaded', handleContentUploaded);
+    };
   }, [userProfile]);
   
   // Scroll to specific content when deep linked

@@ -70,6 +70,21 @@ const StudentPDFs = () => {
     if (userProfile?.membership_status === 'active') {
       loadPDFs();
     }
+
+    // Listen for content upload events to auto-refresh
+    const handleContentUploaded = (event) => {
+      const uploadedContent = event.detail?.content;
+      // Only refresh if it's a PDF type content
+      if (!uploadedContent || uploadedContent.content_type === 'pdf') {
+        loadPDFs();
+      }
+    };
+
+    window.addEventListener('content-uploaded', handleContentUploaded);
+    
+    return () => {
+      window.removeEventListener('content-uploaded', handleContentUploaded);
+    };
   }, [userProfile]);
   
   // Scroll to specific content when deep linked

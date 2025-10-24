@@ -70,6 +70,21 @@ const StudentVideos = () => {
     if (userProfile?.membership_status === 'active') {
       loadVideos();
     }
+
+    // Listen for content upload events to auto-refresh
+    const handleContentUploaded = (event) => {
+      const uploadedContent = event.detail?.content;
+      // Only refresh if it's a video type content
+      if (!uploadedContent || uploadedContent.content_type === 'video') {
+        loadVideos();
+      }
+    };
+
+    window.addEventListener('content-uploaded', handleContentUploaded);
+    
+    return () => {
+      window.removeEventListener('content-uploaded', handleContentUploaded);
+    };
   }, [userProfile]);
   
   // Scroll to specific content when deep linked
