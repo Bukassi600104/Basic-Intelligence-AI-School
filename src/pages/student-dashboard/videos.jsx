@@ -126,30 +126,31 @@ const StudentVideos = () => {
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)} 
       />
       <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'}`}>
-        <div className="p-4 sm:p-6 lg:p-8 pt-16 sm:pt-20 lg:pt-8">
+        <div className="p-3 sm:p-4 lg:p-5 pt-16 sm:pt-20 lg:pt-8">
           {/* Enhanced Gradient Header */}
-          <div className="relative mb-8 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 rounded-3xl"></div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-400/20 to-fuchsia-400/20 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-violet-400/20 to-indigo-400/20 rounded-full blur-2xl"></div>
+          <div className="relative mb-4 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-fuchsia-500/10 rounded-2xl"></div>
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-purple-400/20 to-fuchsia-400/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-violet-400/20 to-indigo-400/20 rounded-full blur-2xl"></div>
             
-            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-8">
+            <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between p-4">
               <div>
-                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent mb-2">
+                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent mb-1">
                   Video Library
                 </h1>
-                <p className="text-gray-600 text-lg">
+                <p className="text-gray-600 text-sm">
                   Watch instructional videos and tutorials to enhance your AI learning experience
                 </p>
               </div>
               
-              <div className="flex items-center space-x-3 mt-4 lg:mt-0">
+              <div className="flex items-center space-x-2 mt-3 lg:mt-0">
                 <Button 
                   variant="outline"
+                  size="sm"
                   onClick={() => navigate('/student-dashboard')}
-                  className="border-2 hover:bg-white/80"
+                  className="border hover:bg-white/80"
                 >
-                  <Icon name="ArrowLeft" size={16} className="mr-2" />
+                  <Icon name="ArrowLeft" size={14} className="mr-1.5" />
                   Back to Dashboard
                 </Button>
               </div>
@@ -157,7 +158,7 @@ const StudentVideos = () => {
           </div>
 
           {/* Search and Filter */}
-          <div className="bg-gradient-to-br from-indigo-50 to-purple-100 border-2 border-indigo-200 rounded-2xl p-6 mb-8 shadow-lg">
+          <div className="bg-gradient-to-br from-indigo-50 to-purple-100 border border-indigo-200 rounded-xl p-4 mb-4 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Search */}
               <div className="relative">
