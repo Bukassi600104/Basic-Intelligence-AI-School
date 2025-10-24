@@ -7,19 +7,19 @@ const MissionSection = () => {
       icon: "Target",
       title: "Our Mission",
       description: `To democratize artificial intelligence education for professionals and entrepreneurs everywhere. We provide practical, hands-on skills that drive career advancement and business growth in the global digital economy.`,
-      gradient: "from-blue-500 to-cyan-600"
+      gradient: "from-orange-500 to-orange-600"
     },
     {
       icon: "Eye",
       title: "Our Vision", 
       description: `To become the world's most trusted platform for applied AI education, empowering a global community of innovators to shape the future of their industries.`,
-      gradient: "from-purple-500 to-pink-600"
+      gradient: "from-orange-500 to-pink-600"
     },
     {
       icon: "Heart",
       title: "Our Values",
       description: `Practical Application: We focus on skills you can use today, not just abstract theory. Student Success: Your growth is our ultimate metric. Community-First: We foster a global network for collaboration and support. Excellence & Clarity: We make complex topics simple and actionable. Continuous Innovation: We stay on the cutting edge of AI.`,
-      gradient: "from-emerald-500 to-green-600"
+      gradient: "from-orange-500 to-green-600"
     }
   ];
 
@@ -28,7 +28,7 @@ const MissionSection = () => {
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
         <div className="text-center mb-16 animate-fadeIn">
           <div className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mb-6">
-            <span className="text-sm font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-sm font-bold bg-gradient-to-r from-orange-600 to-orange-600 bg-clip-text text-transparent">
               Our Foundation
             </span>
           </div>
@@ -69,7 +69,7 @@ const MissionSection = () => {
         {/* Impact Statement - Enhanced */}
         <div className="relative overflow-hidden rounded-3xl animate-slideUp" style={{ animationDelay: '0.3s' }}>
           {/* Gradient Background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-orange-600 to-pink-600"></div>
           
           {/* Decorative Elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
@@ -102,3 +102,4 @@ const MissionSection = () => {
 };
 
 export default MissionSection;
+

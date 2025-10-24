@@ -30,11 +30,11 @@ const CallToActionSection = () => {
   ];
 
   return (
-    <section className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
+    <section className="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-blue-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
         {/* Main CTA - Enhanced */}
         <div className="relative overflow-hidden rounded-3xl mb-16 animate-slideUp">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-orange-600 to-pink-600"></div>
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
           
@@ -57,7 +57,7 @@ const CallToActionSection = () => {
                   <Button 
                     variant="outline" 
                     size="lg" 
-                    className="bg-white text-purple-600 hover:bg-white/90 border-white font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+                    className="bg-white text-orange-600 hover:bg-white/90 border-white font-bold shadow-xl hover:shadow-2xl transition-all hover:scale-105"
                     iconName="UserPlus" 
                     iconPosition="left"
                   >
@@ -95,7 +95,7 @@ const CallToActionSection = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <div className="animate-slideUp" style={{ animationDelay: '0.1s' }}>
             <div className="mb-8">
-              <span className="inline-block px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-sm font-bold text-purple-600 mb-4">
+              <span className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-pink-100 rounded-full text-sm font-bold text-orange-600 mb-4">
                 FAQ
               </span>
               <h3 className="text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent mb-4">
@@ -105,8 +105,8 @@ const CallToActionSection = () => {
             <div className="space-y-6">
               {faqs?.map((faq, index) => (
                 <div key={index} className="bg-white border-2 border-gray-200 rounded-2xl p-6 hover:border-purple-400 hover:shadow-xl transition-all hover:-translate-y-1 group">
-                  <h4 className="font-bold text-gray-900 mb-3 flex items-center group-hover:text-purple-600 transition-colors">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 group-hover:rotate-3 transition-all">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center group-hover:text-orange-600 transition-colors">
+                    <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 group-hover:rotate-3 transition-all">
                       <Icon name="HelpCircle" size={20} className="text-white" />
                     </div>
                     {faq?.question}
@@ -125,7 +125,7 @@ const CallToActionSection = () => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full blur-3xl opacity-50"></div>
               
               <div className="relative">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mb-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mb-4">
                   <Icon name="MessageCircle" size={28} className="text-white" />
                 </div>
                 <h4 className="text-xl font-bold text-gray-900 mb-3">
@@ -146,7 +146,7 @@ const CallToActionSection = () => {
                   <Button 
                     variant="outline" 
                     fullWidth 
-                    className="justify-start border-2 hover:border-purple-500 hover:bg-purple-50 font-medium"
+                    className="justify-start border-2 hover:border-orange-500 hover:bg-orange-50 font-medium"
                     iconName="Mail" 
                     iconPosition="left"
                   >
@@ -162,7 +162,7 @@ const CallToActionSection = () => {
               
               <div className="relative">
                 <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center">
+                  <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-green-600 rounded-2xl flex items-center justify-center">
                     <Icon name="Shield" size={28} className="text-white" />
                   </div>
                   <h4 className="text-xl font-bold text-gray-900">
@@ -170,7 +170,7 @@ const CallToActionSection = () => {
                   </h4>
                 </div>
                 <p className="text-gray-600 leading-relaxed">
-                  We're so confident in our program that we offer <span className="font-bold text-emerald-600">ongoing support</span> until you achieve your AI learning goals. 
+                  We're so confident in our program that we offer <span className="font-bold text-orange-600">ongoing support</span> until you achieve your AI learning goals. 
                   Your success is our success.
                 </p>
               </div>
@@ -203,3 +203,4 @@ const CallToActionSection = () => {
 };
 
 export default CallToActionSection;
+

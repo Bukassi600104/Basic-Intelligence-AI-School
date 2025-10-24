@@ -90,8 +90,8 @@ const PricingPlansPage = () => {
 
     const gradientColors = 
       plan?.id === 'starter' ? 'from-amber-500 to-orange-600' :
-      plan?.id === 'pro' ? 'from-emerald-500 to-green-600' :
-      'from-blue-500 to-purple-600';
+      plan?.id === 'pro' ? 'from-orange-500 to-green-600' :
+      'from-orange-500 to-orange-600';
 
     return (
       <div 
@@ -100,7 +100,7 @@ const PricingPlansPage = () => {
             ? 'border-emerald-400 shadow-xl scale-105 ring-4 ring-emerald-100' 
             : isSelected 
               ? 'border-blue-400 shadow-xl' 
-              : 'border-gray-200 hover:border-blue-300'
+              : 'border-gray-200 hover:border-orange-300'
         }`}
       >
         {plan?.popular && (
@@ -110,7 +110,7 @@ const PricingPlansPage = () => {
         )}
 
         {billingPeriod === 'annual' && (
-          <div className="absolute -top-3 -right-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs px-3 py-2 rounded-full font-bold shadow-lg border-2 border-white">
+          <div className="absolute -top-3 -right-3 bg-gradient-to-r from-orange-500 to-green-600 text-white text-xs px-3 py-2 rounded-full font-bold shadow-lg border-2 border-white">
             Save 20%
           </div>
         )}
@@ -165,7 +165,7 @@ const PricingPlansPage = () => {
           onClick={() => handlePlanSelect(plan?.id)}
           className={`font-bold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105 ${
             plan?.popular 
-              ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white border-0'
+              ? 'bg-gradient-to-r from-orange-500 to-green-600 hover:from-orange-600 hover:to-green-700 text-white border-0'
               : `bg-gradient-to-r ${gradientColors} hover:opacity-90 text-white border-0`
           }`}
         >
@@ -189,7 +189,7 @@ const PricingPlansPage = () => {
       <div className="overflow-x-auto bg-white rounded-2xl shadow-xl border-2 border-gray-200">
         <table className="w-full">
           <thead>
-            <tr className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
+            <tr className="bg-gradient-to-r from-orange-600 via-orange-600 to-pink-600">
               <th className="px-6 py-5 text-left text-sm font-extrabold text-white">Features</th>
               <th className="px-6 py-5 text-center text-sm font-extrabold text-white">
                 <div className="flex flex-col items-center">
@@ -268,8 +268,8 @@ const PricingPlansPage = () => {
               className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-blue-50 rounded-2xl transition-colors group"
               onClick={() => setOpenIndex(openIndex === index ? null : index)}
             >
-              <span className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{faq?.question}</span>
-              <div className={`w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ${openIndex === index ? 'rotate-180' : ''}`}>
+              <span className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors">{faq?.question}</span>
+              <div className={`w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform ${openIndex === index ? 'rotate-180' : ''}`}>
                 <Icon 
                   name="ChevronDown" 
                   size={20} 
@@ -296,11 +296,11 @@ const PricingPlansPage = () => {
         {/* Hero Section - Enhanced */}
         <section className="text-center mb-16 animate-fadeIn">
           <div className="max-w-4xl mx-auto px-4 lg:px-6">
-            <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-bold text-blue-600 mb-4">
+            <span className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-orange-100 rounded-full text-sm font-bold text-orange-600 mb-4">
               Pricing Plans
             </span>
             <h1 className="text-4xl lg:text-5xl font-extrabold mb-6">
-              Choose Your <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">AI Learning</span> Journey
+              Choose Your <span className="bg-gradient-to-r from-orange-600 via-orange-600 to-pink-600 bg-clip-text text-transparent">AI Learning</span> Journey
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
               Select the perfect membership tier to unlock access to our <span className="font-bold text-gray-900">comprehensive AI education platform</span>. 
@@ -309,13 +309,13 @@ const PricingPlansPage = () => {
             
             {/* Billing Period Toggle - Enhanced */}
             <div className="flex items-center justify-center mb-12 bg-white rounded-2xl p-2 inline-flex border-2 border-gray-200 shadow-lg">
-              <span className={`mr-3 px-4 py-2 rounded-xl transition-all ${billingPeriod === 'monthly' ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold' : 'text-gray-600'}`}>
+              <span className={`mr-3 px-4 py-2 rounded-xl transition-all ${billingPeriod === 'monthly' ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold' : 'text-gray-600'}`}>
                 Monthly
               </span>
               <button
                 onClick={() => setBillingPeriod(billingPeriod === 'monthly' ? 'annual' : 'monthly')}
                 className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all shadow-inner ${
-                  billingPeriod === 'annual' ? 'bg-gradient-to-r from-emerald-500 to-green-600' : 'bg-gray-300'
+                  billingPeriod === 'annual' ? 'bg-gradient-to-r from-orange-500 to-green-600' : 'bg-gray-300'
                 }`}
               >
                 <span
@@ -324,7 +324,7 @@ const PricingPlansPage = () => {
                   }`}
                 />
               </button>
-              <span className={`ml-3 px-4 py-2 rounded-xl transition-all ${billingPeriod === 'annual' ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold' : 'text-gray-600'}`}>
+              <span className={`ml-3 px-4 py-2 rounded-xl transition-all ${billingPeriod === 'annual' ? 'bg-gradient-to-r from-orange-500 to-green-600 text-white font-bold' : 'text-gray-600'}`}>
                 Annual
               </span>
               {billingPeriod === 'annual' && (
@@ -356,7 +356,7 @@ const PricingPlansPage = () => {
         <section className="mb-16 animate-slideUp" style={{ animationDelay: '0.3s' }}>
           <div className="max-w-6xl mx-auto px-4 lg:px-6">
             <div className="text-center mb-10">
-              <span className="inline-block px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full text-sm font-bold text-purple-600 mb-4">
+              <span className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-pink-100 rounded-full text-sm font-bold text-orange-600 mb-4">
                 Detailed Comparison
               </span>
               <h2 className="text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
@@ -371,7 +371,7 @@ const PricingPlansPage = () => {
         <section className="mb-16 animate-slideUp" style={{ animationDelay: '0.4s' }}>
           <div className="max-w-4xl mx-auto px-4 lg:px-6">
             <div className="text-center mb-10">
-              <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-cyan-100 rounded-full text-sm font-bold text-blue-600 mb-4">
+              <span className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-orange-100 rounded-full text-sm font-bold text-orange-600 mb-4">
                 FAQ
               </span>
               <h2 className="text-3xl font-extrabold bg-gradient-to-r from-gray-900 via-blue-900 to-cyan-900 bg-clip-text text-transparent">
@@ -386,17 +386,17 @@ const PricingPlansPage = () => {
         <section className="text-center animate-slideUp" style={{ animationDelay: '0.5s' }}>
           <div className="max-w-4xl mx-auto px-4 lg:px-6">
             <div className="relative overflow-hidden bg-white rounded-3xl p-10 border-2 border-gray-200 shadow-2xl">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-50"></div>
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-orange-100 to-orange-100 rounded-full blur-3xl opacity-50"></div>
               
               <div className="relative">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                   <Icon name="Info" size={40} className="text-white" />
                 </div>
                 <h3 className="text-2xl font-extrabold text-gray-900 mb-4">
                   Ready to Get Started?
                 </h3>
                 <p className="text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto">
-                  Choose a plan to unlock access. Once you select your tier, you'll be redirected to <span className="font-bold text-blue-600">register 
+                  Choose a plan to unlock access. Once you select your tier, you'll be redirected to <span className="font-bold text-orange-600">register 
                   and upload your payment proof</span> for admin verification.
                 </p>
                 {!user && (
@@ -404,7 +404,7 @@ const PricingPlansPage = () => {
                     <Button
                       asChild
                       size="lg"
-                      className="border-2 border-blue-500 hover:bg-blue-50 font-bold text-blue-600"
+                      className="border-2 border-orange-500 hover:bg-blue-50 font-bold text-orange-600"
                     >
                       <Link to="/signin">
                         Already have an account? Sign In →
@@ -413,7 +413,7 @@ const PricingPlansPage = () => {
                     <Button
                       asChild
                       size="lg"
-                      className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl border-0"
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-xl border-0"
                     >
                       <Link to="/signup">
                         Create New Account →

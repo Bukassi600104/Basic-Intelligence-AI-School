@@ -20,11 +20,11 @@ const AlternativeActions = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Existing Member Login - Enhanced */}
-        <div className="relative overflow-hidden p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl text-center group hover:shadow-lg transition-all border-2 border-blue-200 hover:border-blue-400">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-200 to-cyan-200 rounded-full blur-2xl opacity-50"></div>
+        <div className="relative overflow-hidden p-6 bg-gradient-to-br from-orange-50 to-orange-50 rounded-2xl text-center group hover:shadow-lg transition-all border-2 border-orange-200 hover:border-orange-400">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-200 to-orange-200 rounded-full blur-2xl opacity-50"></div>
           
           <div className="relative">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all">
+            <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all">
               <Icon name="LogIn" size={28} className="text-white" />
             </div>
             <h4 className="text-lg font-bold text-gray-900 mb-2">
@@ -34,7 +34,7 @@ const AlternativeActions = () => {
               If you've already paid and received your <span className="font-bold text-blue-600">Member ID</span>, login to access your dashboard
             </p>
             <Link to="/signin">
-              <Button variant="outline" size="sm" className="w-full border-2 border-blue-500 hover:bg-blue-50 font-bold">
+              <Button variant="outline" size="sm" className="w-full border-2 border-orange-500 hover:bg-orange-50 font-bold">
                 <Icon name="ArrowRight" size={16} className="mr-2" />
                 Login to Dashboard
               </Button>
@@ -90,3 +90,4 @@ const AlternativeActions = () => {
 };
 
 export default AlternativeActions;
+

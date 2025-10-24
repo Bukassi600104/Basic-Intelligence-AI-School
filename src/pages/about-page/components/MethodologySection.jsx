@@ -58,17 +58,17 @@ const MethodologySection = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-32 bg-gradient-to-br from-gray-50 via-purple-50 to-blue-50">
+    <section className="py-20 lg:py-32 bg-gradient-to-br from-gray-50 via-orange-50 to-orange-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-6">
         {/* Section Header - Enhanced */}
         <div className="text-center mb-16 animate-fadeIn">
-          <div className="inline-block px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full mb-6">
-            <span className="text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <div className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-pink-100 rounded-full mb-6">
+            <span className="text-sm font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
               How We Teach
             </span>
           </div>
           <h2 className="text-4xl lg:text-5xl font-extrabold mb-6">
-            <span className="bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-gray-900 via-orange-900 to-pink-900 bg-clip-text text-transparent">
               Our Learning Methodology
             </span>
           </h2>
@@ -84,26 +84,26 @@ const MethodologySection = () => {
           {methodologySteps?.map((step, index) => (
             <div 
               key={index} 
-              className="group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:shadow-card-hover hover:border-purple-400 hover:-translate-y-1 transition-all duration-300 animate-slideUp"
+              className="group bg-white border-2 border-gray-200 rounded-2xl p-8 hover:shadow-card-hover hover:border-orange-400 hover:-translate-y-1 transition-all duration-300 animate-slideUp"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-start space-x-6">
                 <div className="flex flex-col items-center">
                   <div className={`w-16 h-16 bg-gradient-to-br ${
-                    index === 0 ? 'from-blue-500 to-cyan-600' :
-                    index === 1 ? 'from-purple-500 to-pink-600' :
-                    index === 2 ? 'from-emerald-500 to-green-600' :
+                    index === 0 ? 'from-orange-500 to-orange-600' :
+                    index === 1 ? 'from-orange-500 to-pink-600' :
+                    index === 2 ? 'from-orange-500 to-green-600' :
                     'from-amber-500 to-orange-600'
                   } rounded-2xl flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                     <Icon name={step?.icon} size={24} color="white" />
                   </div>
-                  <span className="text-3xl font-extrabold text-gray-200 group-hover:text-purple-200 transition-colors">
+                  <span className="text-3xl font-extrabold text-gray-200 group-hover:text-orange-200 transition-colors">
                     {step?.step}
                   </span>
                 </div>
                 
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">
                     {step?.title}
                   </h3>
                   <p className="text-gray-600 mb-5 leading-relaxed">
@@ -113,7 +113,7 @@ const MethodologySection = () => {
                   <div className="space-y-3">
                     {step?.features?.map((feature, featureIndex) => (
                       <div key={featureIndex} className="flex items-center space-x-3">
-                        <div className="w-5 h-5 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-5 h-5 bg-gradient-to-br from-orange-500 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
                           <Icon name="Check" size={14} className="text-white" />
                         </div>
                         <span className="text-sm font-medium text-gray-700">{feature}</span>
@@ -129,7 +129,7 @@ const MethodologySection = () => {
         {/* Learning Principles - Enhanced */}
         <div className="relative overflow-hidden rounded-3xl mb-20 animate-slideUp" style={{ animationDelay: '0.4s' }}>
           <div className="absolute inset-0 bg-white shadow-2xl"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-purple-50 opacity-50"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-transparent to-orange-50 opacity-50"></div>
           
           <div className="relative p-8 lg:p-16">
             <div className="text-center mb-12">
@@ -145,9 +145,9 @@ const MethodologySection = () => {
               {learningPrinciples?.map((principle, index) => (
                 <div key={index} className="text-center group">
                   <div className={`w-20 h-20 bg-gradient-to-br ${
-                    index === 0 ? 'from-blue-500 to-cyan-600' :
-                    index === 1 ? 'from-purple-500 to-pink-600' :
-                    index === 2 ? 'from-emerald-500 to-green-600' :
+                    index === 0 ? 'from-orange-500 to-orange-600' :
+                    index === 1 ? 'from-orange-500 to-pink-600' :
+                    index === 2 ? 'from-orange-500 to-green-600' :
                     'from-amber-500 to-orange-600'
                   } rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}>
                     <Icon name={principle?.icon} size={32} className="text-white" />
@@ -166,7 +166,7 @@ const MethodologySection = () => {
 
         {/* Success Metrics - Enhanced */}
         <div className="relative overflow-hidden rounded-3xl animate-slideUp" style={{ animationDelay: '0.5s' }}>
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-600 via-green-600 to-teal-600"></div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
           
           <div className="relative p-8 lg:p-16">

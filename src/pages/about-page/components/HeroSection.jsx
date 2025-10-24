@@ -8,7 +8,7 @@ const HeroSection = () => {
   return (
     <section className="relative bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 py-20 lg:py-32 overflow-hidden">
       {/* Animated Background Elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl animate-pulse-slow"></div>
+      <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-orange-400/20 to-orange-400/20 rounded-full blur-3xl animate-pulse-slow"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
       
       <div className="relative max-w-7xl mx-auto px-4 lg:px-6">
@@ -16,14 +16,14 @@ const HeroSection = () => {
           {/* Content - Enhanced */}
           <div className="space-y-8 animate-fadeIn">
             <div className="space-y-6">
-              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full border border-blue-200 shadow-sm">
-                <Icon name="Sparkles" size={16} className="text-blue-600" />
+              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-100 to-orange-100 rounded-full border border-orange-200 shadow-sm">
+                <Icon name="Sparkles" size={16} className="text-orange-600" />
                 <span className="text-sm font-bold text-blue-900">Empowering Professionals Worldwide</span>
               </div>
               
               <h1 className="text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
                 About{' '}
-                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-orange-600 via-orange-600 to-pink-600 bg-clip-text text-transparent">
                   Basic Intelligence
                 </span>
               </h1>
@@ -37,8 +37,8 @@ const HeroSection = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/join-membership-page">
-                <button className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl shadow-lg hover:shadow-glow-md hover:scale-105 transition-all duration-300 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <button className="group px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-600 text-white font-bold rounded-xl shadow-lg hover:shadow-glow-md hover:scale-105 transition-all duration-300 overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <div className="relative flex items-center justify-center space-x-2">
                     <Icon name="UserPlus" size={20} />
                     <span>Join Our Community</span>
@@ -46,9 +46,9 @@ const HeroSection = () => {
                 </button>
               </Link>
               
-              <button className="group px-8 py-4 bg-white/80 backdrop-blur-sm text-gray-900 font-bold rounded-xl border-2 border-gray-300 hover:border-blue-500 hover:shadow-lg hover:scale-105 transition-all duration-300">
+              <button className="group px-8 py-4 bg-white/80 backdrop-blur-sm text-gray-900 font-bold rounded-xl border-2 border-gray-300 hover:border-orange-500 hover:shadow-lg hover:scale-105 transition-all duration-300">
                 <div className="flex items-center justify-center space-x-2">
-                  <Icon name="MessageCircle" size={20} className="text-blue-600 group-hover:scale-110 transition-transform" />
+                  <Icon name="MessageCircle" size={20} className="text-orange-600 group-hover:scale-110 transition-transform" />
                   <span>Contact Us</span>
                 </div>
               </button>
@@ -57,13 +57,13 @@ const HeroSection = () => {
             {/* Quick Stats - Enhanced */}
             <div className="grid grid-cols-3 gap-6 pt-8 border-t-2 border-gray-200">
               <div className="text-center group animate-slideUp" style={{ animationDelay: '0.2s' }}>
-                <div className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-1">
+                <div className="text-3xl font-extrabold bg-gradient-to-r from-orange-600 to-cyan-600 bg-clip-text text-transparent mb-1">
                   500+
                 </div>
                 <div className="text-sm font-medium text-gray-600">Active Members</div>
               </div>
               <div className="text-center group animate-slideUp" style={{ animationDelay: '0.3s' }}>
-                <div className="text-3xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
+                <div className="text-3xl font-extrabold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-1">
                   50+
                 </div>
                 <div className="text-sm font-medium text-gray-600">AI Courses</div>
@@ -108,3 +108,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+

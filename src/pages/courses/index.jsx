@@ -120,15 +120,15 @@ const CoursesPage = () => {
       
       {/* Animated Background Circles */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-200 to-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-orange-200 to-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse-slow" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-emerald-200 to-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-emerald-200 to-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
       </div>
       
       <main className="relative z-10 pt-20 pb-16">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
           {/* Enhanced Header Section with Gradient Card */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-12 mb-12 shadow-2xl">
+          <div className="relative overflow-hidden bg-gradient-to-br from-orange-600 via-orange-600 to-pink-600 rounded-3xl p-12 mb-12 shadow-2xl">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
             
@@ -148,7 +148,7 @@ const CoursesPage = () => {
               {/* Call to Action */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slideUp" style={{ animationDelay: '0.1s' }}>
                 <Link to="/signup" className="w-full sm:w-auto">
-                  <button className="w-full sm:w-auto bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 flex items-center justify-center">
+                  <button className="w-full sm:w-auto bg-white text-orange-600 hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 flex items-center justify-center">
                     <Icon name="UserPlus" size={20} className="mr-2" />
                     Start Learning Today
                   </button>
@@ -359,7 +359,7 @@ const CoursesPage = () => {
 
           {/* Enhanced Bottom CTA */}
           <div className="mt-16">
-            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-cyan-600 to-blue-600 rounded-3xl p-12 shadow-2xl">
+            <div className="relative overflow-hidden bg-gradient-to-br from-orange-600 via-orange-600 to-orange-600 rounded-3xl p-12 shadow-2xl">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
               
@@ -376,7 +376,7 @@ const CoursesPage = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Link to="/signup" className="w-full sm:w-auto">
-                    <button className="w-full sm:w-auto bg-white text-emerald-600 hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 flex items-center justify-center">
+                    <button className="w-full sm:w-auto bg-white text-orange-600 hover:bg-gray-50 px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 flex items-center justify-center">
                       <Icon name="UserPlus" size={20} className="mr-2" />
                       Create Your Account
                     </button>
@@ -400,3 +400,4 @@ const CoursesPage = () => {
 };
 
 export default CoursesPage;
+

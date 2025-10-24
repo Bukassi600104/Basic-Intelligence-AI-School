@@ -18,7 +18,7 @@ const JoinMembershipPage = () => {
         <div className="max-w-4xl mx-auto px-4 py-8 lg:px-6 lg:py-12">
           {/* Page Header - Enhanced */}
           <div className="text-center mb-12 animate-fadeIn">
-            <span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-bold text-blue-600 mb-4">
+            <span className="inline-block px-4 py-2 bg-gradient-to-r from-orange-100 to-orange-100 rounded-full text-sm font-bold text-orange-600 mb-4">
               Join Our Community
             </span>
             <h1 className="text-3xl lg:text-5xl font-extrabold mb-4">
@@ -42,7 +42,7 @@ const JoinMembershipPage = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full blur-3xl opacity-50"></div>
             
             <div className="relative flex items-start space-x-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-green-600 rounded-2xl flex items-center justify-center flex-shrink-0">
                 <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                 </svg>
@@ -52,7 +52,7 @@ const JoinMembershipPage = () => {
                   Secure & Verified Process
                 </h4>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Your information is handled securely with <span className="font-bold text-emerald-600">bank-level encryption</span>. We use manual verification to ensure all registrations are properly processed and your membership is activated promptly.
+                  Your information is handled securely with <span className="font-bold text-orange-600">bank-level encryption</span>. We use manual verification to ensure all registrations are properly processed and your membership is activated promptly.
                 </p>
               </div>
             </div>
