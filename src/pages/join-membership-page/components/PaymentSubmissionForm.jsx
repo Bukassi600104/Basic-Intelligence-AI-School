@@ -229,6 +229,7 @@ const PaymentSubmissionForm = () => {
           <Input
             label="Email Address"
             type="email"
+            autoComplete="email"
             name="email"
             value={formData?.email}
             onChange={handleInputChange}

@@ -477,6 +477,7 @@ const StudentSettings = () => {
                     <input
                       type="text"
                       name="full_name"
+                      autoComplete="name"
                       value={formData.full_name}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
@@ -491,6 +492,7 @@ const StudentSettings = () => {
                     <input
                       type="email"
                       name="email"
+                      autoComplete="email"
                       value={formData.email}
                       disabled
                       className="w-full px-3 py-2 border border-orange-200 rounded-lg bg-blue-50/50 text-blue-700"
@@ -507,6 +509,7 @@ const StudentSettings = () => {
                     <input
                       type="tel"
                       name="phone"
+                      autoComplete="tel"
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
@@ -666,6 +669,7 @@ const StudentSettings = () => {
                     </label>
                     <input
                       type="password"
+                      autoComplete="current-password"
                       value={passwordForm.currentPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
                       className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
@@ -680,6 +684,7 @@ const StudentSettings = () => {
                     </label>
                     <input
                       type="password"
+                      autoComplete="new-password"
                       value={passwordForm.newPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
                       className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
@@ -716,6 +721,7 @@ const StudentSettings = () => {
                     </label>
                     <input
                       type="password"
+                      autoComplete="new-password"
                       value={passwordForm.confirmPassword}
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
                       className="w-full px-4 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"

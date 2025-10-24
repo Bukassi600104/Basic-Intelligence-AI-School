@@ -237,6 +237,7 @@ const SignInPage = () => {
               label="Email"
               name="email"
               type="email"
+              autoComplete="email"
               required
               value={formData?.email}
               onChange={handleInputChange}
@@ -249,6 +250,7 @@ const SignInPage = () => {
                 label="Password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 required
                 value={formData?.password}
                 onChange={handleInputChange}

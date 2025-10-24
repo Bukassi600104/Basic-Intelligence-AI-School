@@ -244,6 +244,7 @@ const AdminSettings = () => {
               </label>
               <Input
                 type="email"
+                autoComplete="email"
                 value={settings?.contactEmail}
                 onChange={(e) => handleInputChange('general', 'contactEmail', e?.target?.value)}
                 placeholder="Enter contact email"
@@ -356,6 +357,7 @@ const AdminSettings = () => {
                   </label>
                   <Input
                     type="password"
+                    autoComplete="current-password"
                     value={passwordData.currentPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
                     placeholder="Enter your current password"
@@ -370,6 +372,7 @@ const AdminSettings = () => {
                   </label>
                   <Input
                     type="password"
+                    autoComplete="new-password"
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
                     placeholder="Enter new password"
@@ -400,6 +403,7 @@ const AdminSettings = () => {
                   </label>
                   <Input
                     type="password"
+                    autoComplete="new-password"
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                     placeholder="Confirm new password"

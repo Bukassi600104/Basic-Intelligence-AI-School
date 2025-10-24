@@ -279,6 +279,7 @@ const SignUpPage = () => {
               label="Full Name"
               name="fullName"
               type="text"
+              autoComplete="name"
               required
               value={formData?.fullName}
               onChange={handleInputChange}
@@ -290,6 +291,7 @@ const SignUpPage = () => {
               label="Email"
               name="email"
               type="email"
+              autoComplete="email"
               required
               value={formData?.email}
               onChange={handleInputChange}
@@ -302,6 +304,7 @@ const SignUpPage = () => {
                 label="Password"
                 name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
                 required
                 value={formData?.password}
                 onChange={handleInputChange}
@@ -324,6 +327,7 @@ const SignUpPage = () => {
                 label="Confirm Password"
                 name="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
                 required
                 value={formData?.confirmPassword}
                 onChange={handleInputChange}
