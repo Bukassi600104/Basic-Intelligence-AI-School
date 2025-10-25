@@ -74,6 +74,13 @@ const SignInPage = () => {
         return;
       }
       
+      // Check if user must change password (admin-created accounts)
+      if (userProfile.must_change_password) {
+        console.log('⚠️ User must change password - redirecting to /force-password-change');
+        navigate('/force-password-change', { replace: true });
+        return;
+      }
+      
       // Default redirection based on user role from profile
       if (userProfile.role === 'admin') {
         console.log('✅ Admin detected - redirecting to /admin-dashboard');

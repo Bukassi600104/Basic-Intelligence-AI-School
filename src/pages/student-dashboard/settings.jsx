@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import PhoneInput from '../../components/ui/PhoneInput';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { reviewService } from '../../services/reviewService';
 import { passwordService } from '../../services/passwordService';
@@ -503,17 +504,13 @@ const StudentSettings = () => {
                   </div>
                   
                   <div>
-                    <label className="block text-xs font-medium text-blue-900 mb-1.5">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
+                    <PhoneInput
+                      label="Phone Number"
                       name="phone"
-                      autoComplete="tel"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
-                      placeholder="+234123456789"
+                      placeholder="Enter phone number"
+                      defaultCountryCode="+234"
                     />
                   </div>
                   

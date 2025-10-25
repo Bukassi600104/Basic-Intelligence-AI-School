@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import Input from '../../../components/ui/Input';
+import PhoneInput from '../../../components/ui/PhoneInput';
 
 const PaymentSubmissionForm = () => {
   const [formData, setFormData] = useState({
@@ -240,18 +241,21 @@ const PaymentSubmissionForm = () => {
           />
         </div>
 
-        <Input
-          label="WhatsApp Number"
-          type="tel"
-          name="whatsapp"
-          value={formData?.whatsapp}
-          onChange={handleInputChange}
-          placeholder="+234 XXX XXX XXXX"
-          description="We'll send your Member ID confirmation via WhatsApp"
-          error={errors?.whatsapp}
-          required
-          className="text-lg h-14"
-        />
+        <div>
+          <PhoneInput
+            label="WhatsApp Number"
+            name="whatsapp"
+            value={formData?.whatsapp}
+            onChange={handleInputChange}
+            placeholder="Enter WhatsApp number"
+            defaultCountryCode="+234"
+            error={errors?.whatsapp}
+            required
+          />
+          <p className="text-sm text-gray-600 mt-1">
+            We'll send your Member ID confirmation via WhatsApp
+          </p>
+        </div>
 
         {/* Payment Information */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

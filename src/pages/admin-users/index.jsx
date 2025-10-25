@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import AdminSidebar from '../../components/ui/AdminSidebar';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
+import PhoneInput from '../../components/ui/PhoneInput';
 import UserFilters from './components/UserFilters';
 import BulkActions from './components/BulkActions';
 import UserTable from './components/UserTable';
@@ -556,7 +557,22 @@ const AdminUsersPage = () => {
       if (error) {
         alert('Failed to create user: ' + error);
       } else {
-        alert('User created successfully! They can now sign up with their email.');
+        // Show success message with temporary password
+        const password = data?.temp_password || 'Not available';
+        const message = `✅ User created successfully!\n\n` +
+          `📧 Email: ${userData.email}\n` +
+          `🔑 Temporary Password: ${password}\n\n` +
+          `⚠️ IMPORTANT:\n` +
+          `• Save this password - it won't be shown again\n` +
+          `• Share it securely with the user\n` +
+          `• User should change it after first login\n` +
+          `• Password has also been sent via email`;
+        
+        // Use a custom alert or you can create a modal for better UX
+        if (window.confirm(message + '\n\nClick OK to copy password to clipboard')) {
+          navigator.clipboard.writeText(password);
+        }
+        
         await loadUsers(); // Reload users list
       }
     } catch (error) {
@@ -878,30 +894,26 @@ const AdminUsersPage = () => {
                       </div>
 
                       <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
-                          Phone Number
-                        </label>
-                        <input
-                          type="tel"
+                        <PhoneInput
+                          label="Phone Number"
+                          name="phone"
                           value={userFormData.phone}
                           onChange={(e) => handleUserFormChange('phone', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          placeholder="+234123456789"
+                          placeholder="Enter phone number"
+                          defaultCountryCode="+234"
                         />
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          WhatsApp Phone
-                        </label>
-                        <input
-                          type="tel"
+                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
+                        <PhoneInput
+                          label="WhatsApp Phone"
+                          name="whatsapp_phone"
                           value={userFormData.whatsapp_phone}
                           onChange={(e) => handleUserFormChange('whatsapp_phone', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          placeholder="+234123456789"
+                          placeholder="Enter WhatsApp number"
+                          defaultCountryCode="+234"
                         />
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-gray-500 mt-2">
                           For WhatsApp notifications (international format)
                         </p>
                       </div>
@@ -1074,7 +1086,7 @@ const AdminUsersPage = () => {
                   </p>
                 </div>
 
-                <form onSubmit={(e) => {
+                <form data-form="edit-user" onSubmit={(e) => {
                   e.preventDefault();
                   const formData = new FormData(e.target);
                   const userData = {
@@ -1174,16 +1186,22 @@ const AdminUsersPage = () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          Phone Number
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          defaultValue={selectedUser.phone || ''}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          placeholder="+234123456789"
+                        <PhoneInput
+                          label="Phone Number"
+                          name="phone_display"
+                          value={selectedUser.phone || ''}
+                          onChange={(e) => {
+                            const formEl = document.querySelector('form[data-form="edit-user"]');
+                            if (formEl) {
+                              const phoneInput = formEl.querySelector('input[name="phone"]');
+                              if (phoneInput) phoneInput.value = e.target.value;
+                            }
+                          }}
+                          placeholder="Enter phone number"
+                          defaultCountryCode="+234"
                         />
+                        {/* Hidden input for form submission */}
+                        <input type="hidden" name="phone" defaultValue={selectedUser.phone || ''} />
                       </div>
 
                       <div>

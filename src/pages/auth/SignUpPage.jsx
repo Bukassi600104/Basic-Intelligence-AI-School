@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import GeometricBackground from '../../components/ui/GeometricBackground';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import PhoneInput from '../../components/ui/PhoneInput';
 import Icon from '../../components/AppIcon';
 import { notificationService } from '../../services/notificationService';
 
@@ -391,14 +392,14 @@ const SignUpPage = () => {
               </button>
             </div>
 
-            <Input
+            <PhoneInput
               label="Phone Number"
               name="phone"
-              type="tel"
               required
               value={formData?.phone}
               onChange={handleInputChange}
-              placeholder="+234 XXX XXX XXXX"
+              placeholder="Enter phone number"
+              defaultCountryCode="+234"
               disabled={loading}
             />
 
