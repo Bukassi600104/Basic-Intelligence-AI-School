@@ -32,18 +32,51 @@ export const AuthProvider = ({ children }) => {
       if (!userId) return
       setProfileLoading(true)
       try {
+        // First, check if user is an admin
+        const { data: adminData, error: adminError } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('auth_user_id', userId)
+          .single()
+        
+        if (adminData && !adminError) {
+          // User is an admin - create profile object with admin data
+          const adminProfile = {
+            id: adminData.auth_user_id,
+            email: adminData.email,
+            full_name: adminData.full_name,
+            phone: adminData.phone,
+            role: 'admin',
+            member_id: adminData.admin_id, // Use admin_id as member_id for consistency
+            is_active: adminData.is_active,
+            last_login: adminData.last_login,
+            created_at: adminData.created_at,
+            updated_at: adminData.updated_at
+          }
+          console.log('Admin profile loaded:', { 
+            id: adminProfile.id, 
+            email: adminProfile.email, 
+            role: adminProfile.role,
+            admin_id: adminData.admin_id
+          })
+          setUserProfile(adminProfile)
+          return
+        }
+        
+        // User is not an admin, check user_profiles (regular members)
         const { data, error } = await supabase
-          ?.from('user_profiles')
-          ?.select('*')
-          ?.eq('id', userId)
-          ?.single()
+          .from('user_profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
         
         if (!error && data) {
           console.log('User profile loaded:', { 
             id: data.id, 
             email: data.email, 
             role: data.role,
-            membership_status: data.membership_status 
+            membership_status: data.membership_status,
+            member_id: data.member_id
           })
           setUserProfile(data)
         } else if (error) {
