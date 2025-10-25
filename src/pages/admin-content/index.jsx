@@ -7,6 +7,7 @@ import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import Icon from '../../components/AppIcon';
 import { contentService } from '../../services/contentService';
+import { processGoogleDriveUrl, isValidGoogleDriveUrl } from '../../utils/googleDriveUtils';
 import ContentUploadWizard from './components/ContentUploadWizard';
 
 const AdminContentPage = () => {
@@ -32,6 +33,8 @@ const AdminContentPage = () => {
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [googleDriveUrl, setGoogleDriveUrl] = useState('');
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
+  const [driveUrlValid, setDriveUrlValid] = useState(null);
   
   // Filter states
   const [filters, setFilters] = useState({
@@ -122,18 +125,12 @@ const AdminContentPage = () => {
         contentData.mime_type = selectedFile?.type;
         contentData.file_size_bytes = selectedFile?.size;
       } else if (uploadType === 'video' && googleDriveUrl) {
-        // Extract Google Drive ID from URL
-        const driveId = extractGoogleDriveId(googleDriveUrl);
-        if (driveId) {
-          contentData.google_drive_id = driveId;
-          contentData.google_drive_embed_url = `https://drive.google.com/file/d/${driveId}/preview`;
-        } else {
-          setError('Invalid Google Drive URL format');
-          return;
-        }
+        // Use the Google Drive URL processing utility
+        // The contentService will handle URL processing automatically
+        contentData.google_drive_embed_url = googleDriveUrl;
       }
 
-      // Create content record
+      // Create content record (contentService will process Drive URLs automatically)
       const { data, error: createError } = await contentService?.createContent(contentData);
 
       if (createError) {
@@ -150,20 +147,31 @@ const AdminContentPage = () => {
     }
   };
 
-  const extractGoogleDriveId = (url) => {
-    const patterns = [
-      /\/d\/([a-zA-Z0-9-_]+)/,
-      /id=([a-zA-Z0-9-_]+)/,
-      /\/file\/d\/([a-zA-Z0-9-_]+)/
-    ];
+  // Handle Google Drive URL input with validation and preview
+  const handleGoogleDriveUrlChange = (url) => {
+    setGoogleDriveUrl(url);
     
-    for (const pattern of patterns) {
-      const match = url?.match(pattern);
-      if (match && match?.[1]) {
-        return match?.[1];
-      }
+    if (!url.trim()) {
+      setThumbnailPreview(null);
+      setDriveUrlValid(null);
+      return;
     }
-    return null;
+
+    if (!isValidGoogleDriveUrl(url)) {
+      setDriveUrlValid(false);
+      setThumbnailPreview(null);
+      return;
+    }
+
+    const result = processGoogleDriveUrl(url);
+    if (result.valid) {
+      setDriveUrlValid(true);
+      setThumbnailPreview(result.thumbnailUrl);
+    } else {
+      setDriveUrlValid(false);
+      setThumbnailPreview(null);
+      setError(result.error);
+    }
   };
 
   const resetForm = () => {
@@ -176,6 +184,8 @@ const AdminContentPage = () => {
     });
     setSelectedFile(null);
     setGoogleDriveUrl('');
+    setThumbnailPreview(null);
+    setDriveUrlValid(null);
   };
 
   const handleWizardSuccess = async () => {
@@ -673,13 +683,58 @@ const AdminContentPage = () => {
                     />
                   </div>
                 ) : (
-                  <Input
-                    label="Google Drive URL"
-                    value={googleDriveUrl}
-                    onChange={(e) => setGoogleDriveUrl(e?.target?.value)}
-                    placeholder="https://drive.google.com/file/d/..."
-                    required
-                  />
+                  <div className="space-y-4">
+                    <Input
+                      label="Google Drive Thumbnail Link"
+                      value={googleDriveUrl}
+                      onChange={(e) => handleGoogleDriveUrlChange(e?.target?.value)}
+                      placeholder="https://drive.google.com/file/d/..."
+                      required
+                    />
+                    <div className="text-sm space-y-2">
+                      <p className="text-muted-foreground">
+                        <strong>Recommended aspect ratios:</strong> 16:9 (standard), 4:3 (classic), or 1:1 (square)
+                      </p>
+                      <p className="text-muted-foreground">
+                        <strong>How to get the link:</strong> Right-click your image in Google Drive → Get link → Copy link
+                      </p>
+                      {driveUrlValid === true && (
+                        <div className="flex items-center text-green-600">
+                          <Icon name="CheckCircle" size={16} className="mr-2" />
+                          <span>Valid Google Drive link detected</span>
+                        </div>
+                      )}
+                      {driveUrlValid === false && googleDriveUrl.trim() && (
+                        <div className="flex items-center text-red-600">
+                          <Icon name="AlertCircle" size={16} className="mr-2" />
+                          <span>Invalid Google Drive URL format</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Thumbnail Preview */}
+                    {thumbnailPreview && (
+                      <div className="mt-4 p-4 border-2 border-green-200 rounded-lg bg-green-50">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Thumbnail Preview:
+                        </label>
+                        <div className="relative">
+                          <img 
+                            src={thumbnailPreview} 
+                            alt="Thumbnail preview" 
+                            className="w-full max-w-md rounded-lg shadow-md"
+                            onError={(e) => {
+                              e.target.src = '/assets/images/no_image.png';
+                              e.target.alt = 'Preview failed to load';
+                            }}
+                          />
+                          <p className="text-xs text-gray-500 mt-2">
+                            This is how the thumbnail will appear to students
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 <div className="flex justify-end space-x-4 pt-6 border-t-2 border-gray-200">

@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase';
+import { processGoogleDriveUrl } from '../utils/googleDriveUtils';
 
 export const contentService = {
   // Get content based on user's tier access
@@ -39,18 +40,34 @@ export const contentService = {
   // Create new content
   createContent: async (contentData) => {
     try {
+      // Process Google Drive URL if provided
+      let processedData = { ...contentData };
+      
+      if (contentData?.google_drive_embed_url) {
+        const driveResult = processGoogleDriveUrl(contentData.google_drive_embed_url);
+        
+        if (driveResult.valid) {
+          processedData.google_drive_id = driveResult.fileId;
+          processedData.google_drive_embed_url = driveResult.embedUrl;
+          processedData.google_drive_thumbnail_url = driveResult.thumbnailUrl;
+        } else {
+          return { data: null, error: driveResult.error };
+        }
+      }
+
       const { data, error } = await supabase?.from('content_library')?.insert([{
-          title: contentData?.title,
-          description: contentData?.description,
-          content_type: contentData?.content_type,
-          file_path: contentData?.file_path,
-          google_drive_id: contentData?.google_drive_id,
-          google_drive_embed_url: contentData?.google_drive_embed_url,
-          access_level: contentData?.access_level,
-          category: contentData?.category,
-          tags: contentData?.tags || [],
-          mime_type: contentData?.mime_type,
-          file_size_bytes: contentData?.file_size_bytes
+          title: processedData?.title,
+          description: processedData?.description,
+          content_type: processedData?.content_type,
+          file_path: processedData?.file_path,
+          google_drive_id: processedData?.google_drive_id,
+          google_drive_embed_url: processedData?.google_drive_embed_url,
+          google_drive_thumbnail_url: processedData?.google_drive_thumbnail_url,
+          access_level: processedData?.access_level,
+          category: processedData?.category,
+          tags: processedData?.tags || [],
+          mime_type: processedData?.mime_type,
+          file_size_bytes: processedData?.file_size_bytes
         }])?.select()?.single();
 
       return { data, error: error?.message };
@@ -62,8 +79,23 @@ export const contentService = {
   // Update content
   updateContent: async (contentId, updates) => {
     try {
+      // Process Google Drive URL if being updated
+      let processedUpdates = { ...updates };
+      
+      if (updates?.google_drive_embed_url) {
+        const driveResult = processGoogleDriveUrl(updates.google_drive_embed_url);
+        
+        if (driveResult.valid) {
+          processedUpdates.google_drive_id = driveResult.fileId;
+          processedUpdates.google_drive_embed_url = driveResult.embedUrl;
+          processedUpdates.google_drive_thumbnail_url = driveResult.thumbnailUrl;
+        } else {
+          return { data: null, error: driveResult.error };
+        }
+      }
+
       const { data, error } = await supabase?.from('content_library')?.update({
-          ...updates,
+          ...processedUpdates,
           updated_at: new Date()?.toISOString()
         })?.eq('id', contentId)?.select()?.single();
 
@@ -198,22 +230,38 @@ export const contentService = {
         return { success: false, error: 'Not authenticated' };
       }
 
+      // Process Google Drive URL if provided
+      let processedData = { ...contentData };
+      
+      if (contentData?.google_drive_embed_url) {
+        const driveResult = processGoogleDriveUrl(contentData.google_drive_embed_url);
+        
+        if (driveResult.valid) {
+          processedData.google_drive_id = driveResult.fileId;
+          processedData.google_drive_embed_url = driveResult.embedUrl;
+          processedData.google_drive_thumbnail_url = driveResult.thumbnailUrl;
+        } else {
+          return { success: false, error: driveResult.error };
+        }
+      }
+
       const insertData = {
-        title: contentData?.title,
-        description: contentData?.description,
-        content_type: contentData?.content_type,
-        google_drive_id: contentData?.google_drive_id,
-        google_drive_embed_url: contentData?.google_drive_embed_url,
-        access_level: contentData?.access_level,
-        category: contentData?.category,
-        tags: contentData?.tags || [],
-        status: contentData?.status || 'active',
-        is_featured: contentData?.is_featured || false,
-        featured_description: contentData?.featured_description || null,
-        thumbnail_url: contentData?.thumbnail_url || null,
-        featured_order: contentData?.featured_order || null,
-        prompt_type: contentData?.prompt_type || null,
-        use_case_tags: contentData?.use_case_tags || null,
+        title: processedData?.title,
+        description: processedData?.description,
+        content_type: processedData?.content_type,
+        google_drive_id: processedData?.google_drive_id,
+        google_drive_embed_url: processedData?.google_drive_embed_url,
+        google_drive_thumbnail_url: processedData?.google_drive_thumbnail_url,
+        access_level: processedData?.access_level,
+        category: processedData?.category,
+        tags: processedData?.tags || [],
+        status: processedData?.status || 'active',
+        is_featured: processedData?.is_featured || false,
+        featured_description: processedData?.featured_description || null,
+        thumbnail_url: processedData?.thumbnail_url || processedData?.google_drive_thumbnail_url || null,
+        featured_order: processedData?.featured_order || null,
+        prompt_type: processedData?.prompt_type || null,
+        use_case_tags: processedData?.use_case_tags || null,
         uploader_id: user?.id
       };
 

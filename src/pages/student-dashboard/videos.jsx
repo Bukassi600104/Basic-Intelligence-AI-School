@@ -54,7 +54,7 @@ const StudentVideos = () => {
           category: item.category || 'General',
           duration: 'Unknown', // This would need to be calculated from actual video content
           uploadedAt: item.created_at,
-          thumbnail: item.google_drive_embed_url ? `${item.google_drive_embed_url.replace('/preview', '')}/thumbnail` : '/assets/images/no_image.png',
+          thumbnail: item.google_drive_thumbnail_url || item.google_drive_embed_url ? `${item.google_drive_embed_url.replace('/preview', '')}/thumbnail` : '/assets/images/no_image.png',
           videoUrl: item.google_drive_embed_url || '#',
           isFeatured: item.is_featured || false,
         }));
@@ -261,6 +261,11 @@ const StudentVideos = () => {
                       src={video.thumbnail} 
                       alt={video.title}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.src = '/assets/images/no_image.png';
+                        e.target.alt = 'Thumbnail not available';
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                       <button 
