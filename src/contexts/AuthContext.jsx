@@ -32,12 +32,12 @@ export const AuthProvider = ({ children }) => {
       if (!userId) return
       setProfileLoading(true)
       try {
-        // First, check if user is an admin
+        // First, check if user is an admin (no RLS restrictions on read for admins)
         const { data: adminData, error: adminError } = await supabase
           .from('admin_users')
           .select('*')
           .eq('auth_user_id', userId)
-          .single()
+          .maybeSingle() // Use maybeSingle to avoid throwing on no results
         
         if (adminData && !adminError) {
           // User is an admin - create profile object with admin data
@@ -51,16 +51,24 @@ export const AuthProvider = ({ children }) => {
             is_active: adminData.is_active,
             last_login: adminData.last_login,
             created_at: adminData.created_at,
-            updated_at: adminData.updated_at
+            updated_at: adminData.updated_at,
+            membership_status: 'active', // Admins are always active
+            membership_tier: 'admin' // Special tier for admins
           }
-          console.log('Admin profile loaded:', { 
+          console.log('✅ Admin profile loaded:', { 
             id: adminProfile.id, 
             email: adminProfile.email, 
             role: adminProfile.role,
             admin_id: adminData.admin_id
           })
           setUserProfile(adminProfile)
+          setProfileLoading(false)
           return
+        }
+        
+        if (adminError && adminError.code !== 'PGRST116') {
+          // PGRST116 is "no rows returned" which is expected for non-admins
+          console.error('Admin profile query error:', adminError)
         }
         
         // User is not an admin, check user_profiles (regular members)
@@ -68,10 +76,10 @@ export const AuthProvider = ({ children }) => {
           .from('user_profiles')
           .select('*')
           .eq('id', userId)
-          .single()
+          .maybeSingle()
         
         if (!error && data) {
-          console.log('User profile loaded:', { 
+          console.log('✅ User profile loaded:', { 
             id: data.id, 
             email: data.email, 
             role: data.role,
@@ -80,10 +88,12 @@ export const AuthProvider = ({ children }) => {
           })
           setUserProfile(data)
         } else if (error) {
-          console.log('Profile fetch error:', error?.message)
+          console.error('❌ Profile fetch error:', error?.message, error)
+        } else {
+          console.warn('⚠️ No profile found for user:', userId)
         }
       } catch (error) {
-        console.log('Profile operation error:', error?.message)
+        console.error('❌ Profile operation error:', error?.message, error)
       } finally {
         setProfileLoading(false)
       }
