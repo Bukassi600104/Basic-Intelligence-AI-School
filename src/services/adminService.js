@@ -407,9 +407,11 @@ export const adminService = {
         // We just need to wait a moment and then fetch the created profile
         // The trigger uses the user_metadata we passed above
         
+        logger.info('Waiting for handle_new_user trigger to complete...');
         // Wait for trigger to complete (small delay)
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Increased to 1 second
         
+        logger.info('Fetching auto-created profile for user:', authUser.user.id);
         // Fetch the auto-created profile
         const result = await supabase
           .from('user_profiles')
@@ -417,6 +419,7 @@ export const adminService = {
           .eq('id', authUser.user.id)
           .single();
         
+        logger.info('Profile fetch result:', { data: result.data, error: result.error });
         data = result.data;
         error = result.error;
       }
@@ -427,7 +430,9 @@ export const adminService = {
         if (supabaseAdmin && authUser.user.id) {
           await supabaseAdmin.auth.admin.deleteUser(authUser.user.id);
         }
-        return { data: null, error: error?.message || `Failed to create ${isAdmin ? 'admin' : 'user'} profile` };
+        // Return detailed error message for debugging
+        const detailedError = error?.message || error?.hint || error?.details || `Failed to create ${isAdmin ? 'admin' : 'user'} profile`;
+        return { data: null, error: `Database error: ${detailedError}` };
       }
 
       // Send welcome notifications
