@@ -281,12 +281,20 @@ export const adminService = {
     try {
       // Validate required fields
       if (!userData?.email || !userData?.full_name) {
+        logger.error('Validation failed: Missing required fields');
         return { data: null, error: 'Email and full name are required fields' };
       }
 
+      logger.info('=== STARTING USER CREATION ===');
+      logger.info('Email:', userData.email);
+      logger.info('Role:', userData?.role || 'student');
+      logger.info('Membership tier:', userData?.membership_tier || 'starter');
+
       const isAdmin = userData?.role === 'admin';
 
-      // Check if email already exists
+      // STEP 1: Check if email already exists in ANY table
+      logger.info('Step 1: Checking for existing users...');
+      
       if (isAdmin) {
         const { data: existingAdmin } = await supabase
           .from('admin_users')
@@ -295,6 +303,7 @@ export const adminService = {
           .single();
 
         if (existingAdmin) {
+          logger.warn('Admin with this email already exists');
           return { data: null, error: 'Admin with this email already exists' };
         }
       } else {
@@ -305,77 +314,98 @@ export const adminService = {
           .single();
 
         if (existingUser) {
+          logger.warn('User with this email already exists');
           return { data: null, error: 'User with this email already exists' };
         }
       }
 
-      // Check if email already exists in auth.users
+      // Check auth.users via admin API
       if (supabaseAdmin) {
         try {
           const { data: existingAuthUser } = await supabaseAdmin.auth.admin.getUserByIdentifier(userData.email);
           if (existingAuthUser) {
+            logger.warn('User exists in auth system');
             return { data: null, error: 'User with this email already exists in authentication system' };
           }
         } catch (authCheckError) {
-          logger.info(`No existing auth user found for ${userData.email}, proceeding with creation`);
+          logger.info('No existing auth user found (good)');
         }
       } else {
-        logger.warn('Admin service key not configured, skipping auth user check');
+        logger.error('❌ CRITICAL: Admin service key not configured!');
+        return { data: null, error: 'Server configuration error: Admin service key not configured. Contact support.' };
       }
 
-      // Generate secure password
+      // STEP 2: Generate secure password
+      logger.info('Step 2: Generating secure password...');
       const passwordResult = await passwordService.generateAndSetPassword();
       if (!passwordResult.success) {
+        logger.error('Password generation failed');
         return { data: null, error: 'Failed to generate secure password' };
       }
 
       const tempPassword = passwordResult.password;
+      logger.info('✅ Password generated successfully');
 
-      // Create auth user with metadata that triggers will use
-      let authUser = null;
-      if (supabaseAdmin) {
-        const { data: authUserData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-          email: userData.email,
-          password: tempPassword,
-          email_confirm: true,
-          user_metadata: {
-            full_name: userData.full_name,
-            phone: userData.phone || null,
-            location: userData.location || null,
-            role: userData?.role || 'student',
-            membership_tier: userData?.membership_tier || 'starter',
-            membership_status: userData?.membership_status || 'pending',
-            created_by_admin: true
-          }
-        });
+      // STEP 3: Create auth user with comprehensive metadata
+      logger.info('Step 3: Creating authentication user...');
+      logger.info('User metadata:', {
+        full_name: userData.full_name,
+        phone: userData.phone || null,
+        location: userData.location || null,
+        role: userData?.role || 'student',
+        membership_tier: userData?.membership_tier || 'starter',
+        membership_status: userData?.membership_status || 'pending',
+        created_by_admin: true
+      });
 
-        if (authError) {
-          // Log full error details for debugging
-          logger.error('Create auth user error:', authError);
-          logger.error('Error details:', JSON.stringify(authError, null, 2));
-          logger.error('Error message:', authError?.message);
-          logger.error('Error code:', authError?.code);
-          logger.error('Error status:', authError?.status);
-          
-          // Return detailed error message
-          const errorMessage = authError?.message || authError?.msg || 'Failed to create authentication user';
-          return { 
-            data: null, 
-            error: `Database error: ${errorMessage}. Check if COMPLETE_FIX.sql was applied successfully.` 
-          };
+      const { data: authUserData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+        email: userData.email,
+        password: tempPassword,
+        email_confirm: true,
+        user_metadata: {
+          full_name: userData.full_name,
+          phone: userData.phone || null,
+          location: userData.location || null,
+          role: userData?.role || 'student',
+          membership_tier: userData?.membership_tier || 'starter',
+          membership_status: userData?.membership_status || 'pending',
+          created_by_admin: true  // CRITICAL: This triggers must_change_password
         }
-        authUser = authUserData;
-      } else {
-        logger.warn('Admin service key not configured');
-        authUser = { user: { id: crypto.randomUUID() } };
+      });
+
+      if (authError) {
+        logger.error('❌ AUTH USER CREATION FAILED');
+        logger.error('Error object:', authError);
+        logger.error('Error message:', authError?.message);
+        logger.error('Error code:', authError?.code);
+        logger.error('Error status:', authError?.status);
+        logger.error('Error details:', authError?.details);
+        logger.error('Full error JSON:', JSON.stringify(authError, null, 2));
+        
+        // Return detailed error with troubleshooting hints
+        const errorMessage = authError?.message || authError?.msg || 'Unknown authentication error';
+        return { 
+          data: null, 
+          error: `Authentication failed: ${errorMessage}. 
+          
+Troubleshooting:
+1. Check Supabase Dashboard → Database → Logs for trigger errors
+2. Verify PHASE_2_NUCLEAR_FIX.sql was run successfully
+3. Check that handle_new_user() trigger exists and is enabled
+4. Review browser console for additional error details` 
+        };
       }
+
+      const authUser = authUserData;
+      logger.info('✅ Auth user created:', authUser.user.id);
 
       let data = null;
       let error = null;
 
+      // STEP 4: Handle profile creation based on role
       if (isAdmin) {
-        // Create admin user in admin_users table
-        // Admin ID will be auto-generated by the database
+        logger.info('Step 4: Creating admin profile in admin_users table...');
+        
         const newAdminData = {
           auth_user_id: authUser.user.id,
           email: userData.email,
@@ -386,110 +416,133 @@ export const adminService = {
           updated_at: new Date().toISOString()
         };
 
-        if (supabaseAdmin) {
-          const result = await supabaseAdmin
-            .from('admin_users')
-            .insert([newAdminData])
-            .select()
-            .single();
-          data = result.data;
-          error = result.error;
-        } else {
-          const result = await supabase
-            .from('admin_users')
-            .insert([newAdminData])
-            .select()
-            .single();
-          data = result.data;
-          error = result.error;
-        }
+        const result = await supabaseAdmin
+          .from('admin_users')
+          .insert([newAdminData])
+          .select()
+          .single();
+        
+        data = result.data;
+        error = result.error;
 
         if (!error && data) {
-          // Transform admin data to match expected format
+          logger.info('✅ Admin profile created');
           data = {
             ...data,
             id: data.auth_user_id,
             role: 'admin',
-            member_id: data.admin_id // Use admin_id as member_id
+            member_id: data.admin_id
           };
         }
       } else {
-        // For students, the handle_new_user() trigger automatically creates the profile
-        // We just need to wait a moment and then fetch the created profile
-        // The trigger uses the user_metadata we passed above
+        // For students, wait for trigger to create profile
+        logger.info('Step 4: Waiting for handle_new_user() trigger to create profile...');
         
-        logger.info('Waiting for handle_new_user trigger to complete...');
-        // Wait for trigger to complete (small delay)
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Increased to 1 second
+        // Increased wait time for trigger to complete
+        await new Promise(resolve => setTimeout(resolve, 2500)); // 2.5 seconds
         
-        logger.info('Fetching auto-created profile for user:', authUser.user.id);
-        // Fetch the auto-created profile
-        const result = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', authUser.user.id)
-          .single();
+        logger.info('Step 5: Fetching auto-created profile...');
         
-        logger.info('Profile fetch result:', { data: result.data, error: result.error });
-        data = result.data;
-        error = result.error;
-      }
-
-      if (error) {
-        logger.error(`Create ${isAdmin ? 'admin' : 'user'} profile error:`, error);
-        // Clean up auth user if profile creation fails
-        if (supabaseAdmin && authUser.user.id) {
-          await supabaseAdmin.auth.admin.deleteUser(authUser.user.id);
+        // Try up to 3 times with delays (handle race conditions)
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        while (attempts < maxAttempts && !data) {
+          attempts++;
+          logger.info(`Fetch attempt ${attempts}/${maxAttempts}...`);
+          
+          const result = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('id', authUser.user.id)
+            .single();
+          
+          data = result.data;
+          error = result.error;
+          
+          if (data) {
+            logger.info('✅ Profile found:', data.id);
+            break;
+          }
+          
+          if (attempts < maxAttempts) {
+            logger.warn(`Profile not found yet, waiting 1s before retry ${attempts}...`);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
         }
-        // Return detailed error message for debugging
-        const detailedError = error?.message || error?.hint || error?.details || `Failed to create ${isAdmin ? 'admin' : 'user'} profile`;
-        return { data: null, error: `Database error: ${detailedError}` };
       }
 
-      // Send welcome notifications
+      // STEP 5: Verify profile was created
+      if (error || !data) {
+        logger.error('❌ PROFILE CREATION FAILED');
+        logger.error('Profile error:', error);
+        logger.error('Profile data:', data);
+        
+        // Clean up auth user since profile creation failed
+        logger.warn('Cleaning up auth user due to profile creation failure...');
+        try {
+          await supabaseAdmin.auth.admin.deleteUser(authUser.user.id);
+          logger.info('Auth user cleanup successful');
+        } catch (cleanupError) {
+          logger.error('Auth user cleanup failed:', cleanupError);
+        }
+        
+        return { 
+          data: null, 
+          error: `Profile creation failed: ${error?.message || 'Trigger did not create profile'}. 
+
+Troubleshooting:
+1. Check Supabase Dashboard → Database → Logs
+2. Look for errors from handle_new_user() trigger
+3. Verify trigger exists: SELECT * FROM pg_trigger WHERE tgname = 'on_auth_user_created'
+4. Run PHASE_1_DIAGNOSTIC.sql to check database state` 
+        };
+      }
+
+      logger.info('✅ Profile verified successfully');
+
+      // STEP 6: Send welcome email with credentials
+      logger.info('Step 6: Sending welcome email...');
       try {
-        // Send email welcome message
         await notificationService.sendNotification({
           userId: authUser.user.id,
           templateName: 'Welcome Email',
           variables: {
             temporary_password: tempPassword,
             membership_tier: userData?.membership_tier || 'starter',
-            subscription_expiry: 'Not set' // You can add subscription logic here
           },
           recipientType: 'email'
         });
-
-        // Send WhatsApp welcome message if phone number provided
-        if (userData?.whatsapp_phone) {
-          await notificationService.sendNotification({
-            userId: authUser.user.id,
-            templateName: 'Welcome WhatsApp',
-            variables: {
-              temporary_password: tempPassword,
-              membership_tier: userData?.membership_tier || 'starter',
-              subscription_expiry: 'Not set'
-            },
-            recipientType: 'whatsapp'
-          });
-        }
-      } catch (notificationError) {
-        logger.warn('Welcome notifications failed:', notificationError);
-        // Continue even if notifications fail
+        logger.info('✅ Welcome email sent');
+      } catch (emailError) {
+        logger.warn('⚠️ Welcome email failed (non-critical):', emailError);
+        // Don't fail user creation if email fails
       }
 
-      logger.info(`Admin created user: ${userData.email} with password and notifications`);
+      // STEP 7: Return success with temp password
+      logger.info('=== USER CREATION SUCCESSFUL ===');
+      logger.info('User ID:', data.id);
+      logger.info('Email:', data.email);
+      logger.info('Must change password:', data.must_change_password);
+
       return { 
         data: { 
           ...data, 
-          temp_password: tempPassword, // Include temp password for admin reference
-          message: 'User created successfully. Welcome notifications sent.' 
+          temp_password: tempPassword 
         }, 
         error: null 
       };
+
     } catch (error) {
-      logger.error('Create user service error:', error);
-      return { data: null, error: error?.message || 'Unexpected error occurred while creating user' };
+      logger.error('❌ UNEXPECTED ERROR IN createUser:', error);
+      logger.error('Error name:', error?.name);
+      logger.error('Error message:', error?.message);
+      logger.error('Error stack:', error?.stack);
+      
+      return { 
+        data: null, 
+        error: `Unexpected error: ${error?.message || 'Unknown error occurred'}. Check browser console for details.` 
+      };
     }
   },
 
