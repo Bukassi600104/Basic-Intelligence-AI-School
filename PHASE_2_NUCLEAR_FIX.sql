@@ -161,7 +161,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-RAISE NOTICE '✅ Trigger function recreated with error handling';
+-- Notify about trigger function
+DO $$
+BEGIN
+    RAISE NOTICE '✅ Trigger function recreated with error handling';
+END $$;
 
 -- ============================================================
 -- STEP 3: Ensure Trigger Exists on auth.users
@@ -174,7 +178,11 @@ CREATE TRIGGER on_auth_user_created
     FOR EACH ROW
     EXECUTE FUNCTION public.handle_new_user();
 
-RAISE NOTICE '✅ Trigger recreated on auth.users table';
+-- Notify about trigger creation
+DO $$
+BEGIN
+    RAISE NOTICE '✅ Trigger recreated on auth.users table';
+END $$;
 
 -- ============================================================
 -- STEP 4: Fix RLS Policies (Remove conflicts, add proper ones)
@@ -276,7 +284,11 @@ BEGIN
     END IF;
 END $$;
 
-RAISE NOTICE '✅ RLS policies configured';
+-- Notify about RLS configuration
+DO $$
+BEGIN
+    RAISE NOTICE '✅ RLS policies configured';
+END $$;
 
 -- ============================================================
 -- STEP 5: Clean up orphaned auth users (optional but recommended)
