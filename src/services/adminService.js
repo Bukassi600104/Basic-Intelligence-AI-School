@@ -350,8 +350,19 @@ export const adminService = {
         });
 
         if (authError) {
+          // Log full error details for debugging
           logger.error('Create auth user error:', authError);
-          return { data: null, error: authError?.message || 'Failed to create authentication user' };
+          logger.error('Error details:', JSON.stringify(authError, null, 2));
+          logger.error('Error message:', authError?.message);
+          logger.error('Error code:', authError?.code);
+          logger.error('Error status:', authError?.status);
+          
+          // Return detailed error message
+          const errorMessage = authError?.message || authError?.msg || 'Failed to create authentication user';
+          return { 
+            data: null, 
+            error: `Database error: ${errorMessage}. Check if COMPLETE_FIX.sql was applied successfully.` 
+          };
         }
         authUser = authUserData;
       } else {
