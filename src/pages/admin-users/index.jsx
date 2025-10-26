@@ -544,8 +544,11 @@ const AdminUsersPage = () => {
       return;
     }
 
-    await createNewUser(userFormData);
-    handleCloseUserModal();
+    const success = await createNewUser(userFormData);
+    // Only close modal if user creation was successful
+    if (success) {
+      handleCloseUserModal();
+    }
   };
 
   const createNewUser = async (userData) => {
@@ -556,6 +559,7 @@ const AdminUsersPage = () => {
       
       if (error) {
         alert('Failed to create user: ' + error);
+        return false; // Return false to keep modal open
       } else {
         // Show success message with temporary password
         const password = data?.temp_password || 'Not available';
@@ -574,9 +578,11 @@ const AdminUsersPage = () => {
         }
         
         await loadUsers(); // Reload users list
+        return true; // Return true on success
       }
     } catch (error) {
       alert('Failed to create user: ' + error?.message);
+      return false; // Return false to keep modal open
     } finally {
       setActionLoading(false);
     }
