@@ -464,8 +464,6 @@ const AdminUsersPage = () => {
     bio: '',
     is_active: true
   });
-  const [generatedPassword, setGeneratedPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleCreateUser = () => {
     setShowUserModal(true);
@@ -485,40 +483,6 @@ const AdminUsersPage = () => {
       bio: '',
       is_active: true
     });
-    setGeneratedPassword('');
-    setShowPassword(false);
-  };
-
-  // Generate password function
-  const handleGeneratePassword = () => {
-    const password = passwordService.generatePassword();
-    setGeneratedPassword(password);
-    setShowPassword(true);
-  };
-
-  // Copy password to clipboard
-  const handleCopyPassword = async () => {
-    if (!generatedPassword) return;
-    
-    try {
-      await navigator.clipboard.writeText(generatedPassword);
-      alert('Password copied to clipboard!');
-    } catch (error) {
-      console.error('Failed to copy password:', error);
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = generatedPassword;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('Password copied to clipboard!');
-    }
-  };
-
-  // Toggle password visibility
-  const handleTogglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   };
 
   const handleUserFormChange = (field, value) => {
@@ -953,101 +917,37 @@ const AdminUsersPage = () => {
                   </div>
 
                   {/* Password Generation Section */}
+                  {/* Info message about automatic password generation */}
                   <div className="mt-6 pt-6 border-t border-border">
-                    <h3 className="text-lg font-medium text-foreground mb-4">Password Generation</h3>
-                    <div className="bg-blue-50 border border-orange-200 rounded-lg p-4 mb-4">
-                      <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium text-foreground mb-4">Password Information</h3>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-start">
+                        <Icon name="Info" size={20} className="text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="text-sm font-medium text-blue-800 mb-1">
-                            Generate Secure Password
+                          <p className="text-sm font-medium text-blue-800 mb-2">
+                            Automatic Password Generation
                           </p>
-                          <p className="text-xs text-orange-600">
-                            Click the button below to generate a secure password for the user
-                          </p>
+                          <ul className="text-xs text-blue-600 space-y-1">
+                            <li className="flex items-start">
+                              <span className="mr-2">•</span>
+                              <span>A secure temporary password will be automatically generated when you create the user</span>
+                            </li>
+                            <li className="flex items-start">
+                              <span className="mr-2">•</span>
+                              <span>The password will be shown to you in a popup after user creation</span>
+                            </li>
+                            <li className="flex items-start">
+                              <span className="mr-2">•</span>
+                              <span>The user will be required to change this password on their first login</span>
+                            </li>
+                            <li className="flex items-start">
+                              <span className="mr-2">•</span>
+                              <span>The password will also be sent to the user's email address</span>
+                            </li>
+                          </ul>
                         </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={handleGeneratePassword}
-                        >
-                          <Icon name="Key" size={16} className="mr-2" />
-                          Generate Password
-                        </Button>
                       </div>
                     </div>
-
-                    {generatedPassword && (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <div>
-                            <p className="text-sm font-medium text-green-800 mb-1">
-                              Generated Password
-                            </p>
-                            <p className="text-xs text-green-600">
-                              Copy this password and share it securely with the user
-                            </p>
-                          </div>
-                          <div className="flex space-x-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={handleTogglePasswordVisibility}
-                            >
-                              <Icon 
-                                name={showPassword ? "EyeOff" : "Eye"} 
-                                size={16} 
-                                className="mr-2" 
-                              />
-                              {showPassword ? 'Hide' : 'Show'}
-                            </Button>
-                            <Button
-                              type="button"
-                              size="sm"
-                              onClick={handleCopyPassword}
-                            >
-                              <Icon name="Copy" size={16} className="mr-2" />
-                              Copy
-                            </Button>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-white border border-green-300 rounded-lg p-3">
-                          <div className="flex items-center justify-between">
-                            <code className={`text-sm font-mono ${showPassword ? 'text-green-800' : 'text-gray-400'}`}>
-                              {showPassword ? generatedPassword : '••••••••••••'}
-                            </code>
-                            <div className="flex items-center space-x-2">
-                              <div className="flex space-x-1">
-                                {[1, 2, 3, 4, 5].map((i) => (
-                                  <div
-                                    key={i}
-                                    className={`w-2 h-2 rounded-full ${
-                                      i <= Math.floor(passwordService.validatePasswordStrength(generatedPassword).strength / 20)
-                                        ? 'bg-green-500'
-                                        : 'bg-gray-300'
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-xs text-green-600 font-medium">
-                                {passwordService.getPasswordStrengthLabel(
-                                  passwordService.validatePasswordStrength(generatedPassword).strength
-                                ).label}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-3 text-xs text-green-600">
-                          <p className="flex items-center">
-                            <Icon name="Shield" size={12} className="mr-1" />
-                            This password meets all security requirements
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
                   {/* Enhanced Form Actions */}
