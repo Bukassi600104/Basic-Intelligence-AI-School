@@ -5,6 +5,10 @@ import AdminSidebar from '../../components/ui/AdminSidebar';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import PhoneInput from '../../components/ui/PhoneInput';
+import ConfirmDialog from '../../components/ui/ConfirmDialog';
+import AlertDialog from '../../components/ui/AlertDialog';
+import LoadingOverlay from '../../components/ui/LoadingOverlay';
+import PaymentStatusToggle from '../../components/ui/PaymentStatusToggle';
 import UserFilters from './components/UserFilters';
 import BulkActions from './components/BulkActions';
 import UserTable from './components/UserTable';
@@ -33,6 +37,39 @@ const AdminUsersPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  
+  // Modal states
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, type: '', data: null });
+  const [alertDialog, setAlertDialog] = useState({ isOpen: false, variant: 'default', title: '', message: '' });
+  const [loadingOverlay, setLoadingOverlay] = useState({ isOpen: false, message: '', submessage: '' });
+  const [paymentStatusModal, setPaymentStatusModal] = useState({ isOpen: false, user: null });
+
+  // Dialog states
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    onConfirm: null,
+    variant: 'default'
+  });
+  
+  const [alertDialog, setAlertDialog] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    variant: 'default'
+  });
+  
+  const [loadingOverlay, setLoadingOverlay] = useState({
+    isOpen: false,
+    message: 'Processing...',
+    submessage: null
+  });
+
+  const [paymentStatusModal, setPaymentStatusModal] = useState({
+    isOpen: false,
+    user: null
+  });
 
   // Check admin access
   useEffect(() => {
@@ -252,24 +289,26 @@ const AdminUsersPage = () => {
   const [userPayments, setUserPayments] = useState([]);
 
   const handleUserAction = async (action, user) => {
-    setActionLoading(true);
-    
     try {
       switch (action) {
         case 'activate':
           // Activate pending account
           if (user?.membership_status === 'pending') {
-            if (window?.confirm(`Activate ${user?.full_name}'s account? This will grant them 30 days of access.`)) {
-              const { data, error: activateError } = await adminService?.activateUserAccount(user?.id, 30, userProfile?.id);
-              if (activateError) {
-                alert('Failed to activate account: ' + activateError);
-              } else {
-                alert(`Account activated successfully! ${user?.full_name} will receive a confirmation email.`);
-                await loadUsers(); // Reload users
-              }
-            }
+            setConfirmDialog({
+              isOpen: true,
+              type: 'activate',
+              data: user,
+              title: 'Activate Account',
+              message: `Activate ${user?.full_name}'s account? This will grant them 30 days of access.`,
+              variant: 'success'
+            });
           } else {
-            alert('User account is not pending activation');
+            setAlertDialog({
+              isOpen: true,
+              variant: 'warning',
+              title: 'Cannot Activate',
+              message: 'User account is not pending activation'
+            });
           }
           break;
           
@@ -280,36 +319,52 @@ const AdminUsersPage = () => {
           break;
           
         case 'togglePayment':
-          // Toggle membership status
-          const newStatus = user?.membership_status === 'active' ? 'inactive' : 'active';
-          const { error: updateError } = await userService?.updateMembershipStatus(user?.id, newStatus);
-          if (updateError) {
-            alert('Failed to update membership status: ' + updateError);
-          } else {
-            alert(`Membership status updated to ${newStatus}`);
-            await loadUsers(); // Reload users
-          }
+          // Open payment status toggle modal
+          setPaymentStatusModal({
+            isOpen: true,
+            user: user
+          });
           break;
           
         case 'assignMemberId':
           if (!user?.member_id) {
-            const { error: assignError } = await adminService?.assignMemberId(user?.id);
-            if (assignError) {
-              alert('Failed to assign member ID: ' + assignError);
-            } else {
-              alert('Member ID assigned successfully');
-              await loadUsers(); // Reload users
-            }
+            setConfirmDialog({
+              isOpen: true,
+              type: 'assignMemberId',
+              data: user,
+              title: 'Assign Member ID',
+              message: `Assign a unique Member ID to ${user?.full_name}?`,
+              variant: 'default'
+            });
           } else {
-            alert('User already has a member ID: ' + user?.member_id);
+            setAlertDialog({
+              isOpen: true,
+              variant: 'info',
+              title: 'Member ID Exists',
+              message: `User already has a member ID: ${user?.member_id}`
+            });
           }
           break;
           
         case 'viewPayments':
           // Load and show user payments
+          setLoadingOverlay({
+            isOpen: true,
+            message: 'Loading Payments',
+            submessage: 'Please wait...'
+          });
+          
           const { data: payments, error: paymentsError } = await paymentService?.getUserPayments(user?.id);
+          
+          setLoadingOverlay({ isOpen: false });
+          
           if (paymentsError) {
-            alert('Failed to load payments: ' + paymentsError);
+            setAlertDialog({
+              isOpen: true,
+              variant: 'error',
+              title: 'Failed to Load Payments',
+              message: paymentsError
+            });
           } else {
             setSelectedUser(user);
             setUserPayments(payments || []);
@@ -320,37 +375,219 @@ const AdminUsersPage = () => {
         case 'toggleActive':
           // Toggle active status
           const newActiveStatus = !user?.is_active;
-          if (window?.confirm(`Are you sure you want to ${newActiveStatus ? 'activate' : 'deactivate'} ${user?.full_name}?`)) {
-            const { error: activeError } = await adminService?.updateUserActiveStatus(user?.id, newActiveStatus);
-            if (activeError) {
-              alert('Failed to update active status: ' + activeError);
-            } else {
-              alert(`User ${newActiveStatus ? 'activated' : 'deactivated'} successfully`);
-              await loadUsers(); // Reload users
-            }
-          }
+          setConfirmDialog({
+            isOpen: true,
+            type: 'toggleActive',
+            data: { user, newActiveStatus },
+            title: `${newActiveStatus ? 'Activate' : 'Deactivate'} User`,
+            message: `Are you sure you want to ${newActiveStatus ? 'activate' : 'deactivate'} ${user?.full_name}?`,
+            variant: newActiveStatus ? 'success' : 'warning'
+          });
           break;
           
         case 'delete':
           // Delete user
-          if (window?.confirm(`Are you sure you want to delete ${user?.full_name}? This action cannot be undone.`)) {
-            const { error: deleteError } = await adminService?.deleteUser(user?.id);
-            if (deleteError) {
-              alert('Failed to delete user: ' + deleteError);
-            } else {
-              alert('User deleted successfully');
-              await loadUsers(); // Reload users
-            }
-          }
+          setConfirmDialog({
+            isOpen: true,
+            type: 'delete',
+            data: user,
+            title: 'Delete User',
+            message: `Are you sure you want to delete ${user?.full_name}? This action cannot be undone and will remove all user data permanently.`,
+            variant: 'danger'
+          });
           break;
           
         default:
           break;
       }
     } catch (error) {
-      alert('Action failed: ' + error?.message);
-    } finally {
-      setActionLoading(false);
+      setAlertDialog({
+        isOpen: true,
+        variant: 'error',
+        title: 'Action Failed',
+        message: error?.message || 'An unexpected error occurred'
+      });
+    }
+  };
+
+  const handleConfirmAction = async () => {
+    const { type, data } = confirmDialog;
+    setConfirmDialog({ ...confirmDialog, isOpen: false });
+    
+    setLoadingOverlay({
+      isOpen: true,
+      message: 'Processing...',
+      submessage: 'Please wait while we complete this action'
+    });
+
+    try {
+      switch (type) {
+        case 'activate':
+          const { error: activateError } = await adminService?.activateUserAccount(data?.id, 30, userProfile?.id);
+          setLoadingOverlay({ isOpen: false });
+          
+          if (activateError) {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'error',
+              title: 'Activation Failed',
+              message: activateError
+            });
+          } else {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'success',
+              title: 'Account Activated',
+              message: `${data?.full_name}'s account has been activated successfully! They will receive a confirmation email.`
+            });
+            await loadUsers();
+          }
+          break;
+
+        case 'assignMemberId':
+          const { error: assignError } = await adminService?.assignMemberId(data?.id);
+          setLoadingOverlay({ isOpen: false });
+          
+          if (assignError) {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'error',
+              title: 'Assignment Failed',
+              message: assignError
+            });
+          } else {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'success',
+              title: 'Member ID Assigned',
+              message: 'Member ID has been assigned successfully'
+            });
+            await loadUsers();
+          }
+          break;
+
+        case 'toggleActive':
+          const { user, newActiveStatus } = data;
+          const { error: activeError } = await adminService?.updateUserActiveStatus(user?.id, newActiveStatus);
+          setLoadingOverlay({ isOpen: false });
+          
+          if (activeError) {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'error',
+              title: 'Update Failed',
+              message: activeError
+            });
+          } else {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'success',
+              title: 'Status Updated',
+              message: `User ${newActiveStatus ? 'activated' : 'deactivated'} successfully`
+            });
+            await loadUsers();
+          }
+          break;
+
+        case 'delete':
+          const { error: deleteError } = await adminService?.deleteUser(data?.id);
+          setLoadingOverlay({ isOpen: false });
+          
+          if (deleteError) {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'error',
+              title: 'Delete Failed',
+              message: deleteError
+            });
+          } else {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'success',
+              title: 'User Deleted',
+              message: 'User has been deleted successfully'
+            });
+            await loadUsers();
+          }
+          break;
+
+        case 'bulkDelete':
+          const userIds = data;
+          const { error: bulkDeleteError } = await adminService?.bulkDeleteUsers(userIds);
+          setLoadingOverlay({ isOpen: false });
+          
+          if (bulkDeleteError) {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'error',
+              title: 'Bulk Delete Failed',
+              message: bulkDeleteError
+            });
+          } else {
+            setAlertDialog({
+              isOpen: true,
+              variant: 'success',
+              title: 'Users Deleted',
+              message: `${userIds?.length} user(s) have been deleted successfully`
+            });
+            setSelectedUsers([]);
+            await loadUsers();
+          }
+          break;
+
+        default:
+          setLoadingOverlay({ isOpen: false });
+          break;
+      }
+    } catch (error) {
+      setLoadingOverlay({ isOpen: false });
+      setAlertDialog({
+        isOpen: true,
+        variant: 'error',
+        title: 'Action Failed',
+        message: error?.message || 'An unexpected error occurred'
+      });
+    }
+  };
+
+  const handlePaymentStatusChange = async (newStatus) => {
+    const user = paymentStatusModal.user;
+    setPaymentStatusModal({ isOpen: false, user: null });
+    
+    setLoadingOverlay({
+      isOpen: true,
+      message: 'Updating Payment Status...',
+      submessage: 'Please wait'
+    });
+
+    try {
+      const { error } = await userService?.updateMembershipStatus(user?.id, newStatus);
+      setLoadingOverlay({ isOpen: false });
+      
+      if (error) {
+        setAlertDialog({
+          isOpen: true,
+          variant: 'error',
+          title: 'Update Failed',
+          message: error
+        });
+      } else {
+        setAlertDialog({
+          isOpen: true,
+          variant: 'success',
+          title: 'Status Updated',
+          message: `Payment status has been updated to ${newStatus}`
+        });
+        await loadUsers();
+      }
+    } catch (error) {
+      setLoadingOverlay({ isOpen: false });
+      setAlertDialog({
+        isOpen: true,
+        variant: 'error',
+        title: 'Update Failed',
+        message: error?.message || 'Failed to update payment status'
+      });
     }
   };
 
@@ -359,15 +596,30 @@ const AdminUsersPage = () => {
     try {
       const { error } = await userService?.updateUserProfile(selectedUser?.id, userData);
       if (error) {
-        alert('Failed to update user: ' + error);
+        setAlertDialog({
+          isOpen: true,
+          variant: 'error',
+          title: 'Update Failed',
+          message: error
+        });
       } else {
-        alert('User updated successfully');
+        setAlertDialog({
+          isOpen: true,
+          variant: 'success',
+          title: 'User Updated',
+          message: 'User information has been updated successfully'
+        });
         setEditUserModal(false);
         setSelectedUser(null);
-        await loadUsers(); // Reload users
+        await loadUsers();
       }
     } catch (error) {
-      alert('Failed to update user: ' + error?.message);
+      setAlertDialog({
+        isOpen: true,
+        variant: 'error',
+        title: 'Update Failed',
+        message: error?.message || 'Failed to update user'
+      });
     } finally {
       setActionLoading(false);
     }
@@ -387,7 +639,24 @@ const AdminUsersPage = () => {
   const handleBulkAction = async (action, userIds) => {
     if (userIds?.length === 0) return;
     
-    setActionLoading(true);
+    // Handle delete action with confirmation
+    if (action === 'delete_users') {
+      setConfirmDialog({
+        isOpen: true,
+        type: 'bulkDelete',
+        data: userIds,
+        title: 'Delete Multiple Users',
+        message: `Are you sure you want to delete ${userIds?.length} user(s)? This action cannot be undone and will permanently remove all user data.`,
+        variant: 'danger'
+      });
+      return;
+    }
+
+    setLoadingOverlay({
+      isOpen: true,
+      message: 'Processing Bulk Action...',
+      submessage: `Updating ${userIds?.length} user(s)`
+    });
     
     try {
       switch (action) {
@@ -409,7 +678,7 @@ const AdminUsersPage = () => {
           // Bulk assign member IDs
           const { error: bulkError } = await adminService?.bulkAssignMemberIds(userIds);
           if (bulkError) {
-            alert('Bulk assign failed: ' + bulkError);
+            throw new Error(bulkError);
           }
           break;
           
@@ -423,28 +692,29 @@ const AdminUsersPage = () => {
           console.log('Export selected users:', userIds);
           break;
           
-        case 'delete_users':
-          if (window?.confirm(`Are you sure you want to delete ${userIds?.length} users? This action cannot be undone.`)) {
-            const { error: deleteError } = await adminService?.bulkDeleteUsers(userIds);
-            if (deleteError) {
-              alert('Failed to delete users: ' + deleteError);
-            } else {
-              alert(`${userIds?.length} users deleted successfully`);
-            }
-          }
-          break;
-          
         default:
           break;
       }
       
-      await loadUsers(); // Reload users after bulk action
+      setLoadingOverlay({ isOpen: false });
+      setAlertDialog({
+        isOpen: true,
+        variant: 'success',
+        title: 'Bulk Action Completed',
+        message: `Successfully updated ${userIds?.length} user(s)`
+      });
+      
+      await loadUsers();
       setSelectedUsers([]);
       
     } catch (error) {
-      alert('Bulk action failed: ' + error?.message);
-    } finally {
-      setActionLoading(false);
+      setLoadingOverlay({ isOpen: false });
+      setAlertDialog({
+        isOpen: true,
+        variant: 'error',
+        title: 'Bulk Action Failed',
+        message: error?.message || 'Failed to complete bulk action'
+      });
     }
   };
 
@@ -510,31 +780,44 @@ const AdminUsersPage = () => {
       const { data, error } = await adminService?.createUser(userData);
       
       if (error) {
-        alert('Failed to create user: ' + error);
-        return false; // Return false to keep modal open
+        setAlertDialog({
+          isOpen: true,
+          variant: 'error',
+          title: 'User Creation Failed',
+          message: error
+        });
+        return false;
       } else {
         // Show success message with temporary password
         const password = data?.temp_password || 'Not available';
-        const message = `✅ User created successfully!\n\n` +
-          `📧 Email: ${userData.email}\n` +
-          `🔑 Temporary Password: ${password}\n\n` +
-          `⚠️ IMPORTANT:\n` +
-          `• Save this password - it won't be shown again\n` +
-          `• Share it securely with the user\n` +
-          `• User should change it after first login\n` +
-          `• Password has also been sent via email`;
+        const message = `User created successfully!\n\nEmail: ${userData.email}\nTemporary Password: ${password}\n\n⚠️ IMPORTANT:\n• Save this password - it won't be shown again\n• Share it securely with the user\n• User must change it after first login\n• Password has also been sent via email`;
         
-        // Use a custom alert or you can create a modal for better UX
-        if (window.confirm(message + '\n\nClick OK to copy password to clipboard')) {
-          navigator.clipboard.writeText(password);
+        setAlertDialog({
+          isOpen: true,
+          variant: 'success',
+          title: '✅ User Created Successfully',
+          message: message
+        });
+        
+        // Copy password to clipboard
+        try {
+          await navigator.clipboard.writeText(password);
+          console.log('Password copied to clipboard');
+        } catch (clipboardError) {
+          console.warn('Failed to copy password to clipboard:', clipboardError);
         }
         
-        await loadUsers(); // Reload users list
-        return true; // Return true on success
+        await loadUsers();
+        return true;
       }
     } catch (error) {
-      alert('Failed to create user: ' + error?.message);
-      return false; // Return false to keep modal open
+      setAlertDialog({
+        isOpen: true,
+        variant: 'error',
+        title: 'User Creation Failed',
+        message: error?.message || 'An unexpected error occurred'
+      });
+      return false;
     } finally {
       setActionLoading(false);
     }
@@ -1034,6 +1317,44 @@ const AdminUsersPage = () => {
               </div>
             </div>
           )}
+
+          {/* Confirmation Dialog */}
+          <ConfirmDialog
+            isOpen={confirmDialog.isOpen}
+            onClose={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+            onConfirm={handleConfirmAction}
+            title={confirmDialog.title}
+            message={confirmDialog.message}
+            variant={confirmDialog.variant}
+            confirmText={confirmDialog.type === 'delete' || confirmDialog.type === 'bulkDelete' ? 'Delete' : 'Confirm'}
+            loading={loadingOverlay.isOpen}
+          />
+
+          {/* Alert Dialog */}
+          <AlertDialog
+            isOpen={alertDialog.isOpen}
+            onClose={() => setAlertDialog({ ...alertDialog, isOpen: false })}
+            title={alertDialog.title}
+            message={alertDialog.message}
+            variant={alertDialog.variant}
+          />
+
+          {/* Loading Overlay */}
+          <LoadingOverlay
+            isOpen={loadingOverlay.isOpen}
+            message={loadingOverlay.message}
+            submessage={loadingOverlay.submessage}
+          />
+
+          {/* Payment Status Toggle Modal */}
+          <PaymentStatusToggle
+            isOpen={paymentStatusModal.isOpen}
+            onClose={() => setPaymentStatusModal({ isOpen: false, user: null })}
+            onConfirm={handlePaymentStatusChange}
+            currentStatus={paymentStatusModal.user?.membership_status || 'pending'}
+            userName={paymentStatusModal.user?.full_name || ''}
+            loading={loadingOverlay.isOpen}
+          />
         </div>
       </div>
     </div>
