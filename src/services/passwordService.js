@@ -1,3 +1,4 @@
+import { supabase } from '../lib/supabase';
 import { supabaseAdmin } from '../lib/supabaseAdmin';
 import { logger } from '../utils/logger';
 
@@ -103,5 +104,25 @@ export const passwordService = {
     if (strength >= 60) return { label: 'Good', color: 'text-blue-600' };
     if (strength >= 40) return { label: 'Fair', color: 'text-yellow-600' };
     return { label: 'Weak', color: 'text-red-600' };
+  },
+
+  // Update password for currently logged-in user
+  async updatePassword(newPassword) {
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        logger.error('Password update error:', error);
+        return { success: false, error: error.message };
+      }
+
+      logger.info('Password updated successfully');
+      return { success: true, data };
+    } catch (error) {
+      logger.error('Password service error:', error);
+      return { success: false, error: error.message };
+    }
   }
 };

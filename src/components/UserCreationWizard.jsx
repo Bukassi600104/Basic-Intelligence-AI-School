@@ -56,12 +56,20 @@ const UserCreationWizard = ({ onSubmit, onClose, actionLoading }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    // Prevent form submission when clicking Next
+    if (e) {
+      e.preventDefault();
+    }
+    
     if (validateStep(currentStep)) {
       if (currentStep === 1) {
         setEmailValidated(true);
       }
-      setCurrentStep(prev => Math.min(prev + 1, totalSteps));
+      // Move to next step (don't submit yet)
+      if (currentStep < totalSteps) {
+        setCurrentStep(prev => prev + 1);
+      }
     }
   };
 

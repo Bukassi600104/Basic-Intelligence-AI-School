@@ -36,11 +36,9 @@ const ForcePasswordChangePage = () => {
   }, [userProfile, navigate]);
 
   const validateForm = () => {
-    if (!formData.currentPassword) {
-      setError('Current password is required');
-      return false;
-    }
-
+    // For forced password changes, current password is not required
+    // It's a temporary password from admin
+    
     if (!formData.newPassword) {
       setError('New password is required');
       return false;
@@ -48,11 +46,6 @@ const ForcePasswordChangePage = () => {
 
     if (formData.newPassword.length < 6) {
       setError('New password must be at least 6 characters long');
-      return false;
-    }
-
-    if (formData.newPassword === formData.currentPassword) {
-      setError('New password must be different from current password');
       return false;
     }
 
@@ -81,29 +74,23 @@ const ForcePasswordChangePage = () => {
     setError('');
 
     try {
-      // Verify current password by attempting to sign in
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user.email,
-        password: formData.currentPassword
+      // For forced password changes, we don't need to verify the current password
+      // because it's a temporary password provided by admin
+      
+      // Update password using Supabase Auth
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: formData.newPassword
       });
 
-      if (signInError) {
-        setError('Current password is incorrect');
-        setLoading(false);
-        return;
-      }
-
-      // Update password
-      const result = await passwordService.updatePassword(formData.newPassword);
-
-      if (result.error) {
-        setError(result.error);
+      if (updateError) {
+        logger.error('Failed to update password:', updateError);
+        setError(updateError.message || 'Failed to change password. Please try again.');
         setLoading(false);
         return;
       }
 
       // Update user profile to mark password as changed
-      const { error: updateError } = await supabase
+      const { error: profileUpdateError } = await supabase
         .from('user_profiles')
         .update({
           must_change_password: false,
@@ -111,10 +98,12 @@ const ForcePasswordChangePage = () => {
         })
         .eq('id', user.id);
 
-      if (updateError) {
-        logger.error('Failed to update password change status:', updateError);
+      if (profileUpdateError) {
+        logger.error('Failed to update password change status:', profileUpdateError);
         // Continue anyway since password was changed
       }
+
+      logger.info('Password changed successfully');
 
       // Redirect to appropriate dashboard
       if (userProfile?.role === 'admin') {
