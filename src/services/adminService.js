@@ -501,22 +501,49 @@ Troubleshooting:
 
       logger.info('✅ Profile verified successfully');
 
-      // STEP 6: Send welcome email with credentials
-      logger.info('Step 6: Sending welcome email...');
+      // STEP 6: Send welcome email with credentials (same as self-registration)
+      logger.info('Step 6: Sending welcome email with credentials...');
       try {
+        // Send the same welcome email that self-registered users receive
         await notificationService.sendNotification({
           userId: authUser.user.id,
-          templateName: 'Welcome Email',
+          templateName: 'Registration Thank You',
           variables: {
-            temporary_password: tempPassword,
+            full_name: userData.full_name,
+            email: userData.email,
+            member_id: data.member_id || 'Pending',
             membership_tier: userData?.membership_tier || 'starter',
+            temporary_password: tempPassword,
+            dashboard_url: `${typeof window !== 'undefined' ? window.location.origin : 'https://basicintelligence.vercel.app'}/dashboard`
           },
           recipientType: 'email'
         });
-        logger.info('✅ Welcome email sent');
+        logger.info('✅ Welcome email sent (Registration Thank You template)');
       } catch (emailError) {
         logger.warn('⚠️ Welcome email failed (non-critical):', emailError);
         // Don't fail user creation if email fails
+      }
+      
+      // STEP 6b: Optionally send credentials notification
+      logger.info('Step 6b: Sending admin-created account credentials email...');
+      try {
+        // Also send a specific email with login credentials (if template exists)
+        await notificationService.sendNotification({
+          userId: authUser.user.id,
+          templateName: 'Admin Created Account',
+          variables: {
+            full_name: userData.full_name,
+            email: userData.email,
+            temporary_password: tempPassword,
+            login_url: `${typeof window !== 'undefined' ? window.location.origin : 'https://basicintelligence.vercel.app'}/signin`,
+            dashboard_url: `${typeof window !== 'undefined' ? window.location.origin : 'https://basicintelligence.vercel.app'}/dashboard`
+          },
+          recipientType: 'email'
+        });
+        logger.info('✅ Admin-created account credentials email sent');
+      } catch (credentialsEmailError) {
+        logger.warn('⚠️ Credentials email failed (template may not exist, non-critical):', credentialsEmailError);
+        // Don't fail user creation if this optional email fails
       }
 
       // STEP 7: Return success with temp password
