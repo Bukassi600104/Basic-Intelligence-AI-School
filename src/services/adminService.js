@@ -963,7 +963,7 @@ Troubleshooting:
       try {
         await notificationService.sendNotification({
           userId: userId,
-          templateName: 'account_activated_confirmation',
+          templateName: 'Account Activated',
           variables: {
             full_name: user.full_name,
             email: user.email,
@@ -974,6 +974,7 @@ Troubleshooting:
           },
           recipientType: 'email'
         });
+        logger.info(`Activation email sent to ${user.email}`);
       } catch (emailError) {
         logger.warn('Failed to send activation email:', emailError);
         // Don't fail the activation if email fails

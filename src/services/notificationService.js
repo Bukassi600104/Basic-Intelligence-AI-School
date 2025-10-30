@@ -3,6 +3,54 @@ import { emailService } from './emailService';
 import { logger } from '../utils/logger';
 
 export const notificationService = {
+  // Send notification by email address (for users not yet in system)
+  async sendNotificationByEmail(email, templateName, variables = {}) {
+    try {
+      // Get notification template
+      const { data: template, error: templateError } = await supabase
+        .from('notification_templates')
+        .select('*')
+        .eq('name', templateName)
+        .eq('is_active', true)
+        .single();
+
+      if (templateError) {
+        throw new Error(`Template not found: ${templateError.message}`);
+      }
+
+      // Process variables in template content
+      const processedContent = this.processTemplate(template.content, variables);
+      const processedSubject = this.processTemplate(template.subject, variables);
+
+      // Send email directly
+      const result = await emailService.sendEmail({
+        to: email,
+        subject: processedSubject,
+        html: processedContent.replace(/\n/g, '<br>')
+      });
+
+      // Log the notification attempt (without recipient_id since user doesn't exist yet)
+      await supabase
+        .from('notification_logs')
+        .insert({
+          template_id: template.id,
+          recipient_type: 'email',
+          recipient_email: email,
+          subject: processedSubject,
+          content: processedContent,
+          status: result.success ? 'sent' : 'failed',
+          error_message: result.error,
+          sent_at: new Date().toISOString(),
+          delivered_at: result.success ? new Date().toISOString() : null
+        });
+
+      return result;
+    } catch (error) {
+      logger.error('sendNotificationByEmail error:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
   // Send notification to user
   async sendNotification({ 
     userId, 

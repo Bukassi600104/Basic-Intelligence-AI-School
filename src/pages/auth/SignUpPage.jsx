@@ -7,6 +7,7 @@ import Input from '../../components/ui/Input';
 import PhoneInput from '../../components/ui/PhoneInput';
 import Icon from '../../components/AppIcon';
 import { notificationService } from '../../services/notificationService';
+import { emailVerificationService } from '../../services/emailVerificationService';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -20,8 +21,16 @@ const SignUpPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Email verification state
+  const [verificationStep, setVerificationStep] = useState(1); // 1: form, 2: verify OTP, 3: success
+  const [otpCode, setOtpCode] = useState('');
+  const [otpExpiry, setOtpExpiry] = useState(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(0);
 
   const { signUp, user, userProfile, getLoginIntent, clearLoginIntent } = useAuth();
   const navigate = useNavigate();
@@ -44,6 +53,36 @@ const SignUpPage = () => {
       setFormData(prev => ({ ...prev, tier: 'pro' }));
     }
   }, [location?.search, getLoginIntent]);
+
+  // OTP expiry countdown timer
+  useEffect(() => {
+    if (otpExpiry && verificationStep === 2) {
+      const interval = setInterval(() => {
+        const now = new Date();
+        const expiry = new Date(otpExpiry);
+        const secondsLeft = Math.max(0, Math.floor((expiry - now) / 1000));
+        setTimeRemaining(secondsLeft);
+        
+        if (secondsLeft === 0) {
+          clearInterval(interval);
+          setError('Your OTP has expired. Please request a new one.');
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [otpExpiry, verificationStep]);
+
+  // Resend cooldown timer
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const interval = setInterval(() => {
+        setResendCooldown(prev => Math.max(0, prev - 1));
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [resendCooldown]);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -87,8 +126,10 @@ const SignUpPage = () => {
       return false;
     }
     
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/?.test(formData?.email)) {
-      setError('Please enter a valid email address');
+    // Enhanced email validation
+    const emailValidation = emailVerificationService.validateEmailFormat(formData?.email?.trim());
+    if (!emailValidation.valid) {
+      setError(emailValidation.error);
       return false;
     }
     
@@ -115,6 +156,7 @@ const SignUpPage = () => {
     return true;
   };
 
+  // Step 1: Send OTP for email verification
   const handleSubmit = async (e) => {
     e?.preventDefault();
     
@@ -124,18 +166,68 @@ const SignUpPage = () => {
 
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
-      // Prepare metadata for user profile
+      // Send verification email with OTP
+      const result = await emailVerificationService.sendVerificationEmail(
+        formData?.email?.trim(),
+        formData?.fullName?.trim()
+      );
+
+      if (!result.success) {
+        setError(result.error || 'Failed to send verification email. Please try again.');
+        return;
+      }
+
+      // Move to verification step
+      setOtpExpiry(result.data.expiresAt);
+      setVerificationStep(2);
+      setSuccess('Verification code sent to your email. Please check your inbox.');
+      
+    } catch (error) {
+      setError('Failed to send verification email. Please try again.');
+      console.error('Verification email error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 2: Verify OTP and create account
+  const handleVerifyOTP = async (e) => {
+    e?.preventDefault();
+    
+    if (!otpCode || otpCode.length !== 6) {
+      setError('Please enter a valid 6-digit code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Verify the OTP
+      const verifyResult = await emailVerificationService.verifyOTP(
+        formData?.email?.trim(),
+        otpCode
+      );
+
+      if (!verifyResult.success) {
+        setError(verifyResult.error || 'Invalid or expired OTP code');
+        return;
+      }
+
+      // OTP verified successfully - now create the account
       const userMetadata = {
         full_name: formData?.fullName?.trim(),
         phone: formData?.phone?.trim(),
         location: formData?.location?.trim(),
         membership_tier: formData?.tier,
-        membership_status: 'pending' // Set as pending until payment is confirmed
+        membership_status: 'pending', // Set as pending until payment is confirmed
+        email_verified: true
       };
 
-      // Sign up with Supabase Auth
       const { data, error: signUpError } = await signUp(
         formData?.email?.trim(),
         formData?.password,
@@ -147,13 +239,15 @@ const SignUpPage = () => {
         return;
       }
 
-      // Registration successful - redirect to dashboard immediately
       if (data?.user) {
-        // Send welcome email with pending activation message
+        // Mark email as verified in user profile
+        await emailVerificationService.markEmailVerified(data.user.id);
+
+        // Send thank you email
         try {
           await notificationService.sendNotification({
             userId: data.user.id,
-            templateName: 'user_welcome_pending_activation',
+            templateName: 'Registration Thank You',
             variables: {
               full_name: formData?.fullName?.trim(),
               email: formData?.email?.trim(),
@@ -164,19 +258,66 @@ const SignUpPage = () => {
             recipientType: 'email'
           });
         } catch (emailError) {
-          console.error('Failed to send welcome email:', emailError);
+          console.error('Failed to send thank you email:', emailError);
           // Don't block registration if email fails
         }
         
-        // User will see locked dashboard with payment instructions
-        navigate('/student-dashboard');
+        setVerificationStep(3);
+        setSuccess('Account created successfully! Redirecting to dashboard...');
+        
+        // Redirect after a short delay to show success message
+        setTimeout(() => {
+          navigate('/student-dashboard');
+        }, 2000);
       }
       
     } catch (error) {
       setError('Registration failed. Please try again.');
+      console.error('Registration error:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Resend OTP
+  const handleResendOTP = async () => {
+    if (resendCooldown > 0) {
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const result = await emailVerificationService.resendVerificationEmail(
+        formData?.email?.trim()
+      );
+
+      if (!result.success) {
+        setError(result.error || 'Failed to resend code');
+        return;
+      }
+
+      setOtpExpiry(result.data.expiresAt);
+      setResendCooldown(60); // 60 second cooldown
+      setSuccess('New verification code sent to your email');
+      setOtpCode(''); // Clear current OTP input
+      
+    } catch (error) {
+      setError('Failed to resend verification code');
+      console.error('Resend OTP error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Go back to form from verification step
+  const handleBackToForm = () => {
+    setVerificationStep(1);
+    setOtpCode('');
+    setError('');
+    setSuccess('');
   };
 
   const handleInputChange = (e) => {
@@ -196,6 +337,12 @@ const SignUpPage = () => {
       elite: 'Elite Member (₦25,000/month)'
     };
     return tierNames?.[tier] || 'Pro Member (₦15,000/month)';
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -266,10 +413,14 @@ const SignUpPage = () => {
           {/* Form Header */}
           <div className="text-center mb-5">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">
-              Create your account
+              {verificationStep === 1 && 'Create your account'}
+              {verificationStep === 2 && 'Verify your email'}
+              {verificationStep === 3 && 'Success!'}
             </h2>
             <p className="text-gray-600">
-              Sign up to get started with your AI learning journey.
+              {verificationStep === 1 && 'Sign up to get started with your AI learning journey.'}
+              {verificationStep === 2 && 'Enter the 6-digit code we sent to your email'}
+              {verificationStep === 3 && 'Your account has been created successfully!'}
             </p>
           </div>
 
@@ -320,130 +471,246 @@ const SignUpPage = () => {
             </div>
           )}
 
-          {/* Registration Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Full Name"
-              name="fullName"
-              type="text"
-              autoComplete="name"
-              required
-              value={formData?.fullName}
-              onChange={handleInputChange}
-              placeholder="John Doe"
-              disabled={loading}
-            />
-
-            <Input
-              label="Email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={formData?.email}
-              onChange={handleInputChange}
-              placeholder="john@example.com"
-              disabled={loading}
-            />
-
-            <div className="relative">
-              <Input
-                label="Password"
-                name="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete="new-password"
-                required
-                value={formData?.password}
-                onChange={handleInputChange}
-                placeholder="Minimum 6 characters"
-                disabled={loading}
-                className="pr-12"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
-                title={showPassword ? "Hide password" : "Show password"}
-              >
-                <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
-              </button>
+          {/* Success Message */}
+          {success && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg animate-slideDown">
+              <div className="flex items-center space-x-2">
+                <Icon name="CheckCircle" size={20} className="text-green-600 flex-shrink-0" />
+                <span className="text-green-700 text-sm">{success}</span>
+              </div>
             </div>
+          )}
 
-            <div className="relative">
+          {/* Registration Form - Step 1 */}
+          {verificationStep === 1 && (
+            <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                label="Confirm Password"
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                autoComplete="new-password"
+                label="Full Name"
+                name="fullName"
+                type="text"
+                autoComplete="name"
                 required
-                value={formData?.confirmPassword}
+                value={formData?.fullName}
                 onChange={handleInputChange}
-                placeholder="Re-enter your password"
+                placeholder="John Doe"
                 disabled={loading}
-                className="pr-12"
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
-                title={showConfirmPassword ? "Hide password" : "Show password"}
+
+              <Input
+                label="Email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={formData?.email}
+                onChange={handleInputChange}
+                placeholder="john@example.com"
+                disabled={loading}
+              />
+
+              <div className="relative">
+                <Input
+                  label="Password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={formData?.password}
+                  onChange={handleInputChange}
+                  placeholder="Minimum 6 characters"
+                  disabled={loading}
+                  className="pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
+                </button>
+              </div>
+
+              <div className="relative">
+                <Input
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={formData?.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Re-enter your password"
+                  disabled={loading}
+                  className="pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                  title={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
+                </button>
+              </div>
+
+              <PhoneInput
+                label="Phone Number"
+                name="phone"
+                required
+                value={formData?.phone}
+                onChange={handleInputChange}
+                placeholder="Enter phone number"
+                defaultCountryCode="+234"
+                disabled={loading}
+              />
+
+              <Input
+                label="Location (Optional)"
+                name="location"
+                type="text"
+                value={formData?.location}
+                onChange={handleInputChange}
+                placeholder="City, State"
+                disabled={loading}
+              />
+
+              <Button
+                type="submit"
+                variant="orange"
+                fullWidth
+                loading={loading}
+                disabled={loading}
+                size="lg"
               >
-                <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
-              </button>
+                {loading ? 'Sending Code...' : 'Continue'}
+              </Button>
+            </form>
+          )}
+
+          {/* OTP Verification Form - Step 2 */}
+          {verificationStep === 2 && (
+            <div className="space-y-6">
+              {/* Email sent to display */}
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start space-x-3">
+                  <Icon name="Mail" size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-blue-900">Code sent to:</p>
+                    <p className="text-sm text-blue-700 font-semibold">{formData?.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <form onSubmit={handleVerifyOTP} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Verification Code
+                  </label>
+                  <input
+                    type="text"
+                    value={otpCode}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                      setOtpCode(value);
+                      if (error) setError('');
+                    }}
+                    placeholder="000000"
+                    maxLength={6}
+                    className="w-full px-4 py-3 text-center text-2xl font-bold tracking-widest border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none transition-colors"
+                    disabled={loading}
+                    autoFocus
+                  />
+                  {timeRemaining > 0 && (
+                    <p className="mt-2 text-sm text-gray-600 flex items-center justify-center gap-2">
+                      <Icon name="Clock" size={16} />
+                      Code expires in {formatTime(timeRemaining)}
+                    </p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="orange"
+                  fullWidth
+                  loading={loading}
+                  disabled={loading || otpCode.length !== 6}
+                  size="lg"
+                >
+                  {loading ? 'Verifying...' : 'Verify & Create Account'}
+                </Button>
+              </form>
+
+              {/* Resend OTP */}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleResendOTP}
+                  disabled={resendCooldown > 0 || loading}
+                  className="text-sm text-orange-500 hover:text-orange-600 font-medium disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                  {resendCooldown > 0 
+                    ? `Resend code in ${resendCooldown}s` 
+                    : 'Resend verification code'}
+                </button>
+              </div>
+
+              {/* Back to form */}
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleBackToForm}
+                  className="text-sm text-gray-600 hover:text-gray-800 font-medium flex items-center gap-1 mx-auto transition-colors"
+                  disabled={loading}
+                >
+                  <Icon name="ArrowLeft" size={16} />
+                  Change email address
+                </button>
+              </div>
             </div>
+          )}
 
-            <PhoneInput
-              label="Phone Number"
-              name="phone"
-              required
-              value={formData?.phone}
-              onChange={handleInputChange}
-              placeholder="Enter phone number"
-              defaultCountryCode="+234"
-              disabled={loading}
-            />
+          {/* Success Message - Step 3 */}
+          {verificationStep === 3 && (
+            <div className="text-center space-y-6 py-8">
+              <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center animate-fadeIn">
+                <Icon name="CheckCircle" size={40} className="text-green-600" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Welcome aboard!</h3>
+                <p className="text-gray-600">
+                  Your account has been created successfully. You'll be redirected to your dashboard shortly.
+                </p>
+              </div>
+              <div className="flex justify-center">
+                <div className="animate-spin h-8 w-8 border-4 border-orange-500 border-t-transparent rounded-full"></div>
+              </div>
+            </div>
+          )}
 
-            <Input
-              label="Location (Optional)"
-              name="location"
-              type="text"
-              value={formData?.location}
-              onChange={handleInputChange}
-              placeholder="City, State"
-              disabled={loading}
-            />
+          {/* Sign In Link - Only show on step 1 */}
+          {verificationStep === 1 && (
+            <>
+              <p className="text-center text-sm text-gray-600 mt-6">
+                Already have an account?{' '}
+                <Link 
+                  to="/signin" 
+                  className="text-orange-500 hover:text-orange-600 font-semibold transition-colors"
+                >
+                  Sign In
+                </Link>
+              </p>
 
-            <Button
-              type="submit"
-              variant="orange"
-              fullWidth
-              loading={loading}
-              disabled={loading}
-              size="lg"
-            >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </Button>
-          </form>
-
-          {/* Sign In Link */}
-          <p className="text-center text-sm text-gray-600 mt-6">
-            Already have an account?{' '}
-            <Link 
-              to="/signin" 
-              className="text-orange-500 hover:text-orange-600 font-semibold transition-colors"
-            >
-              Sign In
-            </Link>
-          </p>
-
-          {/* WhatsApp Contact */}
-          <button
-            onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
-            className="w-full mt-4 p-3 border-2 border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-sm text-gray-700 hover:text-orange-600 font-medium"
-          >
-            <Icon name="MessageCircle" size={16} className="inline mr-2" />
-            Need Help? WhatsApp Us
-          </button>
+              {/* WhatsApp Contact */}
+              <button
+                onClick={() => window.open('https://wa.me/2349062284074', '_blank')}
+                className="w-full mt-4 p-3 border-2 border-gray-200 rounded-lg hover:border-orange-500 transition-colors text-sm text-gray-700 hover:text-orange-600 font-medium"
+              >
+                <Icon name="MessageCircle" size={16} className="inline mr-2" />
+                Need Help? WhatsApp Us
+              </button>
+            </>
+          )}
 
           {/* Terms and Privacy */}
           <div className="mt-6 text-center">
