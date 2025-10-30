@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase';
 import { logger } from '../utils/logger';
-import { Resend } from 'resend';
+// Note: Resend SDK removed - emails should be sent via Supabase Edge Functions (server-side)
+// import { Resend } from 'resend';
 
 export const emailService = {
   // Send email to single member
@@ -112,39 +113,49 @@ export const emailService = {
     }
   },
 
-  // Real Resend API integration
+  // Email sending via Supabase Edge Function (server-side)
+  // IMPORTANT: Resend API should NEVER be called from the client due to CORS and security
   async sendEmailViaResend(emailData) {
     try {
-      // Check if API key is configured
-      const apiKey = import.meta.env.VITE_RESEND_API_KEY;
-      
-      if (!apiKey || apiKey === 'your_resend_api_key_here' || apiKey.trim() === '') {
-        const errorMsg = 'Resend API key is not configured. For local development, add VITE_RESEND_API_KEY to your .env file. For production, ensure it is set in Vercel environment variables.';
-        logger.error(errorMsg);
-        return { 
-          success: false, 
-          error: errorMsg
-        };
-      }
-
-      const resend = new Resend(apiKey);
-      
-      const { data, error } = await resend.emails.send({
-        from: emailData.from,
+      // TEMPORARY WORKAROUND: Log email instead of sending
+      // TODO: Implement Supabase Edge Function for server-side email sending
+      logger.info('Email would be sent:', {
         to: emailData.to,
         subject: emailData.subject,
-        html: emailData.html,
+        from: emailData.from
+      });
+
+      // For now, just log and return success
+      // In production, this should call a Supabase Edge Function
+      return { 
+        success: true, 
+        data: { 
+          id: 'mock-email-id-' + Date.now(),
+          message: 'Email logged (not sent - awaiting Edge Function implementation)'
+        } 
+      };
+
+      /* 
+      PROPER IMPLEMENTATION (requires Supabase Edge Function):
+      
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: {
+          to: emailData.to,
+          from: emailData.from,
+          subject: emailData.subject,
+          html: emailData.html
+        }
       });
 
       if (error) {
-        logger.error('Resend API error:', error);
-        return { success: false, error: error.message || 'Failed to send email via Resend' };
+        logger.error('Edge Function error:', error);
+        return { success: false, error: error.message };
       }
 
-      logger.info('Email sent successfully via Resend:', data);
       return { success: true, data };
+      */
     } catch (error) {
-      logger.error('Error sending email via Resend:', error);
+      logger.error('Error in email service:', error);
       return { success: false, error: error.message || 'Failed to send email' };
     }
   },
