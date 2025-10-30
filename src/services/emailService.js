@@ -17,13 +17,12 @@ export const emailService = {
         return { success: false, error: 'Member not found' };
       }
 
-      // In a real implementation, this would call Resend API
-      // For now, we'll simulate the email sending
+      // Send via Resend API with test domain (change to your verified domain in production)
       const emailResult = await this.sendEmailViaResend({
         to: member.email,
         subject,
         html: this.generateEmailTemplate(content, template, member),
-        from: 'Basic Intelligence <notifications@basicintelligence.ng>'
+        from: 'Basic Intelligence <onboarding@resend.dev>'
       });
 
       // Log the email in our database
@@ -104,7 +103,7 @@ export const emailService = {
   },
 
   // Simple send email method (used by notificationService)
-  async sendEmail({ to, subject, html, from = 'Basic Intelligence <notifications@basicintelligence.ng>' }) {
+  async sendEmail({ to, subject, html, from = 'Basic Intelligence <onboarding@resend.dev>' }) {
     try {
       return await this.sendEmailViaResend({ to, subject, html, from });
     } catch (error) {

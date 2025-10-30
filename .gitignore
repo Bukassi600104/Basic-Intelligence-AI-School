@@ -16,4 +16,11 @@ yarn-error.log
 .env.local
 .env.development
 .env.production
-.env.test
+.env.test.local
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

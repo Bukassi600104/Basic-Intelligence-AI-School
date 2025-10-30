@@ -25,8 +25,8 @@ Ensure these environment variables are set in Vercel:
 
 ```
 VITE_SUPABASE_URL=https://eremjpneqofidtktsfya.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVyZW1qcG5lcW9maWR0a3RzZnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMjM3OTMsImV4cCI6MjA3NTY5OTc5M30.wLWkd-md1vuF7ygu967vER9i3GNVKJIh9qHcylJNqv4
-VITE_SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-key-here
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+VITE_SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_key_here
 VITE_RESEND_API_KEY=your_resend_api_key_here
 ```
 
