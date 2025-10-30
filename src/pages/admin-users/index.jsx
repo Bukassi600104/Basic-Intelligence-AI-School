@@ -8,6 +8,7 @@ import PhoneInput from '../../components/ui/PhoneInput';
 import UserFilters from './components/UserFilters';
 import BulkActions from './components/BulkActions';
 import UserTable from './components/UserTable';
+import UserCreationWizard from '../../components/UserCreationWizard';
 import { userService } from '../../services/userService';
 import { adminService } from '../../services/adminService';
 import { paymentService } from '../../services/paymentService';
@@ -492,23 +493,10 @@ const AdminUsersPage = () => {
     }));
   };
 
-  const handleUserFormSubmit = async (e) => {
-    e?.preventDefault();
-    
-    // Validate required fields
-    if (!userFormData?.email || !userFormData?.full_name) {
-      alert('Please fill in all required fields (Email and Full Name)');
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex?.test(userFormData?.email)) {
-      alert('Please enter a valid email address');
-      return;
-    }
-
-    const success = await createNewUser(userFormData);
+  const handleUserFormSubmit = async (formData) => {
+    // The wizard handles validation internally
+    // This function now just receives the validated data
+    const success = await createNewUser(formData);
     // Only close modal if user creation was successful
     if (success) {
       handleCloseUserModal();
@@ -741,236 +729,13 @@ const AdminUsersPage = () => {
             loading={actionLoading}
           />
 
-          {/* Enhanced User Creation Modal */}
+          {/* User Creation Wizard */}
           {showUserModal && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
-              <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl border-2 border-gray-200 animate-slideUp">
-                {/* Gradient Header */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 p-6">
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                  <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                  
-                  <div className="relative flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                        <Icon name="UserPlus" size={28} className="text-white" />
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-extrabold text-white">Create New User</h2>
-                        <p className="text-white/90 mt-1">
-                          Add a new user to the platform. Required fields are marked with *
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={handleCloseUserModal}
-                      className="text-white hover:bg-white/20 p-2 rounded-xl transition-colors"
-                    >
-                      <Icon name="X" size={24} />
-                    </button>
-                  </div>
-                </div>
-
-                <form onSubmit={handleUserFormSubmit} className="p-6 bg-gradient-to-br from-gray-50 to-orange-50">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Enhanced Left Column - Required Fields */}
-                    <div className="space-y-4">
-                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-orange-400 transition-colors">
-                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
-                          <Icon name="Mail" size={16} className="mr-2 text-orange-600" />
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          autoComplete="email"
-                          value={userFormData.email}
-                          onChange={(e) => handleUserFormChange('email', e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                          placeholder="user@example.com"
-                          required
-                        />
-                      </div>
-
-                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-orange-400 transition-colors">
-                        <label className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
-                          <Icon name="User" size={16} className="mr-2 text-orange-600" />
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          value={userFormData.full_name}
-                          onChange={(e) => handleUserFormChange('full_name', e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
-                          placeholder="John Doe"
-                          required
-                        />
-                      </div>
-
-                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <label htmlFor="user-role" className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
-                          <Icon name="Shield" size={16} className="mr-2 text-orange-600" />
-                          Role
-                        </label>
-                        <select
-                          id="user-role"
-                          name="role"
-                          value={userFormData.role}
-                          onChange={(e) => handleUserFormChange('role', e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
-                        >
-                          <option value="student">Student</option>
-                          <option value="admin">Admin</option>
-                        </select>
-                      </div>
-
-                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <label htmlFor="user-membership-tier" className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
-                          <Icon name="Award" size={16} className="mr-2 text-orange-600" />
-                          Membership Tier
-                        </label>
-                        <select
-                          id="user-membership-tier"
-                          name="membershipTier"
-                          value={userFormData.membership_tier}
-                          onChange={(e) => handleUserFormChange('membership_tier', e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
-                        >
-                          <option value="starter">Starter</option>
-                          <option value="pro">Pro</option>
-                          <option value="elite">Elite</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Enhanced Right Column - Optional Fields */}
-                    <div className="space-y-4">
-                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <label htmlFor="user-membership-status" className="block text-sm font-bold text-gray-900 mb-2 flex items-center">
-                          <Icon name="CheckCircle" size={16} className="mr-2 text-orange-600" />
-                          Membership Status
-                        </label>
-                        <select
-                          id="user-membership-status"
-                          name="membershipStatus"
-                          value={userFormData.membership_status}
-                          onChange={(e) => handleUserFormChange('membership_status', e.target.value)}
-                          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all bg-white"
-                        >
-                          <option value="pending">Pending</option>
-                          <option value="active">Active</option>
-                          <option value="inactive">Inactive</option>
-                          <option value="expired">Expired</option>
-                        </select>
-                      </div>
-
-                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <PhoneInput
-                          label="Phone Number"
-                          name="phone"
-                          value={userFormData.phone}
-                          onChange={(e) => handleUserFormChange('phone', e.target.value)}
-                          placeholder="Enter phone number"
-                          defaultCountryCode="+234"
-                        />
-                      </div>
-
-                      <div className="bg-white rounded-xl p-4 border-2 border-orange-200 hover:border-blue-400 transition-colors">
-                        <PhoneInput
-                          label="WhatsApp Phone"
-                          name="whatsapp_phone"
-                          value={userFormData.whatsapp_phone}
-                          onChange={(e) => handleUserFormChange('whatsapp_phone', e.target.value)}
-                          placeholder="Enter WhatsApp number"
-                          defaultCountryCode="+234"
-                        />
-                        <p className="text-xs text-gray-500 mt-2">
-                          For WhatsApp notifications (international format)
-                        </p>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          Location
-                        </label>
-                        <input
-                          type="text"
-                          value={userFormData.location}
-                          onChange={(e) => handleUserFormChange('location', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                          placeholder="Lagos, Nigeria"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">
-                          Bio
-                        </label>
-                        <textarea
-                          value={userFormData.bio}
-                          onChange={(e) => handleUserFormChange('bio', e.target.value)}
-                          className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                          placeholder="Brief description about the user"
-                          rows={3}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Password Generation Section */}
-                  {/* Info message about automatic password generation */}
-                  <div className="mt-6 pt-6 border-t border-border">
-                    <h3 className="text-lg font-medium text-foreground mb-4">Password Information</h3>
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-start">
-                        <Icon name="Info" size={20} className="text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="text-sm font-medium text-blue-800 mb-2">
-                            Automatic Password Generation
-                          </p>
-                          <ul className="text-xs text-blue-600 space-y-1">
-                            <li className="flex items-start">
-                              <span className="mr-2">•</span>
-                              <span>A secure temporary password will be automatically generated when you create the user</span>
-                            </li>
-                            <li className="flex items-start">
-                              <span className="mr-2">•</span>
-                              <span>The password will be shown to you in a popup after user creation</span>
-                            </li>
-                            <li className="flex items-start">
-                              <span className="mr-2">•</span>
-                              <span>The user will be required to change this password on their first login</span>
-                            </li>
-                            <li className="flex items-start">
-                              <span className="mr-2">•</span>
-                              <span>The password will also be sent to the user's email address</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Enhanced Form Actions */}
-                  <div className="flex justify-end space-x-4 mt-8 pt-6 border-t-2 border-gray-200">
-                    <button
-                      type="button"
-                      onClick={handleCloseUserModal}
-                      className="px-6 py-3 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={actionLoading}
-                      className="px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-cyan-700 transition-all hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                    >
-                      <Icon name="UserPlus" size={20} className="mr-2" />
-                      {actionLoading ? 'Creating User...' : 'Create User'}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
+            <UserCreationWizard
+              onSubmit={handleUserFormSubmit}
+              onClose={handleCloseUserModal}
+              actionLoading={actionLoading}
+            />
           )}
 
           {/* Edit User Modal */}
