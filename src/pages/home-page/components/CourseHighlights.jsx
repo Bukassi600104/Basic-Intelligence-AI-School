@@ -98,37 +98,37 @@ const CourseHighlights = () => {
   }
 
   return (
-    <section className="py-24 lg:py-32 bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 lg:px-6">
+    <section className="py-24 lg:py-36 bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Course Highlights */}
-        <div className="mb-24">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-block px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full mb-6">
-              <span className="text-sm font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <div className="mb-28">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <div className="inline-block px-5 py-2.5 bg-gradient-to-r from-emerald-100 to-teal-100 rounded-full mb-6">
+              <span className="text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
                 Featured Courses
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold mb-6">
-              <span className="bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-8">
+              <span className="bg-gradient-to-r from-gray-900 via-emerald-900 to-teal-900 bg-clip-text text-transparent">
                 Start Your AI Journey
               </span>
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-gray-700 leading-relaxed">
               Explore our comprehensive AI curriculum designed to take you from{' '}
-              <span className="font-semibold text-gray-900">beginner to expert</span>
+              <span className="font-bold text-gray-900">beginner to expert</span>
             </p>
           </div>
 
           {courses?.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-12">
               {courses?.map((course, index) => (
                 <div 
                   key={course?.id}
-                  className="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:shadow-card-hover hover:border-blue-400 hover:-translate-y-2 transition-all duration-300 animate-slideUp"
+                  className="group bg-white border-2 border-gray-200 rounded-2xl overflow-hidden hover:shadow-2xl hover:border-emerald-400 hover:-translate-y-2 transition-all duration-300 animate-slideUp"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {/* Course Image */}
-                  <div className="relative h-52 overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100">
+                  <div className="relative h-56 overflow-hidden bg-gradient-to-br from-emerald-100 to-teal-100">
                     <Image 
                       src={course?.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=250&fit=crop'}
                       alt={course?.title}
@@ -136,21 +136,19 @@ const CourseHighlights = () => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                     <div className="absolute top-4 left-4">
-                      <span className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 backdrop-blur-sm ${getLevelColor(course?.level)}`}>
+                      <span className={`px-4 py-2 rounded-full text-sm font-bold border-2 backdrop-blur-sm ${getLevelColor(course?.level)}`}>
                         {formatLevel(course?.level)}
                       </span>
                     </div>
                   </div>
 
                   {/* Course Content */}
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                  <div className="p-7">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">
                         {course?.title}
                       </h3>
-                    </div>
-
-                    <div className="flex items-center space-x-3 text-sm text-gray-600 mb-4">
+```                    <div className="flex items-center space-x-3 text-sm text-gray-600 mb-4">
                       <div className="flex items-center space-x-1">
                         <Icon name="Clock" size={16} className="text-gray-400" />
                         <span>{formatDuration(course?.duration_weeks)}</span>

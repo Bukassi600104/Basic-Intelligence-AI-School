@@ -5,7 +5,7 @@ import Button from '../../../components/ui/Button';
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-br from-orange-50 via-gray-50 to-orange-50 py-12 lg:py-16 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-orange-50 via-gray-50 to-orange-50 py-20 lg:py-32 overflow-hidden">
       {/* Animated Background Gradients - Orange Theme */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-0 left-0 w-64 h-64 bg-gradient-to-br from-orange-400/30 to-orange-500/30 rounded-full blur-3xl animate-pulse-slow"></div>
@@ -21,17 +21,17 @@ const HeroSection = () => {
         <div className="absolute bottom-12 right-1/3 w-10 h-10 border-2 border-orange-500/20 rounded-full animate-float" style={{ animationDelay: '1.5s' }}></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 lg:px-6">
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto">
           {/* Animated Badge - Orange Theme */}
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-semibold mb-4 shadow-md animate-scaleIn hover:shadow-lg hover:scale-105 transition-all duration-300">
-            <Icon name="Sparkles" size={14} className="animate-pulse" />
+          <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-sm font-semibold mb-8 shadow-lg animate-scaleIn hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <Icon name="Sparkles" size={16} className="animate-pulse" />
             <span>AI Education Platform</span>
-            <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>
+            <div className="w-2 h-2 bg-white rounded-full animate-ping"></div>
           </div>
 
           {/* Main Heading with Gradient Text - Orange Theme */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 leading-tight animate-fadeIn">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-extrabold mb-8 leading-tight animate-fadeIn">
             <span className="bg-gradient-to-r from-orange-600 via-orange-500 to-orange-600 bg-clip-text text-transparent">
               Learn AI.
             </span>
@@ -42,16 +42,16 @@ const HeroSection = () => {
           </h1>
 
           {/* Subheading with enhanced styling */}
-          <p className="text-sm md:text-base text-gray-700 mb-3 max-w-3xl mx-auto leading-relaxed animate-slideUp" style={{ animationDelay: '0.2s' }}>
+          <p className="text-base md:text-lg lg:text-xl text-gray-700 mb-6 max-w-3xl mx-auto leading-relaxed animate-slideUp" style={{ animationDelay: '0.2s' }}>
             Welcome to{' '}
             <span className="font-bold text-gray-900">Basic Intelligence</span>, the simplest way to learn how AI can grow your business or career. We'll show you exactly how to use it to create new things, open up revenue streams, and innovate in your field.
           </p>
-          <p className="text-sm md:text-base font-semibold text-gray-800 mb-6 animate-slideUp" style={{ animationDelay: '0.3s' }}>
+          <p className="text-base md:text-lg lg:text-xl font-semibold text-gray-800 mb-10 animate-slideUp" style={{ animationDelay: '0.3s' }}>
             No jargon, just practical skills for the real world.
           </p>
 
           {/* Key Benefits with Icons - Orange Theme */}
-          <div className="flex flex-wrap justify-center items-center gap-3 mb-6 animate-slideUp" style={{ animationDelay: '0.4s' }}>
+          <div className="flex flex-wrap justify-center items-center gap-4 mb-10 animate-slideUp" style={{ animationDelay: '0.4s' }}>
             {[
               { icon: 'CheckCircle', text: 'Practical AI Projects', color: 'text-emerald-600' },
               { icon: 'Users', text: 'Expert Instructors', color: 'text-orange-600' },
@@ -60,30 +60,30 @@ const HeroSection = () => {
             ].map((benefit, index) => (
               <div
                 key={index}
-                className="flex items-center space-x-1.5 px-3 py-1.5 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300"
+                className="flex items-center space-x-2 px-5 py-3 bg-white/90 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
               >
-                <Icon name={benefit.icon} size={14} className={benefit.color} />
-                <span className="text-xs font-medium text-gray-700">{benefit.text}</span>
+                <Icon name={benefit.icon} size={18} className={benefit.color} />
+                <span className="text-sm font-medium text-gray-700">{benefit.text}</span>
               </div>
             ))}
           </div>
 
           {/* CTA Buttons with Orange Theme */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-8 animate-slideUp" style={{ animationDelay: '0.5s' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 animate-slideUp" style={{ animationDelay: '0.5s' }}>
             <Link to="/join-membership-page" className="w-full sm:w-auto">
-              <button className="group relative w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300 overflow-hidden">
-                <span className="relative z-10 flex items-center justify-center space-x-1.5">
+              <button className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-base font-bold rounded-xl shadow-lg hover:shadow-xl hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300 overflow-hidden">
+                <span className="relative z-10 flex items-center justify-center space-x-2">
                   <span>Join Now</span>
-                  <Icon name="ArrowRight" size={16} className="group-hover:translate-x-1 transition-transform" />
+                  <Icon name="ArrowRight" size={20} className="group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </Link>
             
             <Link to="/about-page" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-6 py-2.5 bg-white/90 backdrop-blur-sm text-gray-900 text-sm font-semibold rounded-lg border border-gray-300 hover:border-orange-500 hover:shadow-md hover:scale-105 transition-all duration-300">
-                <span className="flex items-center justify-center space-x-1.5">
-                  <Icon name="Info" size={16} />
+              <button className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-sm text-gray-900 text-base font-bold rounded-xl border-2 border-gray-300 hover:border-orange-500 hover:shadow-lg hover:scale-105 transition-all duration-300">
+                <span className="flex items-center justify-center space-x-2">
+                  <Icon name="Info" size={20} />
                   <span>Learn More</span>
                 </span>
               </button>
@@ -91,7 +91,7 @@ const HeroSection = () => {
           </div>
 
           {/* Trust Indicators with Orange Theme */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slideUp" style={{ animationDelay: '0.6s' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-slideUp" style={{ animationDelay: '0.6s' }}>
             {[
               { icon: 'Users', text: '500+ Active Members', color: 'from-orange-500 to-orange-600' },
               { icon: 'Star', text: '4.9/5 Rating', color: 'from-amber-500 to-orange-500' },
@@ -99,12 +99,12 @@ const HeroSection = () => {
             ].map((indicator, index) => (
               <div
                 key={index}
-                className="flex items-center space-x-2 px-3 py-2 bg-white/90 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300"
+                className="flex items-center space-x-3 px-5 py-3 bg-white/90 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
               >
-                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${indicator.color} flex items-center justify-center shadow-sm`}>
-                  <Icon name={indicator.icon} size={16} className="text-white" />
+                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${indicator.color} flex items-center justify-center shadow-sm`}>
+                  <Icon name={indicator.icon} size={20} className="text-white" />
                 </div>
-                <span className="text-xs font-semibold text-gray-800">{indicator.text}</span>
+                <span className="text-sm font-bold text-gray-800">{indicator.text}</span>
               </div>
             ))}
           </div>
