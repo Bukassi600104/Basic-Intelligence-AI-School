@@ -148,7 +148,9 @@ const CourseHighlights = () => {
                       <h3 className="text-xl font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">
                         {course?.title}
                       </h3>
-```                    <div className="flex items-center space-x-3 text-sm text-gray-600 mb-4">
+                    </div>
+                    
+                    <div className="flex items-center space-x-3 text-sm text-gray-600 mb-4">
                       <div className="flex items-center space-x-1">
                         <Icon name="Clock" size={16} className="text-gray-400" />
                         <span>{formatDuration(course?.duration_weeks)}</span>
@@ -159,10 +161,6 @@ const CourseHighlights = () => {
                         <span>{course?.enrollment_count || 0} enrolled</span>
                       </div>
                     </div>
-
-                    <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
-                      {course?.description}
-                    </p>
 
                     <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
                       {course?.description}
@@ -219,9 +217,27 @@ const CourseHighlights = () => {
                 <Icon name="BookOpen" size={40} className="text-blue-600" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">No Featured Courses Yet</h3>
-              <p className="text-gray-600">Check back soon for our latest AI courses!</p>
+                            <p className="text-gray-600">Check back soon for our latest AI courses!</p>
             </div>
           )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default CourseHighlights;
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default CourseHighlights;
+          )}
+        </div>
         </div>
 
         {/* Testimonials - Enhanced Design */}
