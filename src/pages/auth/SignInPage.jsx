@@ -167,9 +167,9 @@ const SignInPage = () => {
   return (
     <div className="flex min-h-screen">
             {/* Left Panel - Geometric Pattern Background */}
-      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-8 text-white relative">
+      <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white relative">
         {/* Logo at top */}
-        <Link to="/" className="absolute top-6 left-6 z-20">
+        <Link to="/" className="absolute top-8 left-8 z-30">
           <div className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
               <Icon name="GraduationCap" size={20} className="text-white" />
@@ -179,27 +179,27 @@ const SignInPage = () => {
         </Link>
         
         {/* Central content */}
-        <div className="max-w-md text-center z-10 px-8">
-          <div className="inline-block mb-6">
-            <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium">
+        <div className="max-w-lg text-center z-20 px-6 space-y-6">
+          <div className="inline-block">
+            <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium backdrop-blur-sm">
               Welcome Back
             </span>
           </div>
           
-          <h1 className="text-4xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl lg:text-5xl font-bold leading-tight drop-shadow-lg">
             Continue Your AI Journey
           </h1>
           
-          <p className="text-lg text-gray-300 leading-relaxed">
+          <p className="text-lg lg:text-xl text-gray-300 leading-relaxed max-w-md mx-auto">
             Access your courses, prompt library, and exclusive AI tutorials.
           </p>
         </div>
         
         {/* Pagination dots at bottom */}
-        <div className="absolute bottom-6 flex gap-1.5 z-20">
-          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
-          <div className="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
+        <div className="absolute bottom-8 flex gap-2 z-30">
+          <div className="w-2 h-2 rounded-full bg-orange-500 shadow-lg"></div>
+          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+          <div className="w-2 h-2 rounded-full bg-gray-600"></div>
         </div>
       </GeometricBackground>
       
