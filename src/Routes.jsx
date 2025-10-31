@@ -1,47 +1,33 @@
-import React, { Suspense, lazy } from "react";
+import React from "react";
 import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
 import ScrollToTop from "components/ScrollToTop";
 import ErrorBoundary from "components/ErrorBoundary";
 import NotFound from "pages/NotFound";
-
-// Critical routes - loaded immediately
+import AdminDashboard from './pages/admin-dashboard';
+import AdminUsersPage from './pages/admin-users';
+import JoinMembershipPage from './pages/join-membership-page';
+import AdminCourses from './pages/admin-courses';
+import AdminContentPage from './pages/admin-content';
+import AdminSettings from './pages/admin-settings';
+import AdminSettingsNew from './pages/admin-dashboard/Settings';
+import AdminAnalytics from './pages/admin-analytics';
+import AdminNotifications from './pages/admin-notifications';
+import AdminNotificationWizard from './pages/admin-notification-wizard';
+import AdminReviews from './pages/admin-reviews';
+import AboutPage from './pages/about-page';
 import HomePage from './pages/home-page';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
-
-// Lazy-loaded routes - deferred for better initial load
-const AdminDashboard = lazy(() => import('./pages/admin-dashboard'));
-const AdminUsersPage = lazy(() => import('./pages/admin-users'));
-const JoinMembershipPage = lazy(() => import('./pages/join-membership-page'));
-const AdminCourses = lazy(() => import('./pages/admin-courses'));
-const AdminContentPage = lazy(() => import('./pages/admin-content'));
-const AdminSettings = lazy(() => import('./pages/admin-settings'));
-const AdminSettingsNew = lazy(() => import('./pages/admin-dashboard/Settings'));
-const AdminAnalytics = lazy(() => import('./pages/admin-analytics'));
-const AdminNotifications = lazy(() => import('./pages/admin-notifications'));
-const AdminNotificationWizard = lazy(() => import('./pages/admin-notification-wizard'));
-const AdminReviews = lazy(() => import('./pages/admin-reviews'));
-const AboutPage = lazy(() => import('./pages/about-page'));
-const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
-const ForcePasswordChangePage = lazy(() => import('./pages/auth/ForcePasswordChangePage'));
-const PricingPlansPage = lazy(() => import('./pages/pricing-plans-page'));
-const StudentDashboard = lazy(() => import('./pages/student-dashboard'));
-const StudentPDFs = lazy(() => import('./pages/student-dashboard/pdfs'));
-const StudentVideos = lazy(() => import('./pages/student-dashboard/videos'));
-const StudentPrompts = lazy(() => import('./pages/student-dashboard/prompts'));
-const StudentSubscription = lazy(() => import('./pages/student-dashboard/subscription'));
-const StudentSettings = lazy(() => import('./pages/student-dashboard/settings'));
-const CoursesPage = lazy(() => import('./pages/courses'));
-
-// Loading fallback component
-const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-sm text-gray-600 dark:text-gray-400">Loading...</p>
-    </div>
-  </div>
-);
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import ForcePasswordChangePage from './pages/auth/ForcePasswordChangePage';
+import PricingPlansPage from './pages/pricing-plans-page';
+import StudentDashboard from './pages/student-dashboard';
+import StudentPDFs from './pages/student-dashboard/pdfs';
+import StudentVideos from './pages/student-dashboard/videos';
+import StudentPrompts from './pages/student-dashboard/prompts';
+import StudentSubscription from './pages/student-dashboard/subscription';
+import StudentSettings from './pages/student-dashboard/settings';
+import CoursesPage from './pages/courses';
 
 
 const Routes = () => {
@@ -49,7 +35,6 @@ const Routes = () => {
     <BrowserRouter basename={import.meta.env.VITE_BASE_PATH || '/'}>
       <ErrorBoundary>
       <ScrollToTop />
-      <Suspense fallback={<PageLoader />}>
       <RouterRoutes>
         {/* Define your route here */}
         <Route path="/" element={<HomePage />} />
@@ -86,7 +71,6 @@ const Routes = () => {
         
         <Route path="*" element={<NotFound />} />
       </RouterRoutes>
-      </Suspense>
       </ErrorBoundary>
     </BrowserRouter>
   );
