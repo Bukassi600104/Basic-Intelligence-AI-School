@@ -39,37 +39,10 @@ const AdminUsersPage = () => {
   const [actionLoading, setActionLoading] = useState(false);
   
   // Modal states
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, type: '', data: null });
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, type: '', data: null, title: '', message: '', variant: 'default' });
   const [alertDialog, setAlertDialog] = useState({ isOpen: false, variant: 'default', title: '', message: '' });
-  const [loadingOverlay, setLoadingOverlay] = useState({ isOpen: false, message: '', submessage: '' });
+  const [loadingOverlay, setLoadingOverlay] = useState({ isOpen: false, message: 'Processing...', submessage: null });
   const [paymentStatusModal, setPaymentStatusModal] = useState({ isOpen: false, user: null });
-
-  // Dialog states
-  const [confirmDialog, setConfirmDialog] = useState({
-    isOpen: false,
-    title: '',
-    message: '',
-    onConfirm: null,
-    variant: 'default'
-  });
-  
-  const [alertDialog, setAlertDialog] = useState({
-    isOpen: false,
-    title: '',
-    message: '',
-    variant: 'default'
-  });
-  
-  const [loadingOverlay, setLoadingOverlay] = useState({
-    isOpen: false,
-    message: 'Processing...',
-    submessage: null
-  });
-
-  const [paymentStatusModal, setPaymentStatusModal] = useState({
-    isOpen: false,
-    user: null
-  });
 
   // Check admin access
   useEffect(() => {
