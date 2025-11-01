@@ -1,13 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
-import AdminSidebar from '../../components/ui/AdminSidebar';
-import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
-import { userService } from '../../services/userService';
-import { notificationService } from '../../services/notificationService';
-import { Toaster, toast } from 'sonner';
+// Re-export the complete notification wizard component
+export { default } from './NotificationWizardComplete';
 
 const AdminNotificationWizard = () => {
   const { userProfile } = useAuth();
