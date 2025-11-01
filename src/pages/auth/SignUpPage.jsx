@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import GeometricBackground from '../../components/ui/GeometricBackground';
-import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
 import PhoneInput from '../../components/ui/PhoneInput';
 import Icon from '../../components/AppIcon';
 import { notificationService } from '../../services/notificationService';
@@ -483,75 +486,87 @@ const SignUpPage = () => {
 
           {/* Registration Form - Step 1 */}
           {verificationStep === 1 && (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                label="Full Name"
-                name="fullName"
-                type="text"
-                autoComplete="name"
-                required
-                value={formData?.fullName}
-                onChange={handleInputChange}
-                placeholder="John Doe"
-                disabled={loading}
-              />
-
-              <Input
-                label="Email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData?.email}
-                onChange={handleInputChange}
-                placeholder="john@example.com"
-                disabled={loading}
-              />
-
-              <div className="relative">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="fullName">Full Name</Label>
                 <Input
-                  label="Password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  autoComplete="name"
                   required
-                  value={formData?.password}
+                  value={formData?.fullName}
                   onChange={handleInputChange}
-                  placeholder="Minimum 6 characters"
+                  placeholder="John Doe"
                   disabled={loading}
-                  className="pr-12"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
-                </button>
               </div>
 
-              <div className="relative">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
                 <Input
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  autoComplete="new-password"
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
                   required
-                  value={formData?.confirmPassword}
+                  value={formData?.email}
                   onChange={handleInputChange}
-                  placeholder="Re-enter your password"
+                  placeholder="john@example.com"
                   disabled={loading}
-                  className="pr-12"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
-                  title={showConfirmPassword ? "Hide password" : "Show password"}
-                >
-                  <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
-                </button>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    required
+                    value={formData?.password}
+                    onChange={handleInputChange}
+                    placeholder="Minimum 6 characters"
+                    disabled={loading}
+                    className="pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    title={showPassword ? "Hide password" : "Show password"}
+                  >
+                    <Icon name={showPassword ? "EyeOff" : "Eye"} size={18} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    required
+                    value={formData?.confirmPassword}
+                    onChange={handleInputChange}
+                    placeholder="Re-enter your password"
+                    disabled={loading}
+                    className="pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    title={showConfirmPassword ? "Hide password" : "Show password"}
+                  >
+                    <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
+                  </button>
+                </div>
               </div>
 
               <PhoneInput
@@ -565,25 +580,33 @@ const SignUpPage = () => {
                 disabled={loading}
               />
 
-              <Input
-                label="Location (Optional)"
-                name="location"
-                type="text"
-                value={formData?.location}
-                onChange={handleInputChange}
-                placeholder="City, State"
-                disabled={loading}
-              />
+              <div className="space-y-2">
+                <Label htmlFor="location">Location (Optional)</Label>
+                <Input
+                  id="location"
+                  name="location"
+                  type="text"
+                  value={formData?.location}
+                  onChange={handleInputChange}
+                  placeholder="City, State"
+                  disabled={loading}
+                />
+              </div>
 
               <Button
                 type="submit"
-                variant="orange"
-                fullWidth
-                loading={loading}
+                className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-600"
                 disabled={loading}
                 size="lg"
               >
-                {loading ? 'Sending Code...' : 'Continue'}
+                {loading ? (
+                  <>
+                    <Icon name="Loader" size={18} className="mr-2 animate-spin" />
+                    Sending Code...
+                  </>
+                ) : (
+                  'Continue'
+                )}
               </Button>
             </form>
           )}
