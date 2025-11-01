@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea.tsx';
 import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Badge } from '@/components/ui/badge.tsx';
+import { Toaster, toast } from 'sonner';
 
 const AdminNotifications = () => {
   const [members, setMembers] = useState([]);
@@ -60,11 +61,25 @@ const AdminNotifications = () => {
   const handleSendEmail = async () => {
     if (!emailData.subject || !emailData.content) {
       setResult({ success: false, error: 'Subject and content are required' });
+      toast.error('Incomplete form', {
+        description: 'Please enter both subject and content before sending.'
+      });
       return;
+    }
+
+    if (selectedMembers.length === 0) {
+      toast.warning('No recipients selected', {
+        description: 'Select specific members or enable "Send to all" to send notifications.'
+      });
     }
 
     setSending(true);
     setResult(null);
+
+    // Show loading toast
+    const loadingToastId = toast.loading('Sending emails...', {
+      description: 'Preparing to send emails...'
+    });
 
     try {
       let sendResult;
@@ -89,14 +104,33 @@ const AdminNotifications = () => {
 
       setResult(sendResult);
       
+      // Dismiss loading toast
+      toast.dismiss(loadingToastId);
+
       if (sendResult.success) {
+        // SUCCESS: Show success toast
+        const totalSent = sendResult.summary?.sent || 0;
+        toast.success('Emails sent successfully! 🎉', {
+          description: `Successfully sent emails to ${totalSent} recipient${totalSent === 1 ? '' : 's'}`
+        });
+        
         // Reset form on success
         setEmailData({ subject: '', content: '', template: 'default' });
         setSelectedMembers([]);
         loadStats(); // Refresh stats
+      } else if (sendResult.error) {
+        // FAILURE: Show error toast
+        toast.error('Failed to send emails', {
+          description: sendResult.error || 'An error occurred while sending emails.'
+        });
       }
     } catch (error) {
+      console.error('Error sending emails:', error);
+      toast.dismiss(loadingToastId);
       setResult({ success: false, error: error.message });
+      toast.error('Error sending emails', {
+        description: error.message || 'An unexpected error occurred.'
+      });
     } finally {
       setSending(false);
     }
@@ -133,6 +167,7 @@ const AdminNotifications = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <Toaster position="top-right" expand={true} richColors />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

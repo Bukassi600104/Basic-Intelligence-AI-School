@@ -7,6 +7,7 @@ import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
+import { Toaster, toast } from 'sonner';
 
 const AdminNotificationWizard = () => {
   const { userProfile } = useAuth();
@@ -120,17 +121,28 @@ const AdminNotificationWizard = () => {
   const handleSendNotifications = async () => {
     if (selectedUsers.length === 0) {
       setError('Please select at least one user');
+      toast.error('No recipients selected', {
+        description: 'Please select at least one user to send notifications to.'
+      });
       return;
     }
 
     if (!notificationData.message.trim()) {
       setError('Please enter a message');
+      toast.error('No message content', {
+        description: 'Please enter a message before sending.'
+      });
       return;
     }
 
     setSending(true);
     setResults(null);
     setError(null);
+
+    // Show loading toast
+    const loadingToastId = toast.loading('Sending notifications...', {
+      description: `Preparing to send to ${selectedUsers.length} recipient${selectedUsers.length === 1 ? '' : 's'}...`
+    });
 
     try {
       const result = await notificationService.sendBulkNotifications({
@@ -145,15 +157,45 @@ const AdminNotificationWizard = () => {
 
       setResults(result);
       
+      // Dismiss loading toast
+      toast.dismiss(loadingToastId);
+
       if (result.successful > 0 && result.failed === 0) {
+        // SUCCESS: All emails sent
         setError(null);
-      } else if (result.failed > 0) {
+        toast.success('All notifications sent successfully! 🎉', {
+          description: `Successfully sent ${result.successful} notification${result.successful === 1 ? '' : 's'} via ${notificationData.recipientType}`
+        });
+        
+        // Clear form on complete success
+        setNotificationData({
+          templateName: '',
+          subject: '',
+          message: '',
+          recipientType: 'email'
+        });
+        setSelectedUsers([]);
+      } else if (result.successful > 0 && result.failed > 0) {
+        // PARTIAL SUCCESS: Some sent, some failed
         setError(`${result.failed} notifications failed to send. Check the results below for details.`);
+        toast.warning('Partial delivery', {
+          description: `Sent ${result.successful} of ${result.total} notifications. ${result.failed} failed.`
+        });
+      } else if (result.failed === result.total) {
+        // COMPLETE FAILURE: All failed
+        setError(`All ${result.failed} notifications failed to send. Check the results below for details.`);
+        toast.error('All notifications failed', {
+          description: `Failed to send notifications to ${result.failed} recipient${result.failed === 1 ? '' : 's'}.`
+        });
       }
 
     } catch (error) {
       console.error('Send notifications error:', error);
+      toast.dismiss(loadingToastId);
       setError('Failed to send notifications: ' + error.message);
+      toast.error('Error sending notifications', {
+        description: error.message || 'An unexpected error occurred while sending notifications.'
+      });
     } finally {
       setSending(false);
     }
@@ -182,6 +224,7 @@ const AdminNotificationWizard = () => {
 
   return (
     <div className="min-h-screen bg-background flex">
+      <Toaster position="top-right" expand={true} richColors />
       <AdminSidebar />
       <div className="flex-1 transition-all duration-300 lg:ml-60">
         <div className="p-6 lg:p-8 pt-20 lg:pt-8">
