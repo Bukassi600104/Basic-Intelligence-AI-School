@@ -4,7 +4,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import StudentDashboardNav from '../../components/ui/StudentDashboardNav';
 import LockedOverlay from '../../components/ui/LockedOverlay';
 import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { contentService } from '../../services/contentService';
 import { logger } from '../../utils/logger';
@@ -207,33 +212,28 @@ const StudentPDFs = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {/* Search */}
               <div className="relative">
-                <Icon name="Search" size={16} className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-indigo-600" />
-                <input
+                <Icon name="Search" size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-600 pointer-events-none z-10" />
+                <Input
                   type="text"
                   placeholder="Search PDFs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80"
+                  className="pl-10 bg-white/80 border-indigo-200 focus-visible:ring-orange-500"
                 />
               </div>
 
               {/* Category Filter */}
-              <div className="relative">
-                <Icon name="Filter" size={16} className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-purple-600 pointer-events-none" />
-                <select
-                  id="category-filter-pdfs"
-                  name="categoryFilter"
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 border border-indigo-200 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white/80 appearance-none"
-                >
-                  <option value="all">All Categories</option>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="bg-white/80 border-indigo-200 focus:ring-orange-500">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {categories.filter(cat => cat !== 'all').map(category => (
-                    <option key={category} value={category}>{category}</option>
+                    <SelectItem key={category} value={category}>{category}</SelectItem>
                   ))}
-                </select>
-                <Icon name="ChevronDown" size={14} className="absolute right-2.5 top-1/2 transform -translate-y-1/2 text-purple-600 pointer-events-none" />
-              </div>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -263,76 +263,85 @@ const StudentPDFs = () => {
               </div>
             ) : (
               filteredPDFs.map((pdf) => (
-                <div 
+                <Card 
                   key={pdf.id}
                   id={`pdf-${pdf.id}`}
-                  className="group bg-white border border-red-200 rounded-xl p-4 hover:shadow-lg hover:border-red-300 transition-all duration-300 transform hover:scale-105"
+                  className="group hover:shadow-lg hover:border-red-300 transition-all duration-300"
                 >
-                  {/* PDF Header */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-11 h-11 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
-                      <Icon name="FileText" size={22} className="text-white" />
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      {/* Featured Badge */}
-                      {pdf.isFeatured && isFeatured && (
-                        <span className="px-1.5 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r from-yellow-100 to-amber-100 text-amber-800 border border-amber-200 flex items-center gap-1">
-                          <Icon name="Star" size={10} className="fill-current" />
-                          Featured
-                        </span>
-                      )}
-                      <span className={`px-2 py-1 rounded-lg text-xs font-bold border ${
-                        pdf.category === 'Prompts' ? 'bg-green-100 text-green-800 border-green-300' :
-                        pdf.category === 'Business' ? 'bg-blue-100 text-blue-800 border-blue-300' :
-                        pdf.category === 'Content' ? 'bg-purple-100 text-purple-800 border-purple-300' :
-                        pdf.category === 'Analytics' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                        'bg-gray-100 text-gray-800 border-gray-300'
-                      }`}>
-                        {pdf.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* PDF Info */}
-                  <h3 className="text-base font-bold text-gray-900 mb-1.5 line-clamp-2 group-hover:text-red-600 transition-colors">
-                    {pdf.title}
-                  </h3>
-                  <p className="text-xs text-gray-600 mb-3 line-clamp-3">
-                    {pdf.description}
-                  </p>
-
-                  {/* PDF Metadata */}
-                  <div className="flex items-center justify-between text-xs mb-3">
-                    <div className="flex items-center space-x-2 text-gray-600">
-                      <div className="flex items-center space-x-1 bg-gray-100 px-1.5 py-0.5 rounded">
-                        <Icon name="File" size={12} className="text-gray-700" />
-                        <span className="font-medium">{pdf.fileSize}</span>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="w-11 h-11 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg transition-shadow">
+                        <Icon name="FileText" size={22} className="text-white" />
                       </div>
-                      <div className="flex items-center space-x-1 bg-gray-100 px-1.5 py-0.5 rounded">
-                        <Icon name="FileText" size={12} className="text-gray-700" />
-                        <span className="font-medium">{pdf.pages} pages</span>
+                      <div className="flex flex-col items-end gap-1">
+                        {/* Featured Badge */}
+                        {pdf.isFeatured && isFeatured && (
+                          <Badge variant="secondary" className="bg-gradient-to-r from-yellow-100 to-amber-100 text-amber-800 border-amber-200">
+                            <Icon name="Star" size={10} className="fill-current mr-1" />
+                            Featured
+                          </Badge>
+                        )}
+                        <Badge 
+                          variant={
+                            pdf.category === 'Prompts' ? 'default' :
+                            pdf.category === 'Business' ? 'secondary' :
+                            'outline'
+                          }
+                          className={
+                            pdf.category === 'Prompts' ? 'bg-green-100 text-green-800 border-green-300' :
+                            pdf.category === 'Business' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                            pdf.category === 'Content' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                            pdf.category === 'Analytics' ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                            'bg-gray-100 text-gray-800 border-gray-300'
+                          }
+                        >
+                          {pdf.category}
+                        </Badge>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="text-xs text-gray-500 mb-3 flex items-center gap-1">
-                    <Icon name="Clock" size={11} />
-                    <span>{formatDate(pdf.uploadedAt)}</span>
-                  </div>
+                    <CardTitle className="text-base line-clamp-2 group-hover:text-red-600 transition-colors">
+                      {pdf.title}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-3">
+                      {pdf.description}
+                    </CardDescription>
+                  </CardHeader>
 
-                  {/* Action Buttons */}
-                  <div className="flex space-x-2">
-                    <Button 
-                      variant="default" 
-                      size="sm" 
-                      className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 shadow-md hover:shadow-lg"
-                      onClick={() => handleViewPDF(pdf)}
-                    >
+                  <CardContent className="pb-3">
+                    {/* PDF Metadata */}
+                    <div className="flex items-center justify-between text-xs mb-2">
+                      <div className="flex items-center space-x-2 text-gray-600">
+                        <div className="flex items-center space-x-1 bg-gray-100 px-1.5 py-0.5 rounded">
+                          <Icon name="File" size={12} className="text-gray-700" />
+                          <span className="font-medium">{pdf.fileSize}</span>
+                        </div>
+                        <div className="flex items-center space-x-1 bg-gray-100 px-1.5 py-0.5 rounded">
+                          <Icon name="FileText" size={12} className="text-gray-700" />
+                          <span className="font-medium">{pdf.pages} pages</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500 flex items-center gap-1">
+                      <Icon name="Clock" size={11} />
+                      <span>{formatDate(pdf.uploadedAt)}</span>
+                    </div>
+                  </CardContent>
+
+                  <CardFooter className="pt-3">
+                    {/* Action Buttons */}
+                    <div className="flex space-x-2 w-full">
+                      <Button 
+                        className="flex-1 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 shadow-md hover:shadow-lg"
+                        size="sm"
+                        onClick={() => handleViewPDF(pdf)}
+                      >
                       <Icon name="Eye" size={16} className="mr-2" />
                       View PDF
                     </Button>
-                  </div>
-                </div>
+                    </div>
+                  </CardFooter>
+                </Card>
               ))
             )}
           </div>

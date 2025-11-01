@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
+import { Progress } from '@/components/ui/progress.tsx';
 import { passwordService } from '../../services/passwordService';
 
 const ResetPasswordPage = () => {
@@ -122,29 +126,30 @@ const ResetPasswordPage = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-              <Icon name="AlertCircle" size={20} className="text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
-            </div>
+            <Alert variant="destructive" className="mb-6">
+              <Icon name="AlertCircle" size={20} className="flex-shrink-0" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           {/* Form */}
           <form onSubmit={handleResetPassword} className="space-y-6">
             {/* New Password Field */}
-            <div>
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-900 mb-2">
+            <div className="space-y-2">
+              <Label htmlFor="newPassword" className="flex items-center space-x-2">
                 <Icon name="Lock" size={16} className="text-orange-600" />
                 <span>New Password</span>
-              </label>
+              </Label>
               <div className="relative">
-                <input
+                <Input
+                  id="newPassword"
                   type={showPassword ? 'text' : 'password'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   autoComplete="new-password"
-                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="Enter new password"
                   disabled={loading}
+                  className="pr-12"
                 />
                 <button
                   type="button"
@@ -179,20 +184,21 @@ const ResetPasswordPage = () => {
             </div>
 
             {/* Confirm Password Field */}
-            <div>
-              <label className="flex items-center space-x-2 text-sm font-medium text-gray-900 mb-2">
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="flex items-center space-x-2">
                 <Icon name="CheckCircle" size={16} className="text-orange-600" />
                 <span>Confirm New Password</span>
-              </label>
+              </Label>
               <div className="relative">
-                <input
+                <Input
+                  id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   autoComplete="new-password"
-                  className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all"
                   placeholder="Confirm new password"
                   disabled={loading}
+                  className="pr-12"
                 />
                 <button
                   type="button"
@@ -213,12 +219,20 @@ const ResetPasswordPage = () => {
             {/* Submit Button */}
             <Button
               type="submit"
-              loading={loading}
-              disabled={!newPassword || !confirmPassword || newPassword !== confirmPassword}
+              disabled={!newPassword || !confirmPassword || newPassword !== confirmPassword || loading}
               className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
             >
-              <Icon name="Key" size={20} className="mr-2" />
-              Reset Password
+              {loading ? (
+                <>
+                  <Icon name="Loader" size={20} className="mr-2 animate-spin" />
+                  Resetting...
+                </>
+              ) : (
+                <>
+                  <Icon name="Key" size={20} className="mr-2" />
+                  Reset Password
+                </>
+              )}
             </Button>
           </form>
 

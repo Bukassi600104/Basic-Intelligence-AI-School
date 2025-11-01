@@ -4,8 +4,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import { passwordService } from '../../services/passwordService';
 import { supabase } from '../../lib/supabase';
 import GeometricBackground from '../../components/ui/GeometricBackground';
-import Button from '../../components/ui/Button';
-import Input from '../../components/ui/Input';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
+import { Progress } from '@/components/ui/progress.tsx';
 import Icon from '../../components/AppIcon';
 import { logger } from '../../utils/logger';
 
@@ -175,91 +178,103 @@ const ForcePasswordChangePage = () => {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg animate-slideDown">
-              <div className="flex items-center space-x-2">
-                <Icon name="AlertCircle" size={20} className="text-red-600 flex-shrink-0" />
-                <span className="text-red-700 text-sm">{error}</span>
-              </div>
-            </div>
+            <Alert variant="destructive" className="mb-6 animate-slideDown">
+              <Icon name="AlertCircle" size={20} className="flex-shrink-0" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           {/* Password Change Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="relative">
-              <Input
-                label="Current Temporary Password"
-                name="currentPassword"
-                type={showCurrentPassword ? "text" : "password"}
-                autoComplete="current-password"
-                required
-                value={formData.currentPassword}
-                onChange={handleInputChange}
-                placeholder="Enter temporary password"
-                disabled={loading}
-                className="pr-12"
-              />
-              <button
-                type="button"
-                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
-              >
-                <Icon name={showCurrentPassword ? "EyeOff" : "Eye"} size={18} />
-              </button>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="currentPassword">Current Temporary Password</Label>
+              <div className="relative">
+                <Input
+                  id="currentPassword"
+                  name="currentPassword"
+                  type={showCurrentPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  required
+                  value={formData.currentPassword}
+                  onChange={handleInputChange}
+                  placeholder="Enter temporary password"
+                  disabled={loading}
+                  className="pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                >
+                  <Icon name={showCurrentPassword ? "EyeOff" : "Eye"} size={18} />
+                </button>
+              </div>
             </div>
 
-            <div className="relative">
-              <Input
-                label="New Password"
-                name="newPassword"
-                type={showNewPassword ? "text" : "password"}
-                autoComplete="new-password"
-                required
-                value={formData.newPassword}
-                onChange={handleInputChange}
-                placeholder="Minimum 6 characters"
-                disabled={loading}
-                className="pr-12"
-              />
-              <button
-                type="button"
-                onClick={() => setShowNewPassword(!showNewPassword)}
-                className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
-              >
-                <Icon name={showNewPassword ? "EyeOff" : "Eye"} size={18} />
-              </button>
+            <div className="space-y-2">
+              <Label htmlFor="newPassword">New Password</Label>
+              <div className="relative">
+                <Input
+                  id="newPassword"
+                  name="newPassword"
+                  type={showNewPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={formData.newPassword}
+                  onChange={handleInputChange}
+                  placeholder="Minimum 6 characters"
+                  disabled={loading}
+                  className="pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                >
+                  <Icon name={showNewPassword ? "EyeOff" : "Eye"} size={18} />
+                </button>
+              </div>
             </div>
 
-            <div className="relative">
-              <Input
-                label="Confirm New Password"
-                name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                autoComplete="new-password"
-                required
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                placeholder="Re-enter new password"
-                disabled={loading}
-                className="pr-12"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform translate-y-1 text-gray-400 hover:text-gray-600 transition-colors z-10"
-              >
-                <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
-              </button>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm New Password</Label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Re-enter new password"
+                  disabled={loading}
+                  className="pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors z-10"
+                >
+                  <Icon name={showConfirmPassword ? "EyeOff" : "Eye"} size={18} />
+                </button>
+              </div>
             </div>
 
             <Button
               type="submit"
-              variant="orange"
-              fullWidth
-              loading={loading}
-              disabled={loading}
+              className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-700 hover:to-orange-600"
               size="lg"
+              disabled={loading}
             >
-              {loading ? 'Changing Password...' : 'Change Password'}
+              {loading ? (
+                <>
+                  <Icon name="Loader" size={18} className="mr-2 animate-spin" />
+                  Changing Password...
+                </>
+              ) : (
+                'Change Password'
+              )}
             </Button>
           </form>
 
