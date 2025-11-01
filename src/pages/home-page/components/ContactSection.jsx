@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
-import Button from '../../../components/ui/Button';
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardContent } from '@/components/ui/card.tsx';
 
 const ContactSection = () => {
   const handleWhatsAppClick = () => {
@@ -67,25 +68,25 @@ const ContactSection = () => {
           {/* Action Buttons - Enhanced */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 max-w-2xl mx-auto animate-slideUp" style={{ animationDelay: '0.2s' }}>
             {/* WhatsApp Button */}
-            <button
+            <Button
               onClick={handleWhatsAppClick}
-              className="group relative w-full sm:w-auto px-10 py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-base font-bold rounded-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 overflow-hidden"
+              size="lg"
+              className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-xl"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <div className="relative flex items-center justify-center space-x-3">
-                <Icon name="MessageCircle" size={22} className="group-hover:rotate-12 transition-transform" />
-                <span>Chat on WhatsApp</span>
-              </div>
-            </button>
+              <Icon name="MessageCircle" size={22} className="mr-2" />
+              <span>Chat on WhatsApp</span>
+            </Button>
 
             {/* Contact Form Button */}
             <Link to="/contact" className="w-full sm:w-auto">
-              <button className="group relative w-full px-10 py-5 bg-white/90 backdrop-blur-sm text-gray-900 text-base font-bold rounded-xl border-2 border-gray-300 hover:border-orange-500 hover:shadow-xl hover:scale-105 transition-all duration-300">
-                <div className="flex items-center justify-center space-x-3">
-                  <Icon name="Mail" size={22} className="text-orange-600 group-hover:scale-110 transition-transform" />
-                  <span>Contact Form</span>
-                </div>
-              </button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="w-full bg-white/90 backdrop-blur-sm border-2 hover:border-orange-500"
+              >
+                <Icon name="Mail" size={22} className="mr-2 text-orange-600" />
+                <span>Contact Form</span>
+              </Button>
             </Link>
           </div>
 

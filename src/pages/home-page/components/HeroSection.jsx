@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/AppIcon';
-import Button from '../../../components/ui/Button';
+import { Button } from '@/components/ui/button.tsx';
 
 const HeroSection = () => {
   return (
@@ -71,22 +71,24 @@ const HeroSection = () => {
           {/* CTA Buttons with Orange Theme */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 animate-slideUp" style={{ animationDelay: '0.5s' }}>
             <Link to="/join-membership-page" className="w-full sm:w-auto">
-              <button className="group relative w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-base font-bold rounded-xl shadow-lg hover:shadow-xl hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300 overflow-hidden">
-                <span className="relative z-10 flex items-center justify-center space-x-2">
-                  <span>Join Now</span>
-                  <Icon name="ArrowRight" size={20} className="group-hover:translate-x-1 transition-transform" />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </button>
+              <Button 
+                size="lg"
+                className="w-full sm:w-auto bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-600 text-white shadow-lg hover:shadow-xl hover:shadow-orange-500/50"
+              >
+                <span>Join Now</span>
+                <Icon name="ArrowRight" size={20} className="ml-2" />
+              </Button>
             </Link>
             
             <Link to="/about-page" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-sm text-gray-900 text-base font-bold rounded-xl border-2 border-gray-300 hover:border-orange-500 hover:shadow-lg hover:scale-105 transition-all duration-300">
-                <span className="flex items-center justify-center space-x-2">
-                  <Icon name="Info" size={20} />
-                  <span>Learn More</span>
-                </span>
-              </button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto bg-white/90 backdrop-blur-sm border-2 hover:border-orange-500"
+              >
+                <Icon name="Info" size={20} className="mr-2" />
+                <span>Learn More</span>
+              </Button>
             </Link>
           </div>
 
