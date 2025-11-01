@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
-import Button from '../../../components/ui/Button';
-import Input from '../../../components/ui/Input';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Textarea } from '@/components/ui/textarea.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
 import Icon from '../../../components/AppIcon';
-import Select from '../../../components/ui/Select';
 import { contentService } from '../../../services/contentService';
 
 const CourseForm = ({

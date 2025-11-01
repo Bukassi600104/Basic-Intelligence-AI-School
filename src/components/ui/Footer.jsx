@@ -1,5 +1,8 @@
 import React from 'react';
 import WhatsAppButton from './WhatsAppButton';
+import { Button } from '@/components/ui/button.tsx';
+import { Separator } from '@/components/ui/separator.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
 
 const Footer = () => {
   return (

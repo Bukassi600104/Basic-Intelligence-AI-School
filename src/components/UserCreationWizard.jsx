@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import Icon from './AppIcon';
 import PhoneInput from './ui/PhoneInput';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
+import { Textarea } from '@/components/ui/textarea.tsx';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group.tsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { Separator } from '@/components/ui/separator.tsx';
 
 const UserCreationWizard = ({ onSubmit, onClose, actionLoading }) => {
   const [currentStep, setCurrentStep] = useState(1);

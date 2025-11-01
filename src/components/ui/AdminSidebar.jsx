@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Icon from '../AppIcon';
-import Button from './Button';
+import { Button } from '@/components/ui/button.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu.tsx';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { Separator } from '@/components/ui/separator.tsx';
 
 const AdminSidebar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

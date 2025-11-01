@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
-import Button from '../../../components/ui/Button';
-import Input from '../../../components/ui/Input';
+import { Button } from '@/components/ui/button.tsx';
+import { Input } from '@/components/ui/input.tsx';
+import { Label } from '@/components/ui/label.tsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import PhoneInput from '../../../components/ui/PhoneInput';
 
 const PaymentSubmissionForm = () => {
