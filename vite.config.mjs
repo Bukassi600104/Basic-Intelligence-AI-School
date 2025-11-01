@@ -2,11 +2,18 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import tagger from "@dhiwise/component-tagger";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   // Base path for the application
   base: process.env.VITE_BASE_PATH || "/",
+  
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   
   build: {
     outDir: "dist",
