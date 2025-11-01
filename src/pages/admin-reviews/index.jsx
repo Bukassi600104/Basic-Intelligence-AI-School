@@ -3,7 +3,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import AdminSidebar from '../../components/ui/AdminSidebar';
 import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog.tsx';
+import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { reviewService } from '../../services/reviewService';
 
 const AdminReviews = () => {
