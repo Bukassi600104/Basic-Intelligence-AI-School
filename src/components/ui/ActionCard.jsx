@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from '../AppIcon';
-import Button from './Button';
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 
 /**
  * Action card component for quick access features

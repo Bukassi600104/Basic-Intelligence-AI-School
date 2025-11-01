@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from './Modal';
 import Icon from '../AppIcon';
-import Button from './Button';
+import { Button } from '@/components/ui/button.tsx';
 
 const AlertDialog = ({ 
   isOpen, 

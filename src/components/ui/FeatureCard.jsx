@@ -1,5 +1,7 @@
 import React from 'react';
 import Icon from '../AppIcon';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
 
 /**
  * Feature card for displaying content, courses, or features
