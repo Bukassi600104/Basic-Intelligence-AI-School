@@ -251,16 +251,16 @@ module.exports = {
   			'slide-in': 'slide-in 0.3s ease-out',
   			'slide-out': 'slide-out 0.3s ease-out',
   			'bounce-in': 'bounce-in 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-  			'fadeIn': 'fadeIn 0.5s ease-out',
-  			'slideDown': 'slideDown 0.3s ease-out',
-  			'slideUp': 'slideUp 0.3s ease-out',
-  			'scaleIn': 'scaleIn 0.3s ease-out',
+  			fadeIn: 'fadeIn 0.5s ease-out',
+  			slideDown: 'slideDown 0.3s ease-out',
+  			slideUp: 'slideUp 0.3s ease-out',
+  			scaleIn: 'scaleIn 0.3s ease-out',
   			'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-  			'glow': 'glow 2s ease-in-out infinite',
-  			'float': 'float 3s ease-in-out infinite',
+  			glow: 'glow 2s ease-in-out infinite',
+  			float: 'float 3s ease-in-out infinite',
   			'float-delayed': 'float 6s ease-in-out infinite 3s',
-  			'shimmer': 'shimmer 2s linear infinite',
-  			'gradient': 'gradient 8s ease infinite'
+  			shimmer: 'shimmer 2s linear infinite',
+  			gradient: 'gradient 8s ease infinite'
   		},
   		keyframes: {
   			'accordion-down': {
@@ -331,7 +331,7 @@ module.exports = {
   					opacity: '1'
   				}
   			},
-  			'fadeIn': {
+  			fadeIn: {
   				'0%': {
   					opacity: '0',
   					transform: 'translateY(10px)'
@@ -341,7 +341,7 @@ module.exports = {
   					transform: 'translateY(0)'
   				}
   			},
-  			'slideDown': {
+  			slideDown: {
   				'0%': {
   					opacity: '0',
   					transform: 'translateY(-10px)'
@@ -351,7 +351,7 @@ module.exports = {
   					transform: 'translateY(0)'
   				}
   			},
-  			'slideUp': {
+  			slideUp: {
   				'0%': {
   					opacity: '0',
   					transform: 'translateY(10px)'
@@ -361,7 +361,7 @@ module.exports = {
   					transform: 'translateY(0)'
   				}
   			},
-  			'scaleIn': {
+  			scaleIn: {
   				'0%': {
   					opacity: '0',
   					transform: 'scale(0.9)'
@@ -371,7 +371,7 @@ module.exports = {
   					transform: 'scale(1)'
   				}
   			},
-  			'glow': {
+  			glow: {
   				'0%, 100%': {
   					opacity: '1'
   				},
@@ -379,7 +379,7 @@ module.exports = {
   					opacity: '0.5'
   				}
   			},
-  			'float': {
+  			float: {
   				'0%, 100%': {
   					transform: 'translateY(0px)'
   				},
@@ -387,7 +387,7 @@ module.exports = {
   					transform: 'translateY(-10px)'
   				}
   			},
-  			'shimmer': {
+  			shimmer: {
   				'0%': {
   					backgroundPosition: '-1000px 0'
   				},
@@ -395,7 +395,7 @@ module.exports = {
   					backgroundPosition: '1000px 0'
   				}
   			},
-  			'gradient': {
+  			gradient: {
   				'0%, 100%': {
   					backgroundPosition: '0% 50%'
   				},
