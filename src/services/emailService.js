@@ -117,27 +117,13 @@ export const emailService = {
   // IMPORTANT: Resend API should NEVER be called from the client due to CORS and security
   async sendEmailViaResend(emailData) {
     try {
-      // TEMPORARY WORKAROUND: Log email instead of sending
-      // TODO: Implement Supabase Edge Function for server-side email sending
-      logger.info('Email would be sent:', {
+      logger.info('Sending email via Supabase Edge Function:', {
         to: emailData.to,
         subject: emailData.subject,
         from: emailData.from
       });
 
-      // For now, just log and return success
-      // In production, this should call a Supabase Edge Function
-      return { 
-        success: true, 
-        data: { 
-          id: 'mock-email-id-' + Date.now(),
-          message: 'Email logged (not sent - awaiting Edge Function implementation)'
-        } 
-      };
-
-      /* 
-      PROPER IMPLEMENTATION (requires Supabase Edge Function):
-      
+      // Call Supabase Edge Function to send email via Resend
       const { data, error } = await supabase.functions.invoke('send-email', {
         body: {
           to: emailData.to,
@@ -149,11 +135,11 @@ export const emailService = {
 
       if (error) {
         logger.error('Edge Function error:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: error.message || 'Failed to call Edge Function' };
       }
 
+      logger.info('Email sent successfully via Edge Function:', { id: data?.id });
       return { success: true, data };
-      */
     } catch (error) {
       logger.error('Error in email service:', error);
       return { success: false, error: error.message || 'Failed to send email' };
