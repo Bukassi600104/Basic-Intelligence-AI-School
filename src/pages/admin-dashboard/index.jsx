@@ -9,7 +9,10 @@ import AlertsPanel from './components/AlertsPanel';
 import SystemStatusPanel from './components/SystemStatusPanel';
 import RecentUploadsWidget from './components/RecentUploadsWidget';
 import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
+import { Button } from '@/components/ui/button.tsx';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert.tsx';
+import { Skeleton } from '@/components/ui/skeleton.tsx';
 import { adminService } from '../../services/adminService';
 
 
