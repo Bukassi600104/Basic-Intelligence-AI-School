@@ -89,34 +89,43 @@ const SignUpPage = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user && userProfile) {
-      // Check for login intent first
-      const intent = getLoginIntent();
-      if (intent && intent.path) {
-        // Build URL with query parameters if present
-        let redirectUrl = intent.path;
-        const params = new URLSearchParams();
-        if (intent.contentId) params.append('contentId', intent.contentId);
-        if (intent.featured) params.append('featured', 'true');
-        
-        if (params.toString()) {
-          redirectUrl = `${intent.path}?${params.toString()}`;
-        }
-
-        // Clear intent and redirect
-        clearLoginIntent();
-        navigate(redirectUrl, { replace: true });
-        return;
-      }
-
-      // Default redirect based on role
-      if (userProfile.role === 'admin') {
-        navigate('/admin-dashboard');
-      } else {
-        navigate('/student-dashboard');
-      }
+    // Prevent redirect loop - only redirect if we have complete auth state
+    if (!user || !userProfile) {
+      return;
     }
-  }, [user, userProfile, navigate, getLoginIntent, clearLoginIntent]);
+
+    console.log('SignUp redirect check:', {
+      hasUser: !!user,
+      hasProfile: !!userProfile,
+      role: userProfile?.role
+    });
+
+    // Check for login intent first
+    const intent = getLoginIntent();
+    if (intent && intent.path) {
+      // Build URL with query parameters if present
+      let redirectUrl = intent.path;
+      const params = new URLSearchParams();
+      if (intent.contentId) params.append('contentId', intent.contentId);
+      if (intent.featured) params.append('featured', 'true');
+      
+      if (params.toString()) {
+        redirectUrl = `${intent.path}?${params.toString()}`;
+      }
+
+      // Clear intent and redirect
+      clearLoginIntent();
+      navigate(redirectUrl, { replace: true });
+      return;
+    }
+
+    // Default redirect based on role
+    if (userProfile.role === 'admin') {
+      navigate('/admin-dashboard', { replace: true });
+    } else {
+      navigate('/student-dashboard', { replace: true });
+    }
+  }, [user, userProfile]);
 
   const validateForm = () => {
     if (!formData?.fullName?.trim()) {
@@ -352,18 +361,18 @@ const SignUpPage = () => {
     <div className="flex min-h-screen">
       {/* Left Panel - Geometric Pattern Background */}
       <GeometricBackground className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white relative">
-        {/* Logo at top */}
-        <Link to="/" className="absolute top-8 left-8 z-30">
-          <div className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-              <Icon name="GraduationCap" size={20} className="text-white" />
+        {/* Central content - properly centered including logo */}
+        <div className="flex flex-col items-center justify-center w-full max-w-lg text-center z-20 px-8 space-y-6">
+          {/* Logo - centered as part of content */}
+          <Link to="/" className="hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-3 justify-center">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Icon name="GraduationCap" size={24} className="text-white" />
+              </div>
+              <span className="text-2xl font-bold">Basic Intelligence</span>
             </div>
-            <span className="text-lg font-bold">Basic Intelligence</span>
-          </div>
-        </Link>
-        
-        {/* Central content */}
-        <div className="max-w-lg text-center z-20 px-6 space-y-6">
+          </Link>
+          
           <div className="inline-block">
             <span className="bg-orange-500/20 text-orange-300 px-4 py-2 rounded-full text-sm border border-orange-500/30 font-medium backdrop-blur-sm">
               Start Your Journey
@@ -374,13 +383,13 @@ const SignUpPage = () => {
             Join Thousands of Students
           </h1>
           
-          <p className="text-lg lg:text-xl text-gray-300 leading-relaxed max-w-md mx-auto">
+          <p className="text-lg lg:text-xl text-gray-300 leading-relaxed max-w-md">
             Get instant access to our comprehensive AI courses and tutorials.
           </p>
         </div>
         
         {/* Pagination dots at bottom */}
-        <div className="absolute bottom-8 flex gap-2 z-30">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-40">
           <div className="w-2 h-2 rounded-full bg-gray-600"></div>
           <div className="w-2 h-2 rounded-full bg-orange-500 shadow-lg"></div>
           <div className="w-2 h-2 rounded-full bg-gray-600"></div>
