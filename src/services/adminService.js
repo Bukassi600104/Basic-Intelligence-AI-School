@@ -1,5 +1,4 @@
 import { supabase } from '../lib/supabase';
-import { supabaseAdmin } from '../lib/supabaseAdmin';
 import { passwordService } from './passwordService';
 import { notificationService } from './notificationService';
 import { logger } from '../utils/logger';
@@ -319,20 +318,21 @@ export const adminService = {
         }
       }
 
-      // Check auth.users via admin API
-      if (supabaseAdmin) {
-        try {
-          const { data: existingAuthUser } = await supabaseAdmin.auth.admin.getUserByIdentifier(userData.email);
-          if (existingAuthUser) {
-            logger.warn('User exists in auth system');
-            return { data: null, error: 'User with this email already exists in authentication system' };
+      // Check auth.users via Edge Function
+      try {
+        const { data: checkResponse, error: checkError } = await supabase.functions.invoke('admin-operations', {
+          body: {
+            operation: 'get_user_by_email',
+            email: userData.email
           }
-        } catch (authCheckError) {
-          logger.info('No existing auth user found (good)');
+        });
+        
+        if (!checkError && checkResponse?.data?.userId) {
+          logger.warn('User exists in auth system');
+          return { data: null, error: 'User with this email already exists in authentication system' };
         }
-      } else {
-        logger.error('❌ CRITICAL: Admin service key not configured!');
-        return { data: null, error: 'Server configuration error: Admin service key not configured. Contact support.' };
+      } catch (authCheckError) {
+        logger.info('No existing auth user found (good)');
       }
 
       // STEP 2: Generate secure password
@@ -346,8 +346,8 @@ export const adminService = {
       const tempPassword = passwordResult.password;
       logger.info('✅ Password generated successfully');
 
-      // STEP 3: Create auth user with comprehensive metadata
-      logger.info('Step 3: Creating authentication user...');
+      // STEP 3: Create auth user via Edge Function (server-side with service key)
+      logger.info('Step 3: Creating authentication user via Edge Function...');
       logger.info('User metadata:', {
         full_name: userData.full_name,
         phone: userData.phone || null,
@@ -358,46 +358,33 @@ export const adminService = {
         created_by_admin: true
       });
 
-      const { data: authUserData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: userData.email,
-        password: tempPassword,
-        email_confirm: true,
-        user_metadata: {
-          full_name: userData.full_name,
-          phone: userData.phone || null,
-          location: userData.location || null,
-          role: userData?.role || 'student',
-          membership_tier: userData?.membership_tier || 'starter',
-          membership_status: userData?.membership_status || 'pending',
-          created_by_admin: true  // CRITICAL: This triggers must_change_password
-        }
-      });
+      const { data: edgeFunctionResponse, error: edgeFunctionError } = 
+        await supabase.functions.invoke('admin-operations', {
+          body: {
+            operation: 'create_user',
+            email: userData.email,
+            password: tempPassword
+          }
+        });
 
-      if (authError) {
+      if (edgeFunctionError || !edgeFunctionResponse?.success) {
         logger.error('❌ AUTH USER CREATION FAILED');
-        logger.error('Error object:', authError);
-        logger.error('Error message:', authError?.message);
-        logger.error('Error code:', authError?.code);
-        logger.error('Error status:', authError?.status);
-        logger.error('Error details:', authError?.details);
-        logger.error('Full error JSON:', JSON.stringify(authError, null, 2));
+        logger.error('Error:', edgeFunctionResponse?.error || edgeFunctionError?.message);
         
-        // Return detailed error with troubleshooting hints
-        const errorMessage = authError?.message || authError?.msg || 'Unknown authentication error';
+        const errorMessage = edgeFunctionResponse?.error || edgeFunctionError?.message || 'Unknown authentication error';
         return { 
           data: null, 
           error: `Authentication failed: ${errorMessage}. 
           
 Troubleshooting:
-1. Check Supabase Dashboard → Database → Logs for trigger errors
-2. Verify PHASE_2_NUCLEAR_FIX.sql was run successfully
-3. Check that handle_new_user() trigger exists and is enabled
-4. Review browser console for additional error details` 
+1. Check Supabase Dashboard → Edge Functions → admin-operations logs
+2. Verify admin-operations function is deployed
+3. Review browser console for additional error details` 
         };
       }
 
-      const authUser = authUserData;
-      logger.info('✅ Auth user created:', authUser.user.id);
+      const authUserId = edgeFunctionResponse.data.userId;
+      logger.info('✅ Auth user created:', authUserId);
 
       let data = null;
       let error = null;
@@ -407,7 +394,7 @@ Troubleshooting:
         logger.info('Step 4: Creating admin profile in admin_users table...');
         
         const newAdminData = {
-          auth_user_id: authUser.user.id,
+          auth_user_id: authUserId,
           email: userData.email,
           full_name: userData.full_name,
           phone: userData.phone || null,
@@ -416,7 +403,7 @@ Troubleshooting:
           updated_at: new Date().toISOString()
         };
 
-        const result = await supabaseAdmin
+        const result = await supabase
           .from('admin_users')
           .insert([newAdminData])
           .select()
@@ -454,7 +441,7 @@ Troubleshooting:
           const result = await supabase
             .from('user_profiles')
             .select('*')
-            .eq('id', authUser.user.id)
+            .eq('id', authUserId)
             .single();
           
           data = result.data;
@@ -481,7 +468,12 @@ Troubleshooting:
         // Clean up auth user since profile creation failed
         logger.warn('Cleaning up auth user due to profile creation failure...');
         try {
-          await supabaseAdmin.auth.admin.deleteUser(authUser.user.id);
+          await supabase.functions.invoke('admin-operations', {
+            body: {
+              operation: 'delete_user',
+              userId: authUserId
+            }
+          });
           logger.info('Auth user cleanup successful');
         } catch (cleanupError) {
           logger.error('Auth user cleanup failed:', cleanupError);
@@ -506,7 +498,7 @@ Troubleshooting:
       try {
         // Send the same welcome email that self-registered users receive
         await notificationService.sendNotification({
-          userId: authUser.user.id,
+          userId: authUserId,
           templateName: 'Registration Thank You',
           variables: {
             full_name: userData.full_name,
@@ -529,7 +521,7 @@ Troubleshooting:
       try {
         // Also send a specific email with login credentials (if template exists)
         await notificationService.sendNotification({
-          userId: authUser.user.id,
+          userId: authUserId,
           templateName: 'Admin Created Account',
           variables: {
             full_name: userData.full_name,
@@ -681,12 +673,17 @@ Troubleshooting:
           return { data: null, error: deleteError.message || 'Failed to delete admin user' };
         }
 
-        // Delete from auth.users
-        if (supabaseAdmin) {
-          const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(userId);
-          if (deleteAuthError) {
-            logger.error('Delete auth user error:', deleteAuthError);
-          }
+        // Delete from auth.users via Edge Function
+        const { data: deleteAuthResponse, error: deleteAuthError } = 
+          await supabase.functions.invoke('admin-operations', {
+            body: {
+              operation: 'delete_user',
+              userId: userId
+            }
+          });
+
+        if (deleteAuthError || !deleteAuthResponse?.success) {
+          logger.error('Delete auth user error:', deleteAuthError || deleteAuthResponse?.error);
         }
 
         logger.info(`Admin deleted: ${adminUser.email} (${adminUser.admin_id})`);
@@ -752,18 +749,20 @@ Troubleshooting:
         return { data: null, error: deleteProfileError?.message || 'Failed to delete user profile' };
       }
 
-      // Step 2: Delete user from auth.users table using admin API
-      if (supabaseAdmin) {
-        const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(userId);
-        
-        if (deleteAuthError) {
-          logger.error('Delete auth user error:', deleteAuthError);
-          // Even if auth deletion fails, we've already deleted the profile
-          // Log the error but don't fail the operation
-          logger.warn(`Auth user deletion failed for ${user?.email}, but profile was deleted`);
-        }
-      } else {
-        logger.warn('Admin client not available, auth user not deleted');
+      // Step 2: Delete user from auth.users table using Edge Function
+      const { data: deleteAuthResponse, error: deleteAuthError } = 
+        await supabase.functions.invoke('admin-operations', {
+          body: {
+            operation: 'delete_user',
+            userId: userId
+          }
+        });
+      
+      if (deleteAuthError || !deleteAuthResponse?.success) {
+        logger.error('Delete auth user error:', deleteAuthError || deleteAuthResponse?.error);
+        // Even if auth deletion fails, we've already deleted the profile
+        // Log the error but don't fail the operation
+        logger.warn(`Auth user deletion failed for ${user?.email}, but profile was deleted`);
       }
 
       // Step 3: Clean up associated records (optional but recommended)
@@ -838,31 +837,34 @@ Troubleshooting:
         return { data: null, error: deleteProfileError?.message || 'Failed to delete users' };
       }
 
-      // Step 2: Delete users from auth.users table using admin API
-      if (supabaseAdmin) {
-        // Delete auth users one by one (Supabase doesn't support bulk auth deletion)
-        const authDeletionPromises = users.map(async (user) => {
-          try {
-            const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
-            if (deleteAuthError) {
-              logger.warn(`Auth user deletion failed for ${user?.email}:`, deleteAuthError);
-              return { success: false, email: user.email, error: deleteAuthError.message };
-            }
-            return { success: true, email: user.email };
-          } catch (error) {
-            logger.warn(`Auth user deletion failed for ${user?.email}:`, error);
-            return { success: false, email: user.email, error: error.message };
-          }
-        });
+      // Step 2: Delete users from auth.users table using Edge Function
+      // Delete auth users one by one (Supabase doesn't support bulk auth deletion)
+      const authDeletionPromises = users.map(async (user) => {
+        try {
+          const { data: deleteAuthResponse, error: deleteAuthError } = 
+            await supabase.functions.invoke('admin-operations', {
+              body: {
+                operation: 'delete_user',
+                userId: user.id
+              }
+            });
 
-        const authResults = await Promise.all(authDeletionPromises);
-        const failedAuthDeletions = authResults.filter(result => !result.success);
-        
-        if (failedAuthDeletions.length > 0) {
-          logger.warn(`Failed to delete ${failedAuthDeletions.length} auth users:`, failedAuthDeletions);
+          if (deleteAuthError || !deleteAuthResponse?.success) {
+            logger.warn(`Auth user deletion failed for ${user?.email}:`, deleteAuthError || deleteAuthResponse?.error);
+            return { success: false, email: user.email, error: (deleteAuthError || deleteAuthResponse?.error)?.message };
+          }
+          return { success: true, email: user.email };
+        } catch (error) {
+          logger.warn(`Auth user deletion failed for ${user?.email}:`, error);
+          return { success: false, email: user.email, error: error?.message };
         }
-      } else {
-        logger.warn('Admin client not available, auth users not deleted');
+      });
+
+      const authResults = await Promise.all(authDeletionPromises);
+      const failedAuthDeletions = authResults.filter(result => !result.success);
+      
+      if (failedAuthDeletions.length > 0) {
+        logger.warn(`Failed to delete ${failedAuthDeletions.length} auth users:`, failedAuthDeletions);
       }
 
       // Step 3: Clean up associated records for all users

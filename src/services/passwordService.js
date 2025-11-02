@@ -1,5 +1,4 @@
 import { supabase } from '../lib/supabase';
-import { supabaseAdmin } from '../lib/supabaseAdmin';
 import { logger } from '../utils/logger';
 
 export const passwordService = {
@@ -36,20 +35,26 @@ export const passwordService = {
     return array.join('');
   },
 
-  // Set password for a user using admin API
+  // Set password for a user using Edge Function (server-side with service key)
   async setUserPassword(userId, password) {
     try {
-      const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
-        userId,
-        { password: password }
-      );
+      // Call Edge Function to update password
+      const { data: response, error: edgeFunctionError } = 
+        await supabase.functions.invoke('admin-operations', {
+          body: {
+            operation: 'update_password',
+            userId: userId,
+            newPassword: password
+          }
+        });
 
-      if (error) {
-        logger.error('Password update error:', error);
-        return { success: false, error: error.message };
+      if (edgeFunctionError || !response?.success) {
+        const errorMsg = response?.error || edgeFunctionError?.message || 'Failed to update password';
+        logger.error('Password update error:', errorMsg);
+        return { success: false, error: errorMsg };
       }
 
-      return { success: true, data };
+      return { success: true, data: response.data };
     } catch (error) {
       logger.error('Password service error:', error);
       return { success: false, error: error.message };
