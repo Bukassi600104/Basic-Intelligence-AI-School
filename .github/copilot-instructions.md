@@ -1,495 +1,404 @@
 # AI Agent Instructions for Basic Intelligence Community School
 
 **Last Updated**: November 2, 2025  
-**Project Status**: ✅ LIVE ON VERCEL - Production Environment  
-**Node Version**: v18+ recommended  
-**Build Tool**: Vite 5.4.20
+**Project Status**: ✅ LIVE ON VERCEL  
+**Core Stack**: React 18 + Vite 5.4.20 + Supabase + TailwindCSS 3.4.6
 
 ---
 
-## 🔧 MCP Servers Available - USE THESE FOR EVERY TASK
+## 🔧 MCP Servers - Use These for Every Task
 
-### **⚠️ CRITICAL: ALWAYS use MCP servers for investigations and implementations**
+### ⚠️ CRITICAL WORKFLOW
 
-All MCP servers are configured in `.vscode/mcp.json` and must be started before beginning work:
+All 4 MCP servers configured in `.vscode/mcp.json`. **Always investigate with MCPs first** before coding:
 
-### **4 Active MCP Servers:**
+1. **Context7** → Fetch latest library docs
+2. **Supabase MCP** → Inspect schema & check RLS policies
+3. **Chrome DevTools MCP** → Debug & test rendering
+4. **Shadcn MCP** → Find components & examples
 
-#### 1. **Context7 (Documentation & Best Practices)**
-- **Type**: HTTP endpoint to Upstash Context7
-- **Use**: Get latest documentation and best practices before coding
-- **Tools Available**:
-  - `mcp_upstash_conte_resolve_library_id` - Find exact library documentation
-  - `mcp_upstash_conte_get_library_docs` - Fetch latest docs with examples
-  
-- **Workflow**:
-  ```
-  STEP 1: Identify what library you need (react, vite, tailwindcss, supabase, etc.)
-  STEP 2: Call resolve_library_id with library name
-  STEP 3: Get the returned Context7-compatible library ID
-  STEP 4: Call get_library_docs with the ID to fetch documentation
-  STEP 5: Read best practices BEFORE implementing features
-  ```
-
-- **Example Use Cases**:
-  - Before implementing React hooks: `resolve_library_id("react")` → `get_library_docs("/facebook/react")`
-  - Before using Tailwind utilities: `resolve_library_id("tailwindcss")` → `get_library_docs("/tailwindlabs/tailwindcss")`
-  - Before Supabase queries: `resolve_library_id("supabase")` → `get_library_docs("/supabase/supabase")`
-
-#### 2. **Supabase MCP (Database Operations)**
-- **Type**: Command-based MCP running via npx
-- **Use**: Inspect database schema, run migrations, check RLS policies, execute queries
-- **Tools Available**:
-  - `mcp_supabase_list_tables` - See all tables and schemas
-  - `mcp_supabase_list_extensions` - Check installed extensions
-  - `mcp_supabase_list_migrations` - View applied migrations
-  - `mcp_supabase_execute_sql` - Run SQL queries for inspection
-  - `mcp_supabase_apply_migration` - Create and apply new migrations
-  - `mcp_supabase_get_advisors` - Check security and performance issues
-  - `mcp_supabase_generate_typescript_types` - Generate types from schema
-
-- **Workflow Before Database Changes**:
-  ```
-  STEP 1: Call list_tables to see current schema
-  STEP 2: Call get_advisors to check for security issues
-  STEP 3: Design migration in a SQL file
-  STEP 4: Call apply_migration to execute
-  STEP 5: Verify with list_tables and advisors again
-  ```
-
-- **Example Use Cases**:
-  - Check if table exists: `mcp_supabase_list_tables`
-  - Verify RLS policies: `mcp_supabase_get_advisors` (type: "security")
-  - Test query: `mcp_supabase_execute_sql` with SELECT statement
-  - Create new table: `mcp_supabase_apply_migration` with CREATE TABLE statement
-
-#### 3. **Chrome DevTools MCP (Browser Inspection)**
-- **Type**: Command-based MCP for browser testing
-- **Use**: Inspect live websites, check console errors, verify network requests, measure performance
-- **Tools Available**:
-  - `mcp_chrome_devtoo_new_page` - Open URL in browser
-  - `mcp_chrome_devtoo_take_snapshot` - Get accessibility tree of page
-  - `mcp_chrome_devtoo_take_screenshot` - Capture visual screenshot
-  - `mcp_chrome_devtoo_list_console_messages` - See all console logs/errors
-  - `mcp_chrome_devtoo_list_network_requests` - Check API calls and assets
-  - `mcp_chrome_devtoo_evaluate_script` - Run JavaScript in browser
-  - `mcp_chrome_devtoo_performance_start_trace` - Measure Core Web Vitals
-
-- **Workflow for Debugging**:
-  ```
-  STEP 1: Call new_page with URL to test (e.g., https://www.basicai.fit)
-  STEP 2: Call take_snapshot to see what's rendered
-  STEP 3: Call list_console_messages to check for errors
-  STEP 4: Call list_network_requests to verify API calls
-  STEP 5: If errors: take_screenshot to visualize
-  STEP 6: Call evaluate_script to test JavaScript
-  ```
-
-- **Example Use Cases**:
-  - Test homepage rendering: `mcp_chrome_devtoo_new_page("https://www.basicai.fit")`
-  - Debug blank page: `mcp_chrome_devtoo_list_console_messages` to see errors
-  - Check API calls: `mcp_chrome_devtoo_list_network_requests` for failed requests
-  - Measure performance: `mcp_chrome_devtoo_performance_start_trace`
-
-#### 4. **Shadcn MCP (Component Library)**
-- **Type**: Command-based MCP for shadcn components
-- **Use**: Search for components, view examples, add new components
-- **Tools Available**:
-  - `mcp_shadcn_search_items_in_registries` - Find components
-  - `mcp_shadcn_view_items_in_registries` - See component details
-  - `mcp_shadcn_get_item_examples_from_registries` - Get usage examples
-  - `mcp_shadcn_get_add_command_for_items` - Get CLI command to add
-
-- **Workflow for Adding Components**:
-  ```
-  STEP 1: Identify component needed (button, card, dialog, etc.)
-  STEP 2: Call search_items with component name
-  STEP 3: Review examples: get_item_examples_from_registries
-  STEP 4: Get add command: get_add_command_for_items
-  STEP 5: Run the npx command to add component
-  STEP 6: Import and use in your code
-  ```
-
-- **Example Use Cases**:
-  - Find button component: `mcp_shadcn_search_items_in_registries("button")`
-  - See dialog component example: `mcp_shadcn_get_item_examples_from_registries("dialog-demo")`
-  - Add card component: `mcp_shadcn_get_add_command_for_items(["@shadcn/card"])`
-
-### **🚨 CRITICAL WORKFLOW - ALWAYS FOLLOW THIS:**
-
-**When given ANY task:**
-1. ✅ **Read this entire MCP section** to understand available tools
-2. ✅ **For documentation questions** → Use Context7 MCP FIRST
-3. ✅ **For database changes** → Use Supabase MCP to inspect FIRST
-4. ✅ **For frontend issues** → Use Chrome DevTools MCP to investigate
-5. ✅ **For component needs** → Use Shadcn MCP to find examples
-6. ✅ **Never skip MCP investigation** - It catches 80% of issues early
-
-**Example Task Workflow - "Add sign-in functionality":**
-```
-1. Context7: Get latest React hooks documentation
-2. Context7: Get latest Supabase auth documentation
-3. Supabase: Check user_profiles and auth tables exist
-4. Supabase: Verify RLS policies on user_profiles table
-5. Shadcn: Find button and input components for form
-6. Shadcn: Get form component examples
-7. Code: Implement sign-in page using docs + examples
-8. Chrome DevTools: Test the implementation
-9. Chrome DevTools: Check for console errors
-10. Chrome DevTools: Verify Supabase API calls succeed
-```
-
-### **MCP Server Configuration**
-- **Location**: `.vscode/mcp.json` (workspace-level)
-- **Status**: ✅ All 4 servers configured and running
-- **Project Ref**: `eremjpneqofidtktsfya` (Supabase project)
-- **Access**: Automatic - tools available in VS Code
+**Project Ref**: `eremjpneqofidtktsfya` (Supabase)
 
 ---
 
-## Project Overview
+## Architecture Overview
 
-**React 18 + Vite educational platform with Supabase backend**. Manages subscription tiers (Starter ₦5k, Pro ₦15k, Elite ₦25k), automated notifications, role-based access control, and comprehensive admin workflows for an AI learning community.
+### Frontend Structure (`src/`)
 
-### Frontend Stack
+```
+src/
+├── Routes.jsx                 # All routes (static + lazy-loaded)
+├── App.jsx                    # Env var validation, AuthProvider wrapper
+├── contexts/AuthContext.jsx   # Global auth state + profile loading
+├── pages/
+│   ├── auth/                  # SignIn, SignUp, PasswordReset (static imports)
+│   ├── admin-dashboard/       # Admin features (lazy-loaded)
+│   ├── student-dashboard/     # Student features (lazy-loaded)
+│   └── home-page/             # Public pages (static imports)
+├── components/ui/             # shadcn-based components (mix of .tsx & .jsx)
+├── services/                  # 18 backend services (pattern: {success, data, error})
+├── lib/
+│   ├── supabase.js            # Client (anon key)
+│   └── supabaseAdmin.js       # Admin client (service role key - server-side only)
+└── utils/logger.js            # Environment-aware logging
+```
 
-- **Build**: Vite 5.4.20 (dev port 4028) with React 18, TypeScript-style JSX
-- **Routing**: React Router v6 with role-based redirects in `src/Routes.jsx`
-- **State**: Context API (`AuthContext`) + service layer pattern
-- **Styling**: TailwindCSS 3.4.6 with custom design tokens, animations, AI-gradient utilities
-- **Data viz**: D3.js + Recharts for analytics dashboards
-- **Components**: shadcn + custom components in `src/components/ui/`
+**Routing Strategy**:
+- **Static imports** (`Routes.jsx`): Core pages (home, auth, pricing)
+- **Lazy-loaded** with `Suspense`: Admin pages, student pages (reduces initial bundle)
+- **PageLoader component** shown during route transitions
 
 ### Backend Architecture (Supabase)
 
-- **Auth**: Built-in Supabase auth with custom profile system
-- **Database**: PostgreSQL with strict Row Level Security (RLS) on all tables
-- **Key functions**: `has_admin_role()`, `admin_delete_user()`, `user_has_access_level()`
-- **Critical tables**:
-  - `user_profiles`: Core user data (role: 'admin'|'student', membership_status, tier)
-  - `content_library`: Digital assets (videos, PDFs) with tier-based access
-  - `courses`: Structured learning paths with instructor assignments
-  - `notification_templates` + `notification_logs`: Email system with variable substitution
-  - `subscription_requests`: Renewal/upgrade approval workflow
-  - `member_reviews`: Testimonials with moderation flags
+- **Auth**: Supabase built-in + custom `user_profiles` table
+- **Key tables**: `user_profiles`, `admin_users`, `content_library`, `courses`, `course_enrollments`, `notification_templates`, `notification_logs`, `subscription_requests`, `member_reviews`
+- **Security**: Row Level Security (RLS) enforced on **all** tables
+- **Functions**: `has_admin_role()`, `admin_delete_user()`, `user_has_access_level()`
+
+### Build Configuration (Vite)
+
+**⚠️ CRITICAL**: `vite.config.mjs` uses **minimal code-splitting** to prevent React initialization errors:
+- ✅ Splits: Individual admin/student/auth page chunks
+- ❌ **NO separate vendor chunks** — All `node_modules` (React, Radix, Supabase) stay in main entry
+- **Why**: Any async chunk trying to import React before it loads = blank page error
+
+**Build output**: `npm run build` → `dist/` → Vercel deploys
 
 ---
 
-## Architecture Fundamentals
+## Authentication & Authorization
 
-### Authentication & Authorization Patterns
-
-#### Auth Context Usage
+### useAuth Hook (Required Pattern)
 
 ```jsx
 import { useAuth } from '../contexts/AuthContext';
 
-const { user, userProfile, isAdmin, isMember, canAccessContent } = useAuth();
+export function MyComponent() {
+  const { user, userProfile, isAdmin, isMember, canAccessContent } = useAuth();
 
-// user: Supabase session
-// userProfile: Database profile with role/membership data
-// isAdmin: userProfile?.role === 'admin'
-// isMember: admin OR membership_status === 'active'
-// canAccessContent(tierLevel): Check if user can access specific tier content
+  if (!userProfile) return <LoadingSpinner />;  // Profile still loading
+
+  // userProfile structure:
+  // { id, email, full_name, role: 'admin'|'student', membership_status, membership_tier, ... }
+  
+  // Authorization checks:
+  // isAdmin → boolean (userProfile.role === 'admin')
+  // isMember → boolean (admin OR membership_status === 'active')
+  // canAccessContent(tier) → boolean (checks user's tier against content's access_level)
+}
 ```
 
-**CRITICAL**: `AuthContext.jsx` has a fire-and-forget profile loading pattern. Never modify the `onAuthStateChange` callback signature—it MUST remain synchronous to prevent auth loops.
+**CRITICAL**: `AuthContext.jsx` has fire-and-forget profile loading (`setProfileLoading(false)` called before state updates complete). **Never** add `await` or modify callback signatures.
 
-#### Role-Based Access Control
+### Role-Based Access Control (3-Layer Pattern)
 
-1. **Client-side checks**: `userProfile?.role !== 'admin'` → redirect in `useEffect`
-2. **Database enforcement**: All tables have RLS policies checking `auth.uid()` and role
-3. **Admin verification**: For sensitive operations, call `supabase.rpc('has_admin_role')`
+1. **Client-side redirects** (immediate UX feedback):
+   ```jsx
+   useEffect(() => {
+     if (userProfile?.role !== 'admin') navigate('/');
+   }, [userProfile]);
+   ```
 
-#### Dual Supabase Client Pattern
+2. **RLS policies** (server-side enforcement):
+   ```sql
+   CREATE POLICY "admins_all_access" ON table_name FOR ALL
+   USING (EXISTS (SELECT 1 FROM user_profiles WHERE id = auth.uid() AND role = 'admin'));
+   ```
 
-- `src/lib/supabase.js`: Regular client (anon key) for user operations
-- `src/lib/supabaseAdmin.js`: Service role key client for admin ops (user creation, deletion)
-- **NEVER** expose service role key client-side—only use in controlled service methods
+3. **Service layer checks** (for sensitive operations):
+   ```javascript
+   const hasAdminRole = await supabase.rpc('has_admin_role');
+   if (!hasAdminRole) throw new Error('Unauthorized');
+   ```
+
+### Admin vs Regular User Access
+
+**Admin users** stored in `admin_users` table (separate from `user_profiles`):
+- `AuthContext` checks `admin_users` first, then falls back to `user_profiles`
+- Admin profiles get role: `'admin'` + membership_tier: `'admin'`
+- Admin operations use `supabaseAdmin` (service role client)
+
+**Regular users** in `user_profiles` with role: `'student'`
 
 ---
 
-## Core Services Architecture
+## Services Layer Patterns
 
-All backend communication goes through services in `src/services/`:
-
-- `adminService.js`: User CRUD, dashboard stats, system alerts
-- `notificationService.js`: Email/WhatsApp delivery with template processing
-- `subscriptionService.js`: Plans (Basic ₦5k, Premium ₦15k, Pro ₦25k), renewal workflow
-- `userService.js`: Profile updates, activity tracking
-- `contentService.js`: Content library management, file uploads, access logging
-- `courseService.js`: Course CRUD, enrollments, instructor management
-- `emailService.js`: Resend API integration
-- `systemService.js`: Health checks, storage metrics
-
-**Pattern**: Services return `{ success: boolean, data?, error? }` objects
-
----
-
-## Notification System
+All backend communication in `src/services/`:
 
 ```javascript
-// Template variables auto-injected: full_name, email, member_id, membership_tier, dashboard_url
+// Service return pattern (consistent across all services):
+{ success: boolean, data?: any, error?: string }
 
-await notificationService.sendNotification({
-  userId: member.id,
-  templateName: 'subscription_expiry_warning', // Must exist in notification_templates
-  variables: { days_remaining: 7, custom_field: 'value' },
-  recipientType: 'email' // 'whatsapp' | 'both'
-});
+// Example usage:
+const { success, data, error } = await userService.getUserById(userId);
+if (!success) {
+  console.error('Failed to fetch user:', error);
+  return;
+}
+console.log('User:', data);
 ```
 
-Templates support `{{variable_name}}` syntax. Logs stored in `notification_logs` with status tracking.
+### Critical Services
+
+| Service | Purpose |
+|---------|---------|
+| `adminService.js` | User CRUD, dashboard stats (getDashboardStats, createUser, deleteUser) |
+| `userService.js` | Profile updates, activity tracking |
+| `notificationService.js` | Email/WhatsApp via templates + Resend API |
+| `subscriptionService.js` | Tier management (₦5k/₦15k/₦25k), approval workflow |
+| `contentService.js` | File uploads, content library, access logging |
+| `courseService.js` | Course CRUD, enrollments, instructor assignments |
 
 ---
 
-## RLS Policy Pattern
+## Notification System (Template-Driven)
 
-Every table MUST have RLS enabled. Example pattern:
+```javascript
+// Send notification:
+await notificationService.sendNotification({
+  userId: memberId,
+  templateName: 'subscription_expiry_warning',  // Must exist in DB
+  variables: { days_remaining: 7 },             // Auto-injected: full_name, email, member_id, membership_tier
+  recipientType: 'email'                        // 'email' | 'whatsapp' | 'both'
+});
+
+// Template syntax in DB:
+// Subject: "{{full_name}}, your subscription expires in {{days_remaining}} days"
+// Body: "Dear {{full_name}}, visit {{dashboard_url}} to renew..."
+```
+
+**Logs stored in `notification_logs`** with status tracking. Admin can create templates via SQL editor or UI wizard (`/admin-notification-wizard`).
+
+---
+
+## Common Implementation Patterns
+
+### Adding Admin Feature
+
+1. Create page: `src/pages/admin-dashboard/NewFeaturePage.jsx`
+2. Add route to `Routes.jsx`:
+   ```jsx
+   const AdminNewFeature = lazy(() => import('./pages/admin-dashboard/NewFeaturePage'));
+   <Route path="/admin-new-feature" element={<AdminNewFeature />} />
+   ```
+3. Add nav link to `components/ui/AdminSidebar.jsx`
+4. Protect with role check:
+   ```jsx
+   useEffect(() => {
+     if (userProfile?.role !== 'admin') navigate('/');
+   }, [userProfile, navigate]);
+   ```
+
+### Adding Student Feature
+
+1. Create page: `src/pages/student-dashboard/NewFeaturePage.jsx`
+2. Add route: `<Route path="/student-dashboard/new-feature" element={<NewFeaturePage />} />`
+3. Gate by membership: Use `isMember` or `canAccessContent(tier)`
+4. Add nav link to `components/ui/StudentDashboardNav.jsx`
+
+### Creating New RLS Policy
 
 ```sql
 ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;
 
--- Users can read own data
+-- Pattern 1: User owns data
 CREATE POLICY "users_read_own" ON table_name FOR SELECT
 USING (auth.uid() = user_id);
 
--- Admins can do anything
+-- Pattern 2: Admins unrestricted
 CREATE POLICY "admins_all_access" ON table_name FOR ALL
 USING (EXISTS (SELECT 1 FROM user_profiles WHERE id = auth.uid() AND role = 'admin'));
 
--- Tier-based content access
-CREATE POLICY "users_view_accessible_content" ON content_library FOR SELECT
+-- Pattern 3: Tier-based access
+CREATE POLICY "members_access_tier_content" ON content_library FOR SELECT
 USING (status = 'active' AND user_has_access_level(access_level));
+```
 
--- Public read for approved reviews
-CREATE POLICY "public_read_approved_reviews" ON member_reviews FOR SELECT
-USING (status = 'approved');
+**Always verify with**: `mcp_supabase_get_advisors(type: "security")`
+
+### Adding UI Component from Shadcn
+
+```bash
+# 1. Search: mcp_shadcn_search_items_in_registries(query: "button")
+# 2. View example: mcp_shadcn_get_item_examples_from_registries(query: "button-demo", registries: ["@shadcn"])
+# 3. Get add command: mcp_shadcn_get_add_command_for_items(items: ["@shadcn/button"])
+# 4. Run the command from terminal
+# 5. Import and use in your component
+
+import { Button } from "@/components/ui/button";
+
+export function MyComponent() {
+  return <Button variant="outline">Click me</Button>;
+}
 ```
 
 ---
 
-## Subscription Management
+## Build & Deployment
 
-The subscription service (`src/services/subscriptionService.js`) handles:
+### Development
 
-- **Plan configuration**: Basic (₦5,000), Premium (₦15,000), Pro (₦25,000)
-- **Admin approval workflow** for renewals and upgrades
-- **Expiration tracking** and automated warnings
-- **Payment integration** with status tracking
+```bash
+npm install                    # Install deps
+npm run dev                    # Start Vite on port 4028
+npm run typecheck              # Verify TypeScript types
+npm run lint                   # Run ESLint
+```
+
+**Browser auto-opens** to `http://localhost:4028`
+
+### Production Build
+
+```bash
+npm run build                  # Vite builds → dist/
+npm run preview                # Test production build locally
+```
+
+**⚠️ Build Notes**:
+- Outputs to `dist/` with sourcemaps enabled (`--sourcemap` flag)
+- Chunk size warning limit: 2000KB
+- Terser minification enabled, console logs kept
+
+### Deployment (Vercel)
+
+- `vercel.json` configures:
+  - SPA routing: All routes → `/index.html`
+  - CSP headers: Allows Supabase + Resend APIs
+  - CORS headers for cross-origin requests
+- **Environment vars** managed in Vercel dashboard (never `.env` in repo)
+- Auto-deploys on merge to `main`
+
+---
+
+## Environment Variables (Required in Production)
+
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| `VITE_SUPABASE_URL` | Database endpoint | `https://xxxxx.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Public auth key | `eyJxxxx...` |
+| `VITE_SUPABASE_SERVICE_ROLE_KEY` | Admin key (server-side only) | `eyJxxxx...` |
+| `VITE_RESEND_API_KEY` | Email API | `re_xxx...` |
+
+**Missing vars** trigger error UI in `App.jsx` with setup instructions. Production errors in Vercel dashboard.
+
+---
+
+## Code Organization Conventions
+
+### Component Naming & Files
+
+- **shadcn-based UI**: `.tsx` files in `components/ui/` (e.g., `button.tsx`, `card.tsx`)
+- **Custom components**: `.jsx` files (e.g., `PaymentCard.jsx`, `DashboardNav.jsx`)
+- **Page components**: `.jsx` in `pages/` (e.g., `AdminDashboard.jsx`)
+- **Services**: `.js` in `services/` with consistent export pattern
+
+### Import Paths
 
 ```javascript
-// Example: Approving a subscription request
-await subscriptionService.approveRequest(requestId, adminId);
+// Prefer absolute imports (configured in tsconfig.json):
+import { useAuth } from '@/contexts/AuthContext';
+import { userService } from '@/services/userService';
+
+// Avoid relative imports:
+// ❌ import { useAuth } from '../../contexts/AuthContext';
+```
+
+### File Organization
+
+```
+Feature-related files group together:
+src/pages/student-dashboard/
+├── StudentDashboard.jsx          # Main page
+├── StudentDashboardNav.jsx        # Navigation component (reused in ui/)
+└── StudentSubscription.jsx        # Nested page
 ```
 
 ---
 
-## Common Implementation Tasks
+## Common Issues & Debugging
 
-### Adding Admin Features
+### Blank Page / White Screen
 
-1. Create page in `src/pages/admin-dashboard/`
-2. Add route to `Routes.jsx` with `/admin-*` pattern
-3. Import in `AdminSidebar.jsx`, add nav item
-4. Protect with role check:
+1. **Check console errors**: `mcp_chrome_devtoo_list_console_messages`
+2. **Verify Supabase**: `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in Vercel
+3. **Check network**: `mcp_chrome_devtoo_list_network_requests` for failed API calls
+4. **Inspect auth**: Is `AuthContext` wrapping `<Routes />`?
 
-```jsx
-useEffect(() => {
-  if (userProfile && userProfile?.role !== 'admin') {
-    navigate('/');
-  }
-}, [userProfile, navigate]);
-```
-
-### Adding Student Features
-
-1. Create page in `src/pages/student-dashboard/`
-2. Add route with `/student-dashboard/*` pattern
-3. Use `isMember` or `canAccessContent(tierLevel)` for content gating
-4. Add to `StudentDashboardNav.jsx`
-
-### Adding New Routes
-
-1. Update `Routes.jsx` with new route definition
-2. Create page component in appropriate directory
-   - Admin routes in `pages/admin-dashboard/`
-   - Student routes in `pages/student-dashboard/`
-3. Add navigation link in relevant sidebar component
-   - `components/ui/AdminSidebar.jsx` for admin navigation
-   - `components/ui/StudentDashboardNav.jsx` for student navigation
-
-### Creating Notification Templates
-
-1. Insert into `notification_templates` table via Supabase SQL Editor:
-
-```sql
-INSERT INTO notification_templates (name, subject, content, category, is_active)
-VALUES ('template_name', 'Subject {{full_name}}', 'Body {{variable}}', 'subscription', true);
-```
-
-2. Test via admin notification wizard (`/admin-notification-wizard`)
-3. Trigger programmatically in service layer
-
-### Managing Subscription Workflow
-
-1. Student requests renewal/upgrade → creates row in `subscription_requests`
-2. Admin approves via `subscriptionService.approveRequest(requestId, adminId)`
-3. Service updates `user_profiles` (membership_status, tier, expiry date)
-4. Automated notification sent via `notificationService`
-
----
-
-## Security Best Practices
-
-### Client-Side Data Validation
-
-- Use `react-hook-form` for forms (already in package.json)
-- Validate on client AND server (RLS policies + database constraints)
-- Never trust `userProfile.role` alone—RLS enforces server-side
-
-### Admin User Creation
-
-**ONLY** via `adminService.createUser()` which:
-
-1. Uses `supabaseAdmin` to create auth user
-2. Inserts into `user_profiles` with role
-3. Generates temporary password via `passwordService`
-4. Sends welcome email with credentials
-
----
-
-## Database Migrations
-
-1. Migrations in `supabase/migrations/` ordered by timestamp (YYYYMMDDHHMMSS)
-2. **Always verify** with `verify_migration.sql` after applying
-3. RLS policies defined inline with table creation
-4. Use `*_clean.sql` variants for fresh environments
-
-**Common pitfall**: Migrations have evolved—some SQL in root directory are deprecated fixes. Trust timestamped migrations in `supabase/migrations/` first.
-
----
-
-## Environment Setup
-
-Required vars (see `.env.example`):
-
-- `VITE_SUPABASE_URL`: Project URL
-- `VITE_SUPABASE_ANON_KEY`: Public anon key
-- `VITE_SUPABASE_SERVICE_ROLE_KEY`: Admin operations (server-side only)
-- `VITE_RESEND_API_KEY`: Email delivery
-
-**Missing env vars** trigger error UI in `App.jsx`—NO silent failures.
-
----
-
-## Production Deployment (Vercel)
-
-- `vercel.json` configures SPA routing (all routes → `/index.html`)
-- Build: `npm run build` (outputs to `dist/`)
-- CSP headers configured in `vercel.json` (allows Supabase + Resend)
-- **Secret management**: All env vars already in Vercel settings (never commit)
-
----
-
-## Troubleshooting Common Issues
+**Common cause**: Build issue with code-splitting. Check `vite.config.mjs` manualChunks (should NOT split React).
 
 ### Auth State Not Loading
 
-- Check browser console for profile fetch errors
-- Verify RLS policies on `user_profiles` allow `auth.uid()` to read own row
-- Ensure `AuthContext` is wrapped around `<Routes />` in `App.jsx`
+- Verify `user_profiles` RLS allows `auth.uid()` to read own data
+- Check `admin_users` RLS if user is admin
+- Inspect `AuthContext.jsx` profile loading logic (lines 26-80)
+- Review Supabase logs: `mcp_supabase_get_logs(service: "postgres")`
 
-### "Service role key missing" Errors
+### Content Access Denied
 
-- Admin operations require `VITE_SUPABASE_SERVICE_ROLE_KEY`
-- In production, verify Vercel env var is set
-- Locally, check `.env` file matches `.env.example`
-
-### Content Not Appearing for Users
-
-- Check user's `membership_tier` in `user_profiles`
-- Verify content's `access_level` allows user's tier (starter ⊆ pro ⊆ elite)
-- Confirm `membership_status = 'active'` in user profile
-- Check content `status = 'active'` in `content_library`
+- Check user's `membership_tier` matches content's `access_level`
+- Verify `membership_status = 'active'` in user profile
+- Confirm content `status = 'active'` in `content_library`
+- Test RLS policy with: `mcp_supabase_execute_sql("SELECT * FROM content_library WHERE id = 'xxx'")`
 
 ### File Upload Failures
 
-- Verify storage bucket exists and has correct MIME type restrictions
-- Check file size against bucket limits (prompt-library: 50MB, course-materials: 100MB)
-- Ensure RLS policies on `storage.objects` allow admin uploads
-- Review Supabase storage quota (free tier: 1GB)
+- Verify storage bucket exists in Supabase
+- Check file size: prompt-library max 50MB, course-materials max 100MB
+- Ensure RLS allows admin uploads to `storage.objects`
+- Review Supabase storage quota (free: 1GB)
 
-### Migrations Not Applying
+### Database Migration Issues
 
-- Run migrations in timestamp order from `supabase/migrations/`
-- Use Supabase SQL Editor, not local psql (RLS context matters)
-- Check for conflicting table/function definitions from prior migrations
+- Always apply in timestamp order from `supabase/migrations/`
+- Use Supabase SQL Editor (preserves RLS context)
+- Verify with: `mcp_supabase_list_migrations` after applying
+- Check for conflicts: `mcp_supabase_get_advisors(type: "security")`
 
-### Notification Send Failures
+### Notification Not Sending
 
-- Verify `VITE_RESEND_API_KEY` is set
-- Check `notification_templates.is_active = true`
-- Review `notification_logs` table for error messages
-- Ensure user has valid email in `user_profiles`
+1. Verify `VITE_RESEND_API_KEY` in Vercel
+2. Check template exists: `SELECT * FROM notification_templates WHERE name = 'xxx' AND is_active = true`
+3. Review error log: `SELECT * FROM notification_logs WHERE status = 'error' ORDER BY created_at DESC LIMIT 10`
+4. Ensure user has valid email: `SELECT email FROM user_profiles WHERE id = 'xxx'`
 
 ---
 
 ## Key Files Reference
 
-- **Auth**: `src/contexts/AuthContext.jsx` (session + profile state)
-- **Routes**: `src/Routes.jsx` (all app routes)
-- **Supabase clients**: `src/lib/supabase.js`, `src/lib/supabaseAdmin.js`
-- **Services**: `src/services/*Service.js` (backend communication)
-- **Utils**: `src/utils/logger.js` (env-aware logging)
-- **Config**: `tailwind.config.js` (design tokens), `vite.config.mjs` (build)
-- **Migrations**: `supabase/migrations/*.sql` (database schema)
+- **Core**: `src/App.jsx` (env validation), `src/Routes.jsx` (routing), `src/index.jsx` (entry)
+- **Auth**: `src/contexts/AuthContext.jsx` (session + profile), `src/components/ui/AuthenticationGate.jsx`
+- **Clients**: `src/lib/supabase.js` (anon), `src/lib/supabaseAdmin.js` (admin-only)
+- **UI**: `src/components/ui/` (60+ shadcn-based components)
+- **Pages**: `src/pages/admin-*`, `src/pages/student-dashboard`, `src/pages/auth`
+- **Services**: `src/services/*Service.js` (18 services)
+- **Build**: `vite.config.mjs` (critical: code-splitting), `vercel.json` (deployment), `tailwind.config.js` (design)
+- **DB**: `supabase/migrations/` (timestamp-ordered SQL)
 
 ---
 
-## Development Workflow
+## Quick Checklist for New Features
 
-```bash
-# Install dependencies
-npm install
-
-# Start development server (port 4028)
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-**Browser auto-opens to** `http://localhost:4028`
-
----
-
-## Quick Reference Checklist
-
-When adding features:
-
-- [ ] Create component/page in appropriate `src/` directory
-- [ ] Add route to `Routes.jsx` with Suspense/lazy loading
-- [ ] Add RLS policies if accessing database
-- [ ] Use services layer for API calls
-- [ ] Test with `npm run dev` locally
-- [ ] Check build with `npm run build`
-- [ ] Verify no console errors in Chrome DevTools
-- [ ] Commit and push to GitHub (Vercel auto-deploys)
+- [ ] Create component/page in correct `src/` directory
+- [ ] Add route to `Routes.jsx` (lazy-load if admin/student page)
+- [ ] Protect with `useAuth` hook if restricted
+- [ ] Create/update RLS policies if accessing DB
+- [ ] Use services layer for API calls (never raw Supabase in components)
+- [ ] Test locally: `npm run dev`
+- [ ] Build locally: `npm run build` (check for errors)
+- [ ] Check console: `mcp_chrome_devtoo_list_console_messages` on dev server
+- [ ] Git push (triggers Vercel deploy)
 - [ ] Test on live Vercel URL
 
 ---
 
-## Important Notes
+## Critical Constraints
 
-✅ **SITE IS LIVE** - All changes go to production after merge  
-✅ **Environment vars** are in Vercel (never add to `.env`)  
-✅ **Database migrations** must be applied in order  
-✅ **RLS policies** are security-critical—test before deploying  
-✅ **No Redux**—use Context API + service layer  
-✅ **TypeScript components**—.tsx files in `components/ui/`, .jsx for pages  
+✅ **LIVE PRODUCTION** — All commits to `main` deploy immediately  
+✅ **No Redux** — Use Context API + services layer only  
+✅ **RLS Mandatory** — Every table must have RLS enabled  
+✅ **Service layer** — Never call Supabase directly from components  
+✅ **Admin key** — `supabaseAdmin` server-side only, never expose client-side  
+✅ **Build splitting** — Do NOT add vendor chunks in `vite.config.mjs`  
 
 ---
