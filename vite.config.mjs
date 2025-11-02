@@ -28,8 +28,54 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
-        // Simpler chunking strategy - let Vite handle it automatically
-        manualChunks: undefined,
+        // Strategic code-splitting to reduce bundle size
+        manualChunks(id) {
+          // Split vendor libraries into separate chunk
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('recharts') || id.includes('d3')) {
+              return 'vendor-charts';
+            }
+            if (id.includes('supabase')) {
+              return 'vendor-supabase';
+            }
+            if (id.includes('radix-ui') || id.includes('lucide')) {
+              return 'vendor-ui';
+            }
+            return 'vendor-common';
+          }
+          
+          // Split admin pages
+          if (id.includes('src/pages/admin-')) {
+            const match = id.match(/admin-([a-z-]+)/);
+            if (match) {
+              return `admin-${match[1]}`;
+            }
+            return 'admin-pages';
+          }
+          
+          // Split student pages
+          if (id.includes('src/pages/student-dashboard')) {
+            return 'student-pages';
+          }
+          
+          // Split auth pages
+          if (id.includes('src/pages/auth')) {
+            return 'auth-pages';
+          }
+          
+          // Split services into their own chunk
+          if (id.includes('src/services')) {
+            return 'services';
+          }
+          
+          // Split contexts
+          if (id.includes('src/contexts')) {
+            return 'contexts';
+          }
+        },
       },
     },
   },
