@@ -1,38 +1,66 @@
-# React
+# Basic Intelligence Community (BIC) School Platform
 
-A modern React-based project utilizing the latest frontend technologies and tools for building responsive web applications.
+A modern React + Supabase educational platform for AI learning community management, course delivery, subscription management, and automated email workflows.
 
-## 🚀 Features
+## 🚀 Key Features
 
-- **React 18** - React version with improved rendering and concurrent features
-- **Vite** - Lightning-fast build tool and development server
-- **Redux Toolkit** - State management with simplified Redux setup
-- **TailwindCSS** - Utility-first CSS framework with extensive customization
-- **React Router v6** - Declarative routing for React applications
-- **Data Visualization** - Integrated D3.js and Recharts for powerful data visualization
+- **React 18 + Vite** - Modern frontend with optimized build and code-splitting (85% bundle reduction)
+- **Supabase Backend** - PostgreSQL with Row Level Security (RLS) and automated triggers
+- **Role-Based Access** - Admin and student roles with tier-based content access (Starter/Pro/Elite)
+- **Email Automation** - 5 database triggers for automated email workflows (8 total scenarios)
+- **Content Management** - Video, PDF, documents, and images with tier-based access
+- **Course System** - Structured learning paths with instructor assignments and enrollment tracking
+- **Subscription Management** - Plan system (₦5k/₦15k/₦25k/month) with renewal workflow
+- **Admin Dashboard** - User management, content library, course administration, notifications
+- **Student Dashboard** - Learning content, subscriptions, progress tracking
+- **Notification System** - Email + WhatsApp delivery with template support
+- **TailwindCSS 3.4** - Custom design tokens and AI-gradient utilities
+- **Data Visualization** - Recharts and D3.js for analytics
 - **Form Management** - React Hook Form for efficient form handling
-- **Animation** - Framer Motion for smooth UI animations
-- **Testing** - Jest and React Testing Library setup
 
 ## 📋 Prerequisites
 
-- Node.js (v14.x or higher)
-- npm or yarn
+- Node.js (v16.x or higher)
+- npm (v7+) or yarn
+- Supabase account (for database backend)
+- Resend API key (for email delivery)
 
-## 🛠️ Installation
+## 🛠️ Installation & Setup
 
-1. Install dependencies:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Bukassi600104/Basic-Intelligence-AI-School.git
+   cd Basic-Intelligence-AI-School
+   ```
+
+2. **Install dependencies**:
    ```bash
    npm install
-   # or
-   yarn install
+   ```
+
+3. **Set up environment variables**:
+   ```bash
+   cp .env.example .env
    ```
    
-2. Start the development server:
+   Fill in the following variables:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_anon_key
+   VITE_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+   VITE_RESEND_API_KEY=your_resend_api_key
+   ```
+
+4. **Start development server**:
    ```bash
-   npm start
-   # or
-   yarn start
+   npm run dev
+   # Server starts on http://localhost:4028
+   ```
+
+5. **Build for production**:
+   ```bash
+   npm run build
+   # Output in dist/ folder
    ```
 
 ## 📁 Project Structure
