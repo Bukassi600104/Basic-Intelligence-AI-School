@@ -30,19 +30,11 @@ export default defineConfig({
       output: {
         // Strategic code-splitting to reduce bundle size
         manualChunks(id) {
-          // ⚠️ CRITICAL: React and its ecosystem MUST be in their own chunks
-          // and loaded before anything else
+          // ⚠️ CRITICAL: React MUST NOT be split into a separate chunk
+          // If React is in a separate chunk, it won't load before the main entry
+          // So keep React inline with the main entry bundle
+          
           if (id.includes('node_modules')) {
-            // React must be FIRST - all other things depend on it
-            if (id.includes('react/') || id.includes('react-dom/')) {
-              return 'vendor-react';
-            }
-            // React hooks and utilities depend on React
-            if (id.includes('use-sync-external-store') || 
-                id.includes('use-callback-ref') ||
-                id.includes('react-helmet')) {
-              return 'vendor-react'; // Bundle with React
-            }
             // Radix UI components depend on React
             if (id.includes('radix-ui') || id.includes('lucide-react')) {
               return 'vendor-ui';
@@ -55,8 +47,10 @@ export default defineConfig({
             if (id.includes('supabase')) {
               return 'vendor-supabase';
             }
-            // Everything else
-            return 'vendor-common';
+            // Redux and utilities
+            if (id.includes('redux') || id.includes('immer')) {
+              return 'vendor-common';
+            }
           }
           
           // Split admin pages
@@ -121,3 +115,4 @@ export default defineConfig({
     cors: true,
   },
 });
+
