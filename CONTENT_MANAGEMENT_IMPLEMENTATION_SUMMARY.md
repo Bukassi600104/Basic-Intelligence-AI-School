@@ -384,7 +384,7 @@
 2. Add server-side rendering for admin UI to prevent flash
 3. Implement comprehensive error tracking (Sentry/LogRocket)
 4. Add performance monitoring (Vercel Analytics)
-5. Create automated testing suite with Cypress/Playwright
+5. Create automated testing suite with Cypress
 
 ---
 
