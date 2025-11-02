@@ -22,7 +22,7 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        drop_console: false, // Keep console logs for debugging
         drop_debugger: true,
       },
     },
@@ -30,20 +30,32 @@ export default defineConfig({
       output: {
         // Strategic code-splitting to reduce bundle size
         manualChunks(id) {
-          // Split vendor libraries into separate chunk
+          // ⚠️ CRITICAL: React and its ecosystem MUST be in their own chunks
+          // and loaded before anything else
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
+            // React must be FIRST - all other things depend on it
+            if (id.includes('react/') || id.includes('react-dom/')) {
               return 'vendor-react';
             }
+            // React hooks and utilities depend on React
+            if (id.includes('use-sync-external-store') || 
+                id.includes('use-callback-ref') ||
+                id.includes('react-helmet')) {
+              return 'vendor-react'; // Bundle with React
+            }
+            // Radix UI components depend on React
+            if (id.includes('radix-ui') || id.includes('lucide-react')) {
+              return 'vendor-ui';
+            }
+            // Charts depend on React
             if (id.includes('recharts') || id.includes('d3')) {
               return 'vendor-charts';
             }
+            // Supabase
             if (id.includes('supabase')) {
               return 'vendor-supabase';
             }
-            if (id.includes('radix-ui') || id.includes('lucide')) {
-              return 'vendor-ui';
-            }
+            // Everything else
             return 'vendor-common';
           }
           
@@ -76,6 +88,8 @@ export default defineConfig({
             return 'contexts';
           }
         },
+        entryFileNames: '[name].[hash].js',
+        chunkFileNames: '[name].[hash].js',
       },
     },
   },
