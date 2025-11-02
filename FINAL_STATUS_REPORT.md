@@ -3,7 +3,7 @@
 **Date**: 2025-01-20
 **Project**: Basic Intelligence Community School Platform
 **Status**: ✅ **ALL OPTIMIZATION & AUTOMATION TASKS COMPLETE**
-**Deployment**: ✅ **LIVE ON VERCEL** (https://basicintelligence.ng)
+**Deployment**: ✅ **LIVE ON VERCEL** (https://basicai.fit)
 
 ---
 
@@ -73,7 +73,7 @@ You asked for **3 major deliverables**. Here's what was completed:
 ## 🚀 What's Live Right Now
 
 ### Production Site
-- **URL**: https://basicintelligence.ng
+- **URL**: https://basicai.fit
 - **Hosting**: Vercel
 - **Status**: ✅ LIVE & DEPLOYED
 - **Latest**: Code-splitting optimizations (commit ae1fc41)
@@ -431,7 +431,7 @@ Before considering this project fully complete:
 
 ## 📞 Contact & Support
 
-**Live Site**: https://basicintelligence.ng
+**Live Site**: https://basicai.fit
 **Admin Email**: tonyorjiako@outlook.com
 **Database**: Supabase project eremjpneqofidtktsfya
 **Deployment**: Vercel (auto-deploy on git push)

@@ -275,7 +275,7 @@ RESULT: Professional codebase ✅
 
 | Resource | URL | Status |
 |----------|-----|--------|
-| **Live Site** | https://basicintelligence.ng | ✅ LIVE |
+| **Live Site** | https://basicai.fit | ✅ LIVE |
 | **Repository** | https://github.com/Bukassi600104/Basic-Intelligence-AI-School | ✅ CLEAN |
 | **Latest Commit** | ed1753d | ✅ PUSHED |
 | **Development Docs** | README.md | ✅ UPDATED |
@@ -394,6 +394,6 @@ RESULT: Professional codebase ✅
 *Completion Date: November 2, 2025*
 *Latest Commit: ed1753d*
 *Repository: https://github.com/Bukassi600104/Basic-Intelligence-AI-School*
-*Live Site: https://basicintelligence.ng*
+*Live Site: https://basicai.fit*
 
 **🎊 PROJECT COMPLETE 🎊**

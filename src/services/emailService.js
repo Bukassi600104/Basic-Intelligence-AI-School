@@ -180,7 +180,7 @@ export const emailService = {
             <div class="footer">
               <p>Basic Intelligence Community School<br>
               ${member.member_id ? `Member ID: ${member.member_id}` : ''}</p>
-              <p><a href="https://basicintelligence.ng" style="color: #667eea;">Visit our website</a></p>
+              <p><a href="https://basicai.fit" style="color: #667eea;">Visit our website</a></p>
             </div>
           </div>
         </body>
@@ -219,7 +219,7 @@ export const emailService = {
             </div>
             <div class="footer">
               <p>Basic Intelligence Community School</p>
-              <p><a href="https://basicintelligence.ng" style="color: #f5576c;">Learn more</a></p>
+              <p><a href="https://basicai.fit" style="color: #f5576c;">Learn more</a></p>
             </div>
           </div>
         </body>
@@ -254,14 +254,14 @@ export const emailService = {
               ${content}
               <br>
               <div style="text-align: center;">
-                <a href="https://basicintelligence.ng/student-dashboard" style="background: #4facfe; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Access Your Dashboard</a>
+                <a href="https://basicai.fit/student-dashboard" style="background: #4facfe; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Access Your Dashboard</a>
               </div>
               <br>
               <p>Happy learning!<br>The Basic Intelligence Team</p>
             </div>
             <div class="footer">
               <p>Basic Intelligence Community School</p>
-              <p><a href="https://basicintelligence.ng/courses" style="color: #4facfe;">Browse all courses</a></p>
+              <p><a href="https://basicai.fit/courses" style="color: #4facfe;">Browse all courses</a></p>
             </div>
           </div>
         </body>

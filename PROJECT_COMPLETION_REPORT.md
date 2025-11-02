@@ -295,7 +295,7 @@ Code quality:          IMPROVED ✅
 
 ## 🌐 Deployment Status
 
-**Production Site**: https://basicintelligence.ng
+**Production Site**: https://basicai.fit
 **Hosting**: Vercel (auto-deploy on git push)
 **Database**: Supabase (eremjpneqofidtktsfya)
 **Latest Build**: ✅ Successful
