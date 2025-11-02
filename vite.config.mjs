@@ -28,30 +28,16 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
-        // Strategic code-splitting to reduce bundle size
+        // ⚠️ CRITICAL FIX: Minimal code-splitting
+        // 
+        // PROBLEM: Any node_modules split separately try to import React before it loads
+        // SOLUTION: Only split page/feature chunks, keep all dependencies with main entry
+        //
+        // This ensures: React + all its dependencies load first, then route chunks load
+        
         manualChunks(id) {
-          // ⚠️ CRITICAL: React MUST NOT be split into a separate chunk
-          // If React is in a separate chunk, it won't load before the main entry
-          // So keep React inline with the main entry bundle
-          
-          if (id.includes('node_modules')) {
-            // Radix UI components depend on React
-            if (id.includes('radix-ui') || id.includes('lucide-react')) {
-              return 'vendor-ui';
-            }
-            // Charts depend on React
-            if (id.includes('recharts') || id.includes('d3')) {
-              return 'vendor-charts';
-            }
-            // Supabase
-            if (id.includes('supabase')) {
-              return 'vendor-supabase';
-            }
-            // Redux and utilities
-            if (id.includes('redux') || id.includes('immer')) {
-              return 'vendor-common';
-            }
-          }
+          // ONLY split page/feature routes - NOT libraries
+          // All libraries stay bundled with main entry to guarantee React availability
           
           // Split admin pages
           if (id.includes('src/pages/admin-')) {
@@ -72,7 +58,7 @@ export default defineConfig({
             return 'auth-pages';
           }
           
-          // Split services into their own chunk
+          // Split services - but they also need React from main entry
           if (id.includes('src/services')) {
             return 'services';
           }
@@ -81,6 +67,10 @@ export default defineConfig({
           if (id.includes('src/contexts')) {
             return 'contexts';
           }
+          
+          // ALL node_modules (React, Radix, Supabase, Charts, etc.) stay in main entry
+          // This is the KEY FIX - no separate vendor chunks
+          // Return undefined = stay in main entry
         },
         entryFileNames: '[name].[hash].js',
         chunkFileNames: '[name].[hash].js',
