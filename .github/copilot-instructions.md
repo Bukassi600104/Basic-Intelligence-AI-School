@@ -7,37 +7,143 @@
 
 ---
 
-## 🔧 MCP Servers Available - USE THESE FOR DEVELOPMENT
+## 🔧 MCP Servers Available - USE THESE FOR EVERY TASK
 
-### **ALWAYS follow this workflow when implementing features:**
+### **⚠️ CRITICAL: ALWAYS use MCP servers for investigations and implementations**
 
-1. **For Supabase Operations** → Use `mcp_supabase_*` tools
-   - Check migrations: `mcp_supabase_list_tables`, `mcp_supabase_get_advisors`
-   - Apply migrations: `mcp_supabase_apply_migration`
-   - Test queries: `mcp_supabase_execute_query`
-   - Manage RLS policies before deploying
+All MCP servers are configured in `.vscode/mcp.json` and must be started before beginning work:
 
-2. **For Documentation & Best Practices** → Use `mcp_upstash_conte_*` tools
-   - FIRST: Call `resolve-library-id` with package name
-   - THEN: Call `get-library-docs` with the returned ID
-   - Get latest React, Next.js, Supabase docs before implementing
+### **4 Active MCP Servers:**
 
-3. **For UI Components** → Use `mcp_shadcn_*` tools
-   - Search components: `search_items_in_registries`
-   - View examples: `get_item_examples_from_registries`
-   - Add components: `get_add_command_for_items`
+#### 1. **Context7 (Documentation & Best Practices)**
+- **Type**: HTTP endpoint to Upstash Context7
+- **Use**: Get latest documentation and best practices before coding
+- **Tools Available**:
+  - `mcp_upstash_conte_resolve_library_id` - Find exact library documentation
+  - `mcp_upstash_conte_get_library_docs` - Fetch latest docs with examples
+  
+- **Workflow**:
+  ```
+  STEP 1: Identify what library you need (react, vite, tailwindcss, supabase, etc.)
+  STEP 2: Call resolve_library_id with library name
+  STEP 3: Get the returned Context7-compatible library ID
+  STEP 4: Call get_library_docs with the ID to fetch documentation
+  STEP 5: Read best practices BEFORE implementing features
+  ```
 
-4. **For Browser Testing** → Use `mcp_chrome-devtoo_*` tools
-   - Take snapshots: `take_snapshot` (for accessibility tree)
-   - Check console: `list_console_messages` for errors
-   - Monitor network: `list_network_requests` for API calls
-   - Performance trace: `performance_start_trace` for CWV metrics
+- **Example Use Cases**:
+  - Before implementing React hooks: `resolve_library_id("react")` → `get_library_docs("/facebook/react")`
+  - Before using Tailwind utilities: `resolve_library_id("tailwindcss")` → `get_library_docs("/tailwindlabs/tailwindcss")`
+  - Before Supabase queries: `resolve_library_id("supabase")` → `get_library_docs("/supabase/supabase")`
 
-### **Environment Context**
-- **Development Server**: Port 4028 (`npm run dev`)
-- **Production**: Deployed on Vercel (basicintelligence.com or subdomain)
-- **Database**: Supabase PostgreSQL with 30+ tables
-- **All Environment Variables**: Already configured in Vercel (never commit)
+#### 2. **Supabase MCP (Database Operations)**
+- **Type**: Command-based MCP running via npx
+- **Use**: Inspect database schema, run migrations, check RLS policies, execute queries
+- **Tools Available**:
+  - `mcp_supabase_list_tables` - See all tables and schemas
+  - `mcp_supabase_list_extensions` - Check installed extensions
+  - `mcp_supabase_list_migrations` - View applied migrations
+  - `mcp_supabase_execute_sql` - Run SQL queries for inspection
+  - `mcp_supabase_apply_migration` - Create and apply new migrations
+  - `mcp_supabase_get_advisors` - Check security and performance issues
+  - `mcp_supabase_generate_typescript_types` - Generate types from schema
+
+- **Workflow Before Database Changes**:
+  ```
+  STEP 1: Call list_tables to see current schema
+  STEP 2: Call get_advisors to check for security issues
+  STEP 3: Design migration in a SQL file
+  STEP 4: Call apply_migration to execute
+  STEP 5: Verify with list_tables and advisors again
+  ```
+
+- **Example Use Cases**:
+  - Check if table exists: `mcp_supabase_list_tables`
+  - Verify RLS policies: `mcp_supabase_get_advisors` (type: "security")
+  - Test query: `mcp_supabase_execute_sql` with SELECT statement
+  - Create new table: `mcp_supabase_apply_migration` with CREATE TABLE statement
+
+#### 3. **Chrome DevTools MCP (Browser Inspection)**
+- **Type**: Command-based MCP for browser testing
+- **Use**: Inspect live websites, check console errors, verify network requests, measure performance
+- **Tools Available**:
+  - `mcp_chrome_devtoo_new_page` - Open URL in browser
+  - `mcp_chrome_devtoo_take_snapshot` - Get accessibility tree of page
+  - `mcp_chrome_devtoo_take_screenshot` - Capture visual screenshot
+  - `mcp_chrome_devtoo_list_console_messages` - See all console logs/errors
+  - `mcp_chrome_devtoo_list_network_requests` - Check API calls and assets
+  - `mcp_chrome_devtoo_evaluate_script` - Run JavaScript in browser
+  - `mcp_chrome_devtoo_performance_start_trace` - Measure Core Web Vitals
+
+- **Workflow for Debugging**:
+  ```
+  STEP 1: Call new_page with URL to test (e.g., https://www.basicai.fit)
+  STEP 2: Call take_snapshot to see what's rendered
+  STEP 3: Call list_console_messages to check for errors
+  STEP 4: Call list_network_requests to verify API calls
+  STEP 5: If errors: take_screenshot to visualize
+  STEP 6: Call evaluate_script to test JavaScript
+  ```
+
+- **Example Use Cases**:
+  - Test homepage rendering: `mcp_chrome_devtoo_new_page("https://www.basicai.fit")`
+  - Debug blank page: `mcp_chrome_devtoo_list_console_messages` to see errors
+  - Check API calls: `mcp_chrome_devtoo_list_network_requests` for failed requests
+  - Measure performance: `mcp_chrome_devtoo_performance_start_trace`
+
+#### 4. **Shadcn MCP (Component Library)**
+- **Type**: Command-based MCP for shadcn components
+- **Use**: Search for components, view examples, add new components
+- **Tools Available**:
+  - `mcp_shadcn_search_items_in_registries` - Find components
+  - `mcp_shadcn_view_items_in_registries` - See component details
+  - `mcp_shadcn_get_item_examples_from_registries` - Get usage examples
+  - `mcp_shadcn_get_add_command_for_items` - Get CLI command to add
+
+- **Workflow for Adding Components**:
+  ```
+  STEP 1: Identify component needed (button, card, dialog, etc.)
+  STEP 2: Call search_items with component name
+  STEP 3: Review examples: get_item_examples_from_registries
+  STEP 4: Get add command: get_add_command_for_items
+  STEP 5: Run the npx command to add component
+  STEP 6: Import and use in your code
+  ```
+
+- **Example Use Cases**:
+  - Find button component: `mcp_shadcn_search_items_in_registries("button")`
+  - See dialog component example: `mcp_shadcn_get_item_examples_from_registries("dialog-demo")`
+  - Add card component: `mcp_shadcn_get_add_command_for_items(["@shadcn/card"])`
+
+### **🚨 CRITICAL WORKFLOW - ALWAYS FOLLOW THIS:**
+
+**When given ANY task:**
+1. ✅ **Read this entire MCP section** to understand available tools
+2. ✅ **For documentation questions** → Use Context7 MCP FIRST
+3. ✅ **For database changes** → Use Supabase MCP to inspect FIRST
+4. ✅ **For frontend issues** → Use Chrome DevTools MCP to investigate
+5. ✅ **For component needs** → Use Shadcn MCP to find examples
+6. ✅ **Never skip MCP investigation** - It catches 80% of issues early
+
+**Example Task Workflow - "Add sign-in functionality":**
+```
+1. Context7: Get latest React hooks documentation
+2. Context7: Get latest Supabase auth documentation
+3. Supabase: Check user_profiles and auth tables exist
+4. Supabase: Verify RLS policies on user_profiles table
+5. Shadcn: Find button and input components for form
+6. Shadcn: Get form component examples
+7. Code: Implement sign-in page using docs + examples
+8. Chrome DevTools: Test the implementation
+9. Chrome DevTools: Check for console errors
+10. Chrome DevTools: Verify Supabase API calls succeed
+```
+
+### **MCP Server Configuration**
+- **Location**: `.vscode/mcp.json` (workspace-level)
+- **Status**: ✅ All 4 servers configured and running
+- **Project Ref**: `eremjpneqofidtktsfya` (Supabase project)
+- **Access**: Automatic - tools available in VS Code
 
 ---
 
