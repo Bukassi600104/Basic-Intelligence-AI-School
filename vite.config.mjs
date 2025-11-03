@@ -26,51 +26,67 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
+    // Disable Rollup's default code splitting to prevent vendor chunks
+    // This is critical: vendor chunks loading before React causes "forwardRef is undefined" error
+    commonjsOptions: {
+      include: [/node_modules/],
+    },
     rollupOptions: {
       output: {
-        // ⚠️ CRITICAL FIX: Minimal code-splitting
+        // ⚠️ CRITICAL FIX: Prevent React initialization race condition
         // 
-        // PROBLEM: Any node_modules split separately try to import React before it loads
-        // SOLUTION: Only split page/feature chunks, keep all dependencies with main entry
-        //
-        // This ensures: React + all its dependencies load first, then route chunks load
+        // PROBLEM: If any node_modules chunk loads BEFORE React, components fail with:
+        //         "Cannot read properties of undefined (reading 'forwardRef')"
+        // 
+        // SOLUTION: Bundle EVERYTHING into main entry
+        //          - React core stays in main
+        //          - All node_modules stay in main
+        //          - Only split page routes that depend on main loading first
         
         manualChunks(id) {
-          // ONLY split page/feature routes - NOT libraries
-          // All libraries stay bundled with main entry to guarantee React availability
-          
-          // Split admin pages
-          if (id.includes('src/pages/admin-')) {
-            const match = id.match(/admin-([a-z-]+)/);
-            if (match) {
-              return `admin-${match[1]}`;
-            }
-            return 'admin-pages';
+          // Never split node_modules - force into main entry
+          if (id.includes('node_modules')) {
+            return;  // undefined = main entry
           }
           
-          // Split student pages
+          // Only split our own code for page routes
+          // Everything stays in main unless explicitly listed here
+          if (id.includes('src/pages/admin-dashboard')) {
+            return 'admin-dashboard';
+          }
+          if (id.includes('src/pages/admin-users')) {
+            return 'admin-users';
+          }
+          if (id.includes('src/pages/admin-courses')) {
+            return 'admin-courses';
+          }
+          if (id.includes('src/pages/admin-content')) {
+            return 'admin-content';
+          }
+          if (id.includes('src/pages/admin-analytics')) {
+            return 'admin-analytics';
+          }
+          if (id.includes('src/pages/admin-notifications')) {
+            return 'admin-notifications';
+          }
+          if (id.includes('src/pages/admin-reviews')) {
+            return 'admin-reviews';
+          }
+          if (id.includes('src/pages/admin-settings')) {
+            return 'admin-settings';
+          }
+          if (id.includes('src/pages/admin-notification-wizard')) {
+            return 'admin-notification-wizard';
+          }
           if (id.includes('src/pages/student-dashboard')) {
             return 'student-pages';
           }
-          
-          // Split auth pages
           if (id.includes('src/pages/auth')) {
             return 'auth-pages';
           }
           
-          // Split services - but they also need React from main entry
-          if (id.includes('src/services')) {
-            return 'services';
-          }
-          
-          // Split contexts
-          if (id.includes('src/contexts')) {
-            return 'contexts';
-          }
-          
-          // ALL node_modules (React, Radix, Supabase, Charts, etc.) stay in main entry
-          // This is the KEY FIX - no separate vendor chunks
-          // Return undefined = stay in main entry
+          // Services and everything else stays in main
+          // This is the KEY - no separate vendor chunks, everything loads with main
         },
         entryFileNames: '[name].[hash].js',
         chunkFileNames: '[name].[hash].js',
