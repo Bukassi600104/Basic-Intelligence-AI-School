@@ -26,7 +26,7 @@ interface EmailRequest {
   replyTo?: string
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
@@ -88,7 +88,8 @@ serve(async (req) => {
     try {
       emailRequest = await req.json()
     } catch (parseError) {
-      log('ERROR', 'Failed to parse JSON request body', { error: String(parseError) })
+      const errorMessage = parseError instanceof Error ? parseError.message : String(parseError)
+      log('ERROR', 'Failed to parse JSON request body', { error: errorMessage })
       return new Response(
         JSON.stringify({ 
           error: 'Invalid JSON',
@@ -148,12 +149,13 @@ serve(async (req) => {
       const responseTime = Date.now() - startTime
       log('INFO', `Resend API responded in ${responseTime}ms`, { status: resendResponse.status })
     } catch (fetchError) {
-      log('ERROR', 'Failed to reach Resend API', { error: String(fetchError) })
+      const fetchErrorMessage = fetchError instanceof Error ? fetchError.message : String(fetchError)
+      log('ERROR', 'Failed to reach Resend API', { error: fetchErrorMessage })
       return new Response(
         JSON.stringify({ 
           error: 'Network error',
           message: 'Could not reach Resend API. Check internet connection.',
-          details: String(fetchError)
+          details: fetchErrorMessage
         }),
         { status: 503, headers: corsHeaders }
       )
@@ -226,13 +228,14 @@ serve(async (req) => {
     )
 
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
     log('ERROR', '💥 Unexpected error in send-email function')
-    log('ERROR', String(error))
+    log('ERROR', errorMessage)
     
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error',
-        message: String(error)
+        message: errorMessage
       }),
       { status: 500, headers: corsHeaders }
     )

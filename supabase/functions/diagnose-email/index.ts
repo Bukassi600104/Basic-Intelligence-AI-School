@@ -28,7 +28,7 @@ interface DiagnosticsReport {
   }
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // CORS handling
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
@@ -132,9 +132,10 @@ serve(async (req) => {
         )
       }
     } catch (connectError) {
-      console.error('❌ Failed to reach Resend API:', connectError.message)
+      const connectErrorMessage = connectError instanceof Error ? connectError.message : String(connectError)
+      console.error('❌ Failed to reach Resend API:', connectErrorMessage)
       report.configuration.recommendations.push(
-        `🔴 Cannot reach Resend API: ${connectError.message}`
+        `🔴 Cannot reach Resend API: ${connectErrorMessage}`
       )
     }
 
@@ -233,17 +234,18 @@ serve(async (req) => {
           report.configuration.testResult = `FAILED - ${resendData.message}`
         }
       } catch (sendError) {
-        console.error('❌ Error sending test email:', sendError.message)
+        const sendErrorMessage = sendError instanceof Error ? sendError.message : String(sendError)
+        console.error('❌ Error sending test email:', sendErrorMessage)
         
         report.testEmail = {
           success: false,
-          error: sendError.message
+          error: sendErrorMessage
         }
 
         report.configuration.recommendations.push(
-          `Failed to send test email: ${sendError.message}`
+          `Failed to send test email: ${sendErrorMessage}`
         )
-        report.configuration.testResult = `ERROR - ${sendError.message}`
+        report.configuration.testResult = `ERROR - ${sendErrorMessage}`
       }
     }
 
@@ -282,12 +284,13 @@ serve(async (req) => {
     )
 
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
     console.error('Critical error in diagnostics:', error)
 
     return new Response(
       JSON.stringify({
         error: 'Diagnostic function error',
-        message: error.message,
+        message: errorMessage,
         timestamp: new Date().toISOString()
       }, null, 2),
       {

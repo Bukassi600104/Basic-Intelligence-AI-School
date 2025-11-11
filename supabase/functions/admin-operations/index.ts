@@ -12,7 +12,7 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
 });
 
 // Helper: Verify user is admin
-async function verifyAdminAccess(authHeader) {
+async function verifyAdminAccess(authHeader: string | undefined) {
   try {
     // Extract JWT from Authorization header
     const token = authHeader?.replace("Bearer ", "");
@@ -42,11 +42,12 @@ async function verifyAdminAccess(authHeader) {
 
     return { isAdmin: true, userId: user.id, email: user.email };
   } catch (error) {
-    return { isAdmin: false, error: error.message };
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return { isAdmin: false, error: errorMessage };
   }
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // Only allow POST requests
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
@@ -54,7 +55,7 @@ serve(async (req) => {
 
   try {
     // Verify admin access
-    const authHeader = req.headers.get("authorization");
+    const authHeader = req.headers.get("authorization") ?? undefined;
     const { isAdmin, error: authError, userId } = await verifyAdminAccess(
       authHeader
     );
@@ -247,9 +248,10 @@ serve(async (req) => {
       }
     }
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Edge function error:", error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: errorMessage }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
