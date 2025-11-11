@@ -1,0 +1,12 @@
+{
+  "lint": {
+    "include": ["src/"],
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "fmt": {
+    "semiColons": false,
+    "singleQuote": true
+  }
+}
