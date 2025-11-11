@@ -38,6 +38,14 @@ serve(async (req) => {
     })
   }
 
+  // CORS headers for all responses
+  const corsHeaders = {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  }
+
   try {
     log('INFO', '📨 Email request received')
     
@@ -46,7 +54,7 @@ serve(async (req) => {
       log('WARN', 'Invalid HTTP method', { method: req.method })
       return new Response(
         JSON.stringify({ error: 'Method not allowed' }),
-        { status: 405, headers: { 'Content-Type': 'application/json' } }
+        { status: 405, headers: corsHeaders }
       )
     }
 
@@ -63,7 +71,7 @@ serve(async (req) => {
           message: 'Please set RESEND_API_KEY in Supabase Edge Function Secrets',
           help: 'Visit Supabase Dashboard → Settings → Edge Function Secrets → Add RESEND_API_KEY'
         }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
+        { status: 500, headers: corsHeaders }
       )
     }
     
@@ -86,7 +94,7 @@ serve(async (req) => {
           error: 'Invalid JSON',
           message: 'Request body must be valid JSON'
         }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: corsHeaders }
       )
     }
     
@@ -103,7 +111,7 @@ serve(async (req) => {
           error: 'Missing required fields',
           message: `Required fields missing: ${missingFields.join(', ')}`
         }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: corsHeaders }
       )
     }
     
@@ -147,7 +155,7 @@ serve(async (req) => {
           message: 'Could not reach Resend API. Check internet connection.',
           details: String(fetchError)
         }),
-        { status: 503, headers: { 'Content-Type': 'application/json' } }
+        { status: 503, headers: corsHeaders }
       )
     }
 
@@ -166,7 +174,7 @@ serve(async (req) => {
           error: 'Invalid API response',
           message: 'Resend API returned invalid JSON'
         }),
-        { status: 502, headers: { 'Content-Type': 'application/json' } }
+        { status: 502, headers: corsHeaders }
       )
     }
 
@@ -196,7 +204,7 @@ serve(async (req) => {
           debugHint,
           details: resendData
         }),
-        { status: resendResponse.status, headers: { 'Content-Type': 'application/json' } }
+        { status: resendResponse.status, headers: corsHeaders }
       )
     }
 
@@ -213,10 +221,7 @@ serve(async (req) => {
       }),
       {
         status: 200,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
+        headers: corsHeaders,
       }
     )
 
@@ -229,7 +234,7 @@ serve(async (req) => {
         error: 'Internal server error',
         message: String(error)
       }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
+      { status: 500, headers: corsHeaders }
     )
   }
 })
