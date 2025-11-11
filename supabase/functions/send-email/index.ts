@@ -48,6 +48,12 @@ serve(async (req: Request) => {
 
   try {
     log('INFO', '📨 Email request received')
+    log('INFO', 'Request method:', { method: req.method })
+    log('INFO', 'Request headers:', {
+      authorization: req.headers.get('authorization')?.substring(0, 20),
+      contentType: req.headers.get('content-type'),
+      origin: req.headers.get('origin')
+    })
     
     // Verify request method
     if (req.method !== 'POST') {
