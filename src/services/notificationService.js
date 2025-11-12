@@ -70,23 +70,43 @@ export const notificationService = {
         throw new Error(`User not found: ${userError.message}`);
       }
 
-      // Get notification template
-      const { data: template, error: templateError } = await supabase
-        .from('notification_templates')
-        .select('*')
-        .eq('name', templateName)
-        .eq('is_active', true)
-        .single();
+      // Handle custom messages (templateName === 'custom_message')
+      let template;
+      let logTemplate = null;
+      
+      if (templateName === 'custom_message') {
+        // For custom messages, use variables directly (no DB template fetch)
+        template = {
+          id: null,
+          name: 'custom_message',
+          subject: variables.subject || 'Notification',
+          content: variables.custom_message || variables.message || '',
+          is_custom: true
+        };
+        // For logging, we'll reference a null template_id for custom messages
+        logTemplate = null;
+      } else {
+        // Get notification template from database
+        const { data: dbTemplate, error: templateError } = await supabase
+          .from('notification_templates')
+          .select('*')
+          .eq('name', templateName)
+          .eq('is_active', true)
+          .single();
 
-      if (templateError) {
-        throw new Error(`Template not found: ${templateError.message}`);
+        if (templateError) {
+          throw new Error(`Template not found: ${templateError.message}`);
+        }
+
+        template = dbTemplate;
+        logTemplate = dbTemplate.id;
       }
 
       // Create notification log entry
       const { data: logEntry, error: logError } = await supabase
         .from('notification_logs')
         .insert({
-          template_id: template.id,
+          template_id: logTemplate,
           recipient_type: recipientType,
           recipient_email: user.email,
           recipient_phone: user.whatsapp_phone,
