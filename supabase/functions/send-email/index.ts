@@ -125,7 +125,7 @@ serve(async (req: Request) => {
     log('INFO', '✅ Email request validated', {
       to: Array.isArray(emailRequest.to) ? `${emailRequest.to.length} recipients` : emailRequest.to,
       subject: emailRequest.subject.substring(0, 50) + '...',
-      from: emailRequest.from || 'Basic Intelligence <onboarding@resend.dev>'
+      from: emailRequest.from || 'bukassi@gmail.com'
     })
 
     // ============================================
@@ -144,7 +144,7 @@ serve(async (req: Request) => {
           'Authorization': `Bearer ${RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: emailRequest.from || 'Basic Intelligence <onboarding@resend.dev>',
+          from: emailRequest.from || 'bukassi@gmail.com',
           to: Array.isArray(emailRequest.to) ? emailRequest.to : [emailRequest.to],
           subject: emailRequest.subject,
           html: emailRequest.html,
