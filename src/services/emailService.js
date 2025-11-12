@@ -123,23 +123,39 @@ export const emailService = {
         from: emailData.from
       });
 
-      // Call Supabase Edge Function to send email via Resend
-      const { data, error } = await supabase.functions.invoke('send-email', {
-        body: {
+      // Get the project URL from environment
+      const supabaseUrl = import.meta.env?.VITE_SUPABASE_URL;
+      if (!supabaseUrl) {
+        return { success: false, error: 'Supabase URL not configured' };
+      }
+
+      // Call Supabase Edge Function with raw fetch (bypasses SDK auth issues)
+      const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': '', // No auth header - function has verify_jwt: false
+        },
+        body: JSON.stringify({
           to: emailData.to,
           from: emailData.from,
           subject: emailData.subject,
           html: emailData.html
-        }
+        })
       });
 
-      if (error) {
-        logger.error('Edge Function error:', error);
-        return { success: false, error: error.message || 'Failed to call Edge Function' };
+      const data = await response.json();
+
+      if (!response.ok) {
+        logger.error('Edge Function error:', {
+          status: response.status,
+          data
+        });
+        return { success: false, error: data?.error || `Failed with status ${response.status}` };
       }
 
-      logger.info('Email sent successfully via Edge Function:', { id: data?.id });
-      return { success: true, data };
+      logger.info('Email sent successfully via Edge Function:', { id: data?.id || data?.data?.id });
+      return { success: true, data: data?.data || data };
     } catch (error) {
       logger.error('Error in email service:', error);
       return { success: false, error: error.message || 'Failed to send email' };
