@@ -22,7 +22,7 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: false, // Keep console logs for debugging
+        drop_console: process.env.NODE_ENV === 'production', // Remove console logs in production
         drop_debugger: true,
       },
     },
@@ -109,11 +109,19 @@ export default defineConfig({
     port: 4028,
     host: "0.0.0.0",
     strictPort: true,
-    cors: true,
+    cors: {
+      origin: process.env.NODE_ENV === 'production' 
+        ? ['https://yourdomain.com', 'https://www.yourdomain.com'] // Restrict to your domains in production
+        : true, // Allow all origins in development
+      credentials: true,
+    },
     headers: {
-      "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, HEAD, PUT, PATCH, POST, DELETE",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "X-XSS-Protection": "1; mode=block",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
     },
   },
   
