@@ -211,6 +211,9 @@ const SignUpPage = () => {
   const handlePaymentConfirmation = async () => {
     setError('');
     setLoading(true);
+    
+    console.log('🚀 Starting payment confirmation process...');
+    console.log('Form data:', formData);
 
     try {
       // First, send payment slip to admin email
@@ -232,6 +235,26 @@ const SignUpPage = () => {
 
       // Send email with attachment (this would need to be implemented in email service)
       console.log('Payment slip would be sent to admin:', slipEmailData);
+      
+      // For now, let's try to send the email via notificationService
+      try {
+        const emailResult = await notificationService.sendNotificationByEmail(
+          'bukassi@gmail.com',
+          'Payment Slip Upload Notification',
+          {
+            full_name: 'Admin',
+            member_name: formData?.fullName?.trim(),
+            email: formData?.email?.trim(),
+            phone: formData?.phone?.trim(),
+            location: formData?.location?.trim(),
+            plan: getTierDisplayName(formData?.tier),
+            amount: `₦${getTierPrice(formData?.tier)}`
+          }
+        );
+        console.log('Payment slip email result:', emailResult);
+      } catch (emailError) {
+        console.error('Failed to send payment slip email:', emailError);
+      }
 
       // Create account
       const userMetadata = {
