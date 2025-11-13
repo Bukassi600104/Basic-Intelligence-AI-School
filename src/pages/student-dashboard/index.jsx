@@ -183,6 +183,7 @@ const StudentDashboard = () => {
         <LockedOverlay 
           type={userProfile.membership_status}
           onRenew={() => navigate('/student-dashboard/subscription?action=renew')}
+          registrationDate={userProfile.created_at || userProfile.registration_date}
         />
       )}
       

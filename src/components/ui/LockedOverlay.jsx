@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from '../AppIcon';
 import Button from './Button';
 
@@ -6,16 +6,74 @@ const LockedOverlay = ({
   message = "Your payment is being verified. Full access coming soon!", 
   type = 'pending',
   onRenew,
-  onContactSupport 
+  onContactSupport,
+  registrationDate = null
 }) => {
+  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [isExpired, setIsExpired] = useState(false);
+
+  // Calculate time remaining for 48-hour countdown
+  useEffect(() => {
+    if (type === 'pending' && registrationDate) {
+      const calculateTimeRemaining = () => {
+        try {
+          const now = new Date();
+          const registration = new Date(registrationDate);
+          
+          // Validate registration date
+          if (isNaN(registration.getTime())) {
+            console.warn('Invalid registration date:', registrationDate);
+            setIsExpired(true);
+            setTimeRemaining(null);
+            return;
+          }
+          
+          const expiryTime = new Date(registration.getTime() + 48 * 60 * 60 * 1000); // 48 hours from registration
+          const remaining = expiryTime - now;
+
+          if (remaining <= 0) {
+            setIsExpired(true);
+            setTimeRemaining(null);
+          } else {
+            setIsExpired(false);
+            const totalHours = Math.floor(remaining / (1000 * 60 * 60));
+            const totalMinutes = Math.floor(remaining / (1000 * 60));
+            const hours = Math.floor(totalHours);
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            
+            setTimeRemaining({
+              hours,
+              minutes,
+              seconds,
+              totalHours,
+              totalMinutes,
+              percentage: Math.max(0, Math.min(100, (totalHours / 48) * 100))
+            });
+          }
+        } catch (error) {
+          console.error('Error calculating countdown:', error);
+          setIsExpired(true);
+          setTimeRemaining(null);
+        }
+      };
+
+      calculateTimeRemaining();
+      const interval = setInterval(calculateTimeRemaining, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [type, registrationDate]);
   const getLockedContent = () => {
     switch (type) {
       case 'pending':
         return {
-          icon: 'Clock',
-          title: 'Payment Verification in Progress',
-          message: 'Your payment has been received and is being verified by our admin team. You\'ll get full access within 24-48 hours.',
-          color: 'warning',
+          icon: isExpired ? 'AlertCircle' : 'Clock',
+          title: isExpired ? 'Approval Time Expired' : 'Account Pending Approval',
+          message: isExpired 
+            ? 'Your 48-hour approval window has expired. Please contact support for assistance.'
+            : 'Your payment has been received and is being verified by our admin team. You\'ll get full access within 48 hours.',
+          color: isExpired ? 'error' : 'warning',
           actionText: 'Contact Support',
           actionIcon: 'MessageCircle'
         };
@@ -106,6 +164,48 @@ const LockedOverlay = ({
         <p className="text-muted-foreground mb-6 leading-relaxed">
           {content.message}
         </p>
+
+        {/* 48-Hour Countdown Timer for Pending Status */}
+        {type === 'pending' && !isExpired && timeRemaining && (
+          <div className="mb-6 p-4 bg-muted/50 rounded-xl border border-border/50">
+            <div className="text-center">
+              <div className="text-sm font-medium text-muted-foreground mb-2">
+                Time Remaining Until Approval
+              </div>
+              <div className="flex justify-center items-center space-x-2 mb-3">
+                <div className="bg-background border border-border rounded-lg px-3 py-2 min-w-[60px]">
+                  <div className="text-2xl font-bold text-foreground">
+                    {String(timeRemaining.hours).padStart(2, '0')}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Hours</div>
+                </div>
+                <div className="text-2xl font-bold text-muted-foreground">:</div>
+                <div className="bg-background border border-border rounded-lg px-3 py-2 min-w-[60px]">
+                  <div className="text-2xl font-bold text-foreground">
+                    {String(timeRemaining.minutes).padStart(2, '0')}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Minutes</div>
+                </div>
+                <div className="text-2xl font-bold text-muted-foreground">:</div>
+                <div className="bg-background border border-border rounded-lg px-3 py-2 min-w-[60px]">
+                  <div className="text-2xl font-bold text-foreground">
+                    {String(timeRemaining.seconds).padStart(2, '0')}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Seconds</div>
+                </div>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2 mb-2">
+                <div 
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-1000"
+                  style={{ width: `${timeRemaining.percentage}%` }}
+                ></div>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {timeRemaining.totalHours}h {timeRemaining.totalMinutes % 60}m remaining out of 48 hours
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Action Button */}
         <div className="space-y-3">
