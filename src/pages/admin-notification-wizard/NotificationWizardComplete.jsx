@@ -9,6 +9,7 @@ import Button from '../../components/ui/Button';
 import { userService } from '../../services/userService';
 import { notificationService } from '../../services/notificationService';
 import { logger } from '../../utils/logger';
+import { sanitizeHtml, RateLimiter } from '../../utils/security';
 import { Toaster, toast } from 'sonner';
 
 /**
@@ -39,6 +40,9 @@ const NotificationWizardComplete = () => {
   const { userProfile } = useAuth();
   const navigate = useNavigate();
   
+  // Rate limiting for notification sending
+  const [rateLimiter] = useState(() => new RateLimiter(3, 60000)); // 3 sends per minute
+
   // State Management
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -228,13 +232,17 @@ const NotificationWizardComplete = () => {
   };
 
   const generatePreview = (data = notificationData) => {
+    // Use security utility for safe HTML sanitization
+    const sanitizedSubject = sanitizeHtml(data.subject || 'No Subject');
+    const sanitizedMessage = sanitizeHtml(data.message || 'No message content', { allowLineBreaks: true });
+    
     let preview = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5; border-radius: 8px;">
       <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px;">
-          <h2 style="margin: 0; font-size: 20px;">${data.subject || 'No Subject'}</h2>
+          <h2 style="margin: 0; font-size: 20px;">${sanitizedSubject}</h2>
         </div>
         <div style="padding: 20px; color: #333;">
-          ${data.message ? data.message.replace(/\n/g, '<br>') : '<p><em>No message content</em></p>'}
+          ${sanitizedMessage}
         </div>
         <div style="background: #f9f9f9; padding: 15px; text-align: center; color: #666; font-size: 12px;">
           <p>Basic Intelligence Community School<br>Powered by Notification System</p>
@@ -247,6 +255,15 @@ const NotificationWizardComplete = () => {
   // ================== SENDING NOTIFICATIONS ==================
 
   const handleSendNotifications = async () => {
+    // Rate limiting check
+    if (!rateLimiter.isAllowed()) {
+      const timeToWait = Math.ceil(rateLimiter.timeUntilNextRequest() / 1000);
+      toast.error('Rate limit exceeded', {
+        description: `Please wait ${timeToWait} seconds before sending more notifications.`
+      });
+      return;
+    }
+
     // Validation
     if (notificationMode === 'individual' && selectedUsers.length === 0) {
       toast.error('No recipients selected', {
