@@ -11,6 +11,7 @@ import PhoneInput from '../../components/ui/PhoneInput';
 import Icon from '../../components/AppIcon';
 import { notificationService } from '../../services/notificationService';
 import { emailVerificationService } from '../../services/emailVerificationService';
+import { whatsappService } from '../../services/whatsappService';
 
 const SignUpPage = () => {
   // Wizard steps: 1 = Member Details, 2 = Select Plan, 3 = Account Summary & Payment
@@ -215,7 +216,30 @@ const SignUpPage = () => {
     console.log('🚀 Starting payment confirmation process...');
     console.log('Form data:', formData);
 
+    if (!validateStep3()) {
+      setLoading(false);
+      return;
+    }
+
     try {
+      // Send WhatsApp notification to admin
+      try {
+        const whatsappResult = await whatsappService.sendPaymentReceipt({
+          fullName: formData?.fullName?.trim(),
+          email: formData?.email?.trim(),
+          phone: formData?.phone?.trim(),
+          plan: getTierDisplayName(formData?.tier),
+          amount: getTierPrice(formData?.tier),
+          imageFile: paymentSlip
+        });
+        
+        if (whatsappResult.success) {
+          console.log('WhatsApp notification sent to admin');
+        }
+      } catch (whatsappError) {
+        console.error('Failed to send WhatsApp notification:', whatsappError);
+      }
+
       // First, send payment slip to admin email
       const slipEmailData = {
         to: 'bukassi@gmail.com',
@@ -607,15 +631,41 @@ const SignUpPage = () => {
           {/* Step 3: Account Summary & Payment */}
           {currentStep === 3 && (
             <div>
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete Registration</h2>
-                <p className="text-gray-600">Review your details and upload payment slip</p>
+              <div className="text-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900 mb-1">Complete Registration</h2>
+                <p className="text-sm text-gray-600">Review your details and upload payment slip</p>
+              </div>
+
+              {/* Payment Details */}
+              <div className="mb-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center">
+                  <Icon name="CreditCard" size={18} className="mr-2 text-orange-600" />
+                  Payment Details
+                </h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Bank:</span>
+                    <span className="font-semibold">Opay</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Account Number:</span>
+                    <span className="font-semibold">9062284074</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Account Name:</span>
+                    <span className="font-semibold">Orjiako Tony</span>
+                  </div>
+                  <div className="flex justify-between pt-2 border-t border-orange-200">
+                    <span className="text-gray-600">Amount:</span>
+                    <span className="font-bold text-base text-orange-600">₦{getTierPrice(formData?.tier)}</span>
+                  </div>
+                </div>
               </div>
 
               {/* Account Summary */}
-              <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Summary</h3>
-                <div className="space-y-3">
+              <div className="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                <h3 className="text-base font-semibold text-gray-900 mb-3">Account Summary</h3>
+                <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Name:</span>
                     <span className="font-medium">{formData?.fullName?.trim()}</span>
@@ -632,47 +682,43 @@ const SignUpPage = () => {
                     <span className="text-gray-600">Plan:</span>
                     <span className="font-medium text-orange-600">{getTierDisplayName(formData?.tier)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Amount:</span>
-                    <span className="font-bold text-lg">₦{getTierPrice(formData?.tier)}</span>
-                  </div>
                 </div>
               </div>
 
               {/* Payment Slip Upload */}
-              <div className="space-y-3">
-                <Label>Payment Slip (Required)</Label>
-                <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-orange-400 transition-colors">
+              <div className="space-y-2">
+                <Label className="text-sm">Payment Slip (Required)</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:border-orange-400 transition-colors">
                   {paymentSlip ? (
-                    <div className="space-y-4">
-                      <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto">
-                        <Icon name="CheckCircle" size={32} className="text-green-600" />
+                    <div className="space-y-3">
+                      <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto">
+                        <Icon name="CheckCircle" size={24} className="text-green-600" />
                       </div>
                       <div className="text-sm font-medium text-gray-900">
                         {paymentSlip?.name}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500">
                         {(paymentSlip?.size / 1024 / 1024)?.toFixed(2)} MB
                       </div>
                       <Button
                         type="button"
                         variant="outline"
                         onClick={() => setPaymentSlip(null)}
-                        className="text-sm"
+                        className="text-xs h-8"
                       >
-                        <Icon name="X" size={16} className="mr-2" />
+                        <Icon name="X" size={14} className="mr-1" />
                         Remove File
                       </Button>
                     </div>
                   ) : (
-                    <div className="space-y-4">
-                      <div className="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center mx-auto">
-                        <Icon name="Upload" size={32} className="text-gray-400" />
+                    <div className="space-y-3">
+                      <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center mx-auto">
+                        <Icon name="Upload" size={24} className="text-gray-400" />
                       </div>
                       <div className="text-sm font-medium text-gray-900">
                         Upload payment receipt or screenshot
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs text-gray-500">
                         Supports JPEG, PNG, WebP (Max 5MB)
                       </div>
                       <input
