@@ -9,9 +9,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert.tsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.tsx';
 import PhoneInput from '../../components/ui/PhoneInput';
 import Icon from '../../components/AppIcon';
-import { notificationService } from '../../services/notificationService';
 import { emailVerificationService } from '../../services/emailVerificationService';
-import { whatsappService } from '../../services/whatsappService';
+import { paymentReceiptService } from '../../services/paymentReceiptService';
+import { adminNotificationService } from '../../services/adminNotificationService';
+import { welcomeEmailService } from '../../services/welcomeEmailService';
 
 const SignUpPage = () => {
   // Wizard steps: 1 = Member Details, 2 = Select Plan, 3 = Account Summary & Payment
@@ -213,71 +214,45 @@ const SignUpPage = () => {
     setError('');
     setLoading(true);
     
-    console.log('🚀 Starting payment confirmation process...');
-    console.log('Form data:', formData);
-
     if (!validateStep3()) {
       setLoading(false);
       return;
     }
 
     try {
-      // Send WhatsApp notification to admin
+      let receiptUrl = '';
+
+      if (paymentSlip) {
+        try {
+          const receiptUploadResult = await paymentReceiptService.uploadReceipt(
+            paymentSlip,
+            `${formData?.email?.trim() || 'member'}-${Date.now()}`
+          );
+
+          if (receiptUploadResult.success && receiptUploadResult.url) {
+            receiptUrl = receiptUploadResult.url;
+          } else if (!receiptUploadResult.success) {
+            console.error('Payment receipt upload failed:', receiptUploadResult.error);
+          }
+        } catch (uploadError) {
+          console.error('Payment receipt upload error:', uploadError);
+        }
+      }
+
       try {
-        const whatsappResult = await whatsappService.sendPaymentReceipt({
+        await adminNotificationService.notifyNewRegistration({
           fullName: formData?.fullName?.trim(),
           email: formData?.email?.trim(),
           phone: formData?.phone?.trim(),
+          location: formData?.location?.trim(),
           plan: getTierDisplayName(formData?.tier),
           amount: getTierPrice(formData?.tier),
-          imageFile: paymentSlip
+          receiptUrl,
+          dashboardUrl: window.location.origin,
+          registrationTime: new Date()
         });
-        
-        if (whatsappResult.success) {
-          console.log('WhatsApp notification sent to admin');
-        }
-      } catch (whatsappError) {
-        console.error('Failed to send WhatsApp notification:', whatsappError);
-      }
-
-      // First, send payment slip to admin email
-      const slipEmailData = {
-        to: 'bukassi@gmail.com',
-        subject: `New Registration Payment Slip - ${formData?.fullName?.trim()}`,
-        html: `
-          <h2>New Member Registration Payment</h2>
-          <p><strong>Name:</strong> ${formData?.fullName?.trim()}</p>
-          <p><strong>Email:</strong> ${formData?.email?.trim()}</p>
-          <p><strong>Phone:</strong> ${formData?.phone?.trim()}</p>
-          <p><strong>Location:</strong> ${formData?.location?.trim()}</p>
-          <p><strong>Plan:</strong> ${getTierDisplayName(formData?.tier)}</p>
-          <p><strong>Amount:</strong> ₦${getTierPrice(formData?.tier)}</p>
-          <hr>
-          <p><strong>Payment Slip:</strong> Attached</p>
-        `
-      };
-
-      // Send email with attachment (this would need to be implemented in email service)
-      console.log('Payment slip would be sent to admin:', slipEmailData);
-      
-      // For now, let's try to send the email via notificationService
-      try {
-        const emailResult = await notificationService.sendNotificationByEmail(
-          'bukassi@gmail.com',
-          'Payment Slip Upload Notification',
-          {
-            full_name: 'Admin',
-            member_name: formData?.fullName?.trim(),
-            email: formData?.email?.trim(),
-            phone: formData?.phone?.trim(),
-            location: formData?.location?.trim(),
-            plan: getTierDisplayName(formData?.tier),
-            amount: `₦${getTierPrice(formData?.tier)}`
-          }
-        );
-        console.log('Payment slip email result:', emailResult);
-      } catch (emailError) {
-        console.error('Failed to send payment slip email:', emailError);
+      } catch (adminNotificationError) {
+        console.error('Failed to notify admin about new registration:', adminNotificationError);
       }
 
       // Create account
@@ -303,23 +278,17 @@ const SignUpPage = () => {
       }
 
       if (data?.user) {
-        // Send welcome email
         try {
-          await notificationService.sendNotification({
-            userId: data.user.id,
-            templateName: 'Welcome Email',
-            variables: {
-              full_name: formData?.fullName?.trim(),
-              email: formData?.email?.trim(),
-              member_id: 'Pending Assignment',
-              membership_tier: formData?.tier,
-              dashboard_url: `${window.location.origin}/student-dashboard`
-            },
-            recipientType: 'email'
+          await welcomeEmailService.sendWelcomeEmail({
+            to: formData?.email?.trim(),
+            fullName: formData?.fullName?.trim(),
+            email: formData?.email?.trim(),
+            memberId: 'Pending Assignment',
+            planLabel: getTierDisplayName(formData?.tier),
+            dashboardUrl: `${window.location.origin}/student-dashboard`
           });
         } catch (emailError) {
           console.error('Failed to send welcome email:', emailError);
-          // Don't block registration if email fails
         }
         
         setSuccess('Account created successfully! Redirecting to dashboard...');
